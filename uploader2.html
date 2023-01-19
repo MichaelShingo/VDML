@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Bookings Analyzer</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="main.css">
+        <!-- <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
+    </head>
+    <body>
+        <div class="main-container">
+            <h1>Booking Analyzer</h1>
+            
+            <ol>
+                <li>Go into the "Find Bookings" tab in connect2.</li>
+                <li>Apply desired filters.</li>
+                <li>Click "Search."</li>
+                <li>Click "Export to Excel."</li>
+                <li>Upload the resulting CSV file to this page.</li>
+            </ol>
+
+            <form class="form" id="myForm">
+                <div class="drop-zone">
+                    <span class="drop-zone__prompt">Drop CSV file here or click to upload</span>
+                    <!-- <div class="drop-zone__thumb" data-label="myfile.txt"></div> -->
+                    <input type="file" id="inpFile" name="myFile" class="drop-zone__input">
+                </div>
+                <button class="btn-submit" type="submit">Submit</button>
+            </form>
+
+        </div>
+
+        <script>
+            const myForm = document.getElementById("myForm");
+            const inpFile = document.getElementById("inpFile").files[0];
+            const endpoint = "upload.php";
+            const formData = new FormData(); //holds the file once it's chosen and pass to fetch request
+
+            myForm.addEventListener("submit", e => {
+                e.preventDefault(); //prevents refreshing the page default behavior
+                console.log(inpFile)
+                let textBlob = new Blob(['hello this is a text'], {type: 'text/csv'});
+                const pickerOptions = {
+                    suggestedName: 'sampleFile.csv',
+                    types: [
+                        {
+                            description: 'CSV file',
+                            accept: {
+                                'text/csv': ['.csv']
+                            }
+                        }
+                    ]
+                }
+
+
+
+                formData.append("inpFile", inpFile.files[0]); //first argument is the name of the file, then data to send
+                //console.log(formData.get('inpFile').text);
+           
+            });
+
+        </script>
+        
+  
+    </body>
+    <script src="main.js"></script>
+</html>
