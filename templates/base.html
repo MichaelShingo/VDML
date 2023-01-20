@@ -7,23 +7,34 @@
         <title></title>
         <link rel="shortcut icon" type="image/png" href="img/favicon.png">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> <!--this syntax for functions that return as strings-->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <title>Title</title>
         {% block head %}{% endblock %}
-        
     </head>
 
     <body>
-        {% block body %}{% endblock %}
-        <div id="page-container">
-            <div id="content-wrap">
-
-            
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">VDML</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="late_equipment">Late Equipment</a></li>
+                <li><a href="late_fines">Late Fines</a></li>
+                <li><a href="booking_analysis">Booking Analysis</a></li>
+                <li><a href="lab_usage">Lab Usage</a></li>
+            </ul>
         </div>
-
-
-
-
-        
-        
+        <div class="container">
+            
+            {% block body %}
+            {% endblock %}
+        </div>
     </body>
     <script src="index.js" type="text/javascript" defer></script>
 

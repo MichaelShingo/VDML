@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+{% block body %}
+    <h1>Late Equipment Email Generator</h1>
+    <p>This script takes plain text from the connect2 booking page and generates a late equipment
+        email that can be sent to the user.
+    </p>
+    <form method="POST">
+        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here."></textarea>
+        <br>
+        <input type="submit">
+    </form>
+    <p style="visibility: {{ visibility }}" class="alert-message">The result has been copied to your clipboard.</p>
+    <textarea style="visibility: {{ visibility }}" name="output" id="late-output" 
+        rows="20" cols="100" placeholder="Result outputs here.">{{ resultText }}</textarea>
+
+{% endblock %}

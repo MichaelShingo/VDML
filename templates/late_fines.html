@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Late Fines</title>
+{% endblock %}
+{% block body %}
+    <h1>Late Fines Toolkit</h1>
+    <p>Processing late fines involve a few different steps that can be automated separately.
+        This page contains scripts for all of these steps.
+    </p>
+    <h2>Generate a CSV that can be pasted into the Excel sheet</h2>
+    <form method="POST">
+        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here."></textarea>
+        <br>
+        <input type="submit">
+    </form>
+    <p style="visibility: {{ visibility }}" class="alert-message">The result has been copied to your clipboard.</p>
+    <textarea style="visibility: {{ visibility }}" name="output" id="late-output" 
+        rows="20" cols="{{ cols }}" placeholder="Result outputs here.">{{ resultText }}</textarea>
+    <h2>Generate the email for the users</h2>
+    <h2>Generate the email to circulation</h2>
+    
+
+{% endblock %}
