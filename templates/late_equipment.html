@@ -8,12 +8,13 @@
         email that can be sent to the user.
     </p>
     <form method="POST">
-        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here."></textarea>
+        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ originalText }}</textarea>
         <br>
         <input type="submit">
     </form>
-    <p style="visibility: {{ visibility }}" class="alert-message">The result has been copied to your clipboard.</p>
     <textarea style="visibility: {{ visibility }}" name="output" id="late-output" 
         rows="20" cols="100" placeholder="Result outputs here.">{{ resultText }}</textarea>
+    <p style="visibility: {{ visibility }}" class="alert-message">The result has been copied to your clipboard.</p>
+
 
 {% endblock %}

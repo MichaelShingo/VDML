@@ -5,20 +5,73 @@
 {% endblock %}
 {% block body %}
     <h1>Late Fines Toolkit</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>Task</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.content }}</td>
+                    <td>{{ task.date_created.date() }}</td>
+                    <td>
+                        <a href="">Delete</a>
+                        <br>
+                        <a href="">Update</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <form action="/late_fines" method="POST">
+            <input type="text" name="content" id="content">
+            <input type="submit" value="Add Task">
+
+        </form>
+    </div>
+
+
+
+
+
+
+
     <p>Processing late fines involve a few different steps that can be automated separately.
         This page contains scripts for all of these steps.
     </p>
-    <h2>Generate a CSV that can be pasted into the Excel sheet</h2>
+    <h2>Generate text that can be pasted directly into an Excel sheet</h2>
+    <form method="POST">
+        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ resultTextCSV }}</textarea>
+        <br>
+        <input name="csv" type="submit">
+    </form>
+    <textarea style="visibility: {{ visibilityCSV }}" name="output" id="late-output" 
+        rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextCSV }}</textarea>
+    <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
+
+
+    <h2>Generate the email for the users</h2>
     <form method="POST">
         <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here."></textarea>
         <br>
-        <input type="submit">
+        <input name="user-email" type="submit">
     </form>
-    <p style="visibility: {{ visibility }}" class="alert-message">The result has been copied to your clipboard.</p>
-    <textarea style="visibility: {{ visibility }}" name="output" id="late-output" 
-        rows="20" cols="{{ cols }}" placeholder="Result outputs here.">{{ resultText }}</textarea>
-    <h2>Generate the email for the users</h2>
+    <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 
+        rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextUser }}</textarea>
+    <p style="visibility: {{ visibilityUser }}" class="alert-message">The result has been copied to your clipboard.</p>
+
+
     <h2>Generate the email to circulation</h2>
+    <form method="POST">
+        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here."></textarea>
+        <br>
+        <input name="circ-email" type="submit">
+    </form>
+    <textarea style="visibility: {{ visibilityCirc }}" name="output" id="late-output" 
+        rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextCirc }}</textarea>
+    <p style="visibility: {{ visibilityCirc }}" class="alert-message">The result has been copied to your clipboard.</p>
     
 
 {% endblock %}
