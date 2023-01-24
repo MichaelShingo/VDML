@@ -6,44 +6,90 @@
 {% block body %}
     <h1>Late Fines Toolkit</h1>
     <div class="content">
-        <table>
+        {% if tasks|length < 1 %}
+        <table class="table">
             <tr>
-                <th>Task</th>
-                <th>Added</th>
+                <th>Name</th>
+                <th>Penn ID</th>
+                <th>Email</th>
+                <th>Fine Amount</th>
+                <th>Booking</th>
+                <th>Details</th>
+                <th>Date Range</th>
+                <th>Return Time</th>
+                <th>Staff</th>
+                <th>Date Added</th>
+                <th>Forgiven Note</th>
                 <th>Actions</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <h4>There are no entries in table. Create one below.</h4>
+
+
+        {% else %}
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Penn ID</th>
+                <th>Email</th>
+                <th>Fine Amount</th>
+                <th>Booking</th>
+                <th>Details</th>
+                <th>Date Range</th>
+                <th>Return Time</th>
+                <th>Staff</th>
+                <th>Date Added</th>
+                <th>Forgiven Note</th>
+                <th>Actions</th>
+                
             </tr>
             {% for task in tasks %}
                 <tr>
-                    <td>{{ task.content }}</td>
-                    <td>{{ task.date_created.date() }}</td>
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.penn_id }}</td>
+                    <td>{{ task.email }}</td>
+                    <td>{{ task.amount }}</td>
+                    <td>{{ task.booking_number }}</td>
+                    <td>{{ task.details }}</td>
+                    <td>{{ task.schedule }}</td>
+                    <td>{{ task.return_time }}</td>
+                    <td>{{ task.operator }}</td>
+                    <td>{{ task.date_sent }}</td>
+                    <td>{{ task.forgiven }}</td>
                     <td>
-                        <a href="">Delete</a>
+                        <a href="/delete/{{task.id}}">Delete</a>
                         <br>
-                        <a href="">Update</a>
+                        <a href="/update/{{task.id}}">Update</a>
                     </td>
                 </tr>
             {% endfor %}
         </table>
+        {% endif %}
 
-        <form action="/late_fines" method="POST">
-            <input type="text" name="content" id="content">
-            <input type="submit" value="Add Task">
-
-        </form>
     </div>
 
 
-
-
-
-
-
-    <p>Processing late fines involve a few different steps that can be automated separately.
-        This page contains scripts for all of these steps.
-    </p>
-    <h2>Generate text that can be pasted directly into an Excel sheet</h2>
-    <form method="POST">
-        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ resultTextCSV }}</textarea>
+    <h2>Add entry to the database</h2>
+    <form class="form" method="POST">
+        <textarea name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ resultTextCSV }}</textarea><br>
+        <input name="penn-id" id="penn-id" placeholder="Penn ID"><br>
+        <input name="user-email" id="user-email" placeholder="User email"><br>
+        <input name="fine-amount" id="fine-amount" placeholder="Fine amount (number only)"><br>
+        <input name="forgiven" id="forgiven" placeholder="(Optional) Note if fine forgiven">
         <br>
         <input name="csv" type="submit">
     </form>

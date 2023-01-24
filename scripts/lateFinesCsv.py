@@ -48,5 +48,5 @@ def generateCSV(text):
         equipmentList[i] = equipmentList[i].strip()
     equipmentString = 'Late: ' + ' | '.join(equipmentList)
     result = '%s\t\t\t\t%s\t%s\t%s\t%s\t%s\t%s' % (owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate)
-    pyperclip.copy(result)
-    return result
+    #pyperclip.copy(result)
+    return owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate

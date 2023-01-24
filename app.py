@@ -22,10 +22,19 @@ app = Flask(__name__) #references this file
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #three /'s is relative path, 4 is absolute path
 db.init_app(app)
 
-class Todo(db.Model): #Todo is the table name, it's automatically lowercase when it's created
+class LateFine(db.Model): #Todo is the table name, it's automatically lowercase when it's created
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    name = db.Column(db.String(200), nullable=False)
+    penn_id = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(200), nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    booking_number = db.Column(db.String(200), nullable=False)
+    details = db.Column(db.String(200), nullable=False)
+    schedule = db.Column(db.String(200), nullable=False)
+    return_time = db.Column(db.String(200), nullable=False)
+    operator = db.Column(db.String(200), nullable=False)
+    date_sent = db.Column(db.DateTime, default=datetime.utcnow)
+    forgiven = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return '<Task %r>' % self.id #when you create new element, it returns the task and the id of the task created 
@@ -53,46 +62,81 @@ def late_equipment_post(resultText=None, visibility='hidden'):
 
 
 @app.route("/late_fines", methods=['POST', 'GET'])
-def late_fines(visibility='hidden', cols='0'):
+def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
     if request.method == 'POST':
-        task_content = request.form['content']
-        new_task = Todo(content=task_content)
-        try:
-            db.session.add(new_task)
+        # task_content = request.form['content']
+        # new_task = Todo(content=task_content)
+        # try:
+        #     db.session.add(new_task)
+        #     db.session.commit()
+        #     return redirect('/late_fines')
+        # except:
+        #     return 'There was an issue adding your task'
+        if 'csv' in request.form:
+            text = request.form['text']
+            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
+            pennID = request.form['penn-id']
+            email = request.form['user-email']
+            amount = request.form['fine-amount']
+            forgiven = request.form['forgiven']
+            processed_text = 'temp text'
+
+            new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
+                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
+
+            db.session.add(new_entry)
             db.session.commit()
             return redirect('/late_fines')
-        except:
-            return 'There was an issue adding your task'
+        
+
+            #create fields that populate the remaining data, all required except "forgiven"
+            return render_template('late_fines.html', originalTextCSV=text, resultTextCSV=processed_text, methods=['POST'], visibilityCSV='visible',
+                visibilityUser='hidden', visibilityCirc='hidden')
+
+        elif 'user-email' in request.form:
+            text = request.form['text']
+            processed_text = lateFinesUserEmail.generateEmail(text)
+            return render_template('late_fines.html', originalTextUser=text, resultTextUser=processed_text, methods=['POST'], visibilityUser='visible',
+                visibilityCSV='hidden', visbilityCirc='hidden')
+
+        elif 'circ-email' in request.form:
+            text = request.form['text']
+            processed_text = lateFinesCirculationEmail.generateEmail(text)
+            return render_template('late_fines.html', originalTextCirc=text, resultTextCirc=processed_text, methods=['POST'], 
+                visibilityUser='hidden', visibilityCSV='hidden', visibilityCirc='visible')
     else:
         try:
-            tasks = Todo.query.order_by(Todo.date_created).all() #returns all 
+            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             #if table todo does not exist, create table
-            tasks = Todo.query.order_by(Todo.date_created).all() #returns all 
+            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
 
-@app.route("/late_fines", methods=['POST', 'GET']) #posting means you send data somewhere, like a database
-def late_fines_post(resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
-    if 'csv' in request.form:
-        text = request.form['text']
-        processed_text = lateFinesCsv.generateCSV(text)
-        return render_template('late_fines.html', originalTextCSV=text, resultTextCSV=processed_text, methods=['POST'], visibilityCSV='visible',
-            visibilityUser='hidden', visibilityCirc='hidden')
 
-    elif 'user-email' in request.form:
-        text = request.form['text']
-        processed_text = lateFinesUserEmail.generateEmail(text)
-        return render_template('late_fines.html', originalTextUser=text, resultTextUser=processed_text, methods=['POST'], visibilityUser='visible',
-            visibilityCSV='hidden', visbilityCirc='hidden')
+@app.route('/delete/<int:id>') #id is primary key in database
+def delete(id):
+    task_to_delete = LateFine.query.get_or_404(id)
+    try:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        return redirect('/late_fines')
+    except:
+        return 'There was a problem deleting that task'
 
-    elif 'circ-email' in request.form:
-        text = request.form['text']
-        processed_text = lateFinesCirculationEmail.generateEmail(text)
-        return render_template('late_fines.html', originalTextCirc=text, resultTextCirc=processed_text, methods=['POST'], 
-            visibilityUser='hidden', visibilityCSV='hidden', visibilityCirc='visible')
-
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+    task = LateFine.query.get_or_404(id)
+    if request.method == 'POST':
+        task.content = request.form['content']
+        try:
+            db.session.commit()
+            return redirect('../late_fines')
+        except:
+            return 'There was an issue updating your task'
+    else:
+        return render_template('update.html', task=task)
 
 
 
