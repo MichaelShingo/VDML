@@ -10,11 +10,8 @@ from datetime import datetime
 # cmd "source env/bin/activate"
 # TODO add a database, so you don't have to deal with excel and CSV's 
 
-
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
-
-
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
@@ -35,6 +32,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     operator = db.Column(db.String(200), nullable=False)
     date_sent = db.Column(db.String(200), default=(datetime.utcnow()).strftime('%Y-%m-%d')) #2023-01-25 15:04:04.443131
     forgiven = db.Column(db.String(200), nullable=False)
+    selected = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<Task %r>' % self.id #when you create new element, it returns the task and the id of the task created 
@@ -43,7 +41,6 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
 with app.app_context():
     print('created database')
     db.create_all()
-
 
 
 @app.route('/')  #routes to index.html so you don't 404
@@ -64,16 +61,13 @@ def late_equipment_post(resultText=None, visibility='hidden'):
 
 @app.route("/late_fines", methods=['POST', 'GET'])
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
+    #add select button on database, adds LateFine object to list
+    #click on generate emails
+    #loop through list and run script for each 
+    select = 'Select'
+
     if request.method == 'POST':
-        # task_content = request.form['content']
-        # new_task = Todo(content=task_content)
-        # try:
-        #     db.session.add(new_task)
-        #     db.session.commit()
-        #     return redirect('/late_fines')
-        # except:
-        #     return 'There was an issue adding your task'
-        if 'csv' in request.form:
+        if 'add-entry' in request.form:
             text = request.form['text']
             owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
             pennID = request.form['penn-id']
@@ -88,27 +82,16 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             db.session.add(new_entry)
             db.session.commit()
             return redirect('/late_fines')
-        
 
-            #create fields that populate the remaining data, all required except "forgiven"
-            return render_template('late_fines.html', originalTextCSV=text, resultTextCSV=processed_text, methods=['POST'], visibilityCSV='visible',
-                visibilityUser='hidden', visibilityCirc='hidden')
-
-        elif 'user-email' in request.form:
+        elif 'generate-emails' in request.form:
             text = request.form['text']
             processed_text = lateFinesUserEmail.generateEmail(text)
             return render_template('late_fines.html', originalTextUser=text, resultTextUser=processed_text, methods=['POST'], visibilityUser='visible',
                 visibilityCSV='hidden', visbilityCirc='hidden')
-
-        elif 'circ-email' in request.form:
-            text = request.form['text']
-            processed_text = lateFinesCirculationEmail.generateEmail(text)
-            return render_template('late_fines.html', originalTextCirc=text, resultTextCirc=processed_text, methods=['POST'], 
-                visibilityUser='hidden', visibilityCSV='hidden', visibilityCirc='visible')
     else:
         try:
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', select=select, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             #if table todo does not exist, create table
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
@@ -125,6 +108,21 @@ def delete(id):
         return redirect('/late_fines')
     except:
         return 'There was a problem deleting that task'
+
+selectedList = set()
+@app.route('/select/<int:id>')
+def select(id):
+    entry = LateFine.query.get_or_404(id)
+    if not id in selectedList:
+        selectedList.add(id)
+        entry.selected = True
+    else:
+        selectedList.remove(id)
+        entry.selected = False
+    db.session.commit()
+    print(f'CURRENT LIST = {selectedList}')
+    return redirect('/late_fines')
+
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -155,22 +153,6 @@ def update(id):
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @app.route('/booking_analysis', methods=['GET', 'POST'])
 def upload_file():
