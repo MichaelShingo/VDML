@@ -8,7 +8,17 @@
     <div class="content">
 
         <form action="/update/{{task.id}}" method="POST">
-            <input type="text" name="content" id="content" value="{{task.content}}">
+            <input tyñpe="text" name="name" id="content" value="{{task.name}}">
+            <input type="text" name="penn_id" id="content" value="{{task.penn_id}}">
+            <input type="text" name="email" id="content" value="{{task.email}}">
+            <input type="text" name="amount" id="content" value="{{task.amount}}">
+            <input type="text" name="booking_number" id="content" value="{{task.booking_number}}">
+            <input type="text" name="details" id="content" value="{{task.details}}">
+            <input type="text" name="schedule" id="content" value="{{task.schedule}}">
+            <input type="text" name="return_time" id="content" value="{{task.return_time}}">
+            <input type="text" name="operator" id="content" value="{{task.operator}}">
+            <input type="text" name="date_sent" id="content" value="{{task.date_sent}}">
+            <input type="text" name="forgiven" id="content" value="{{task.forgiven}}">
             <input type="submit" value="Update Task">
 
         </form>

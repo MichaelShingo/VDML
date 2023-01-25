@@ -33,7 +33,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     schedule = db.Column(db.String(200), nullable=False)
     return_time = db.Column(db.String(200), nullable=False)
     operator = db.Column(db.String(200), nullable=False)
-    date_sent = db.Column(db.DateTime, default=datetime.utcnow)
+    date_sent = db.Column(db.String(200), default=(datetime.utcnow()).strftime('%Y-%m-%d')) #2023-01-25 15:04:04.443131
     forgiven = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
@@ -41,6 +41,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
 
 
 with app.app_context():
+    print('created database')
     db.create_all()
 
 
@@ -129,13 +130,24 @@ def delete(id):
 def update(id):
     task = LateFine.query.get_or_404(id)
     if request.method == 'POST':
-        task.content = request.form['content']
+        task.name = request.form['name']
+        task.penn_id = request.form['penn_id']
+        task.email = request.form['email']
+        task.amount = request.form['amount']
+        task.booking_number = request.form['booking_number']
+        task.details = request.form['details']
+        task.schedule = request.form['schedule']
+        task.return_time = request.form['return_time']
+        task.operator = request.form['operator']
+        task.date_sent = request.form['date_sent']
+        task.forgiven = request.form['forgiven']
         try:
             db.session.commit()
-            return redirect('../late_fines')
+            return redirect('/late_fines')
         except:
             return 'There was an issue updating your task'
     else:
+        #get all field values rendered in editable inputs 
         return render_template('update.html', task=task)
 
 
