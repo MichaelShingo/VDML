@@ -13,6 +13,7 @@ from datetime import datetime
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
 
+
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
 
@@ -39,13 +40,16 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
 
 
 with app.app_context():
-    print('created database')
     db.create_all()
+
 
 
 @app.route('/')  #routes to index.html so you don't 404
 def index():
     return render_template('index.html')
+
+
+selectedSet = set()
 
 
 @app.route("/late_equipment")
@@ -64,7 +68,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
     #add select button on database, adds LateFine object to list
     #click on generate emails
     #loop through list and run script for each 
-    select = 'Select'
+    currentDB = LateFine.query.all()
+    for entry in currentDB:
+        if entry.selected:
+            selectedSet.add(entry.id)
 
     if request.method == 'POST':
         if 'add-entry' in request.form:
@@ -74,7 +81,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             email = request.form['user-email']
             amount = request.form['fine-amount']
             forgiven = request.form['forgiven']
-            processed_text = 'temp text'
 
             new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
                 details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
@@ -84,14 +90,21 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             return redirect('/late_fines')
 
         elif 'generate-emails' in request.form:
-            text = request.form['text']
-            processed_text = lateFinesUserEmail.generateEmail(text)
-            return render_template('late_fines.html', originalTextUser=text, resultTextUser=processed_text, methods=['POST'], visibilityUser='visible',
-                visibilityCSV='hidden', visbilityCirc='hidden')
+            tasks = LateFine.query.order_by(LateFine.date_sent).all()
+            resultUser = ''
+            resultCirc = ''
+            for id in selectedSet:
+                currentEntry = LateFine.query.get_or_404(id)
+                resultUser += lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, 
+                    currentEntry.schedule, currentEntry.return_time) + '\n\n'
+                resultCirc += f'''{currentEntry.name}\n{currentEntry.penn_id}\n{currentEntry.email}\n${currentEntry.amount}\n{currentEntry.booking_number}\n{currentEntry.details}\n\n-----------------------------------------\n'''
+                
+            return render_template('late_fines.html', methods=['POST'], visibilityUser='visible', resultTextCirc=resultCirc, resultTextUser=resultUser,
+                visibilityCSV='hidden', visbilityCirc='hidden', tasks=tasks)
     else:
         try:
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
-            return render_template('late_fines.html', select=select, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             #if table todo does not exist, create table
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
@@ -109,18 +122,17 @@ def delete(id):
     except:
         return 'There was a problem deleting that task'
 
-selectedList = set()
 @app.route('/select/<int:id>')
 def select(id):
     entry = LateFine.query.get_or_404(id)
-    if not id in selectedList:
-        selectedList.add(id)
+    if not id in selectedSet:
+        selectedSet.add(id)
         entry.selected = True
     else:
-        selectedList.remove(id)
+        selectedSet.remove(id)
         entry.selected = False
     db.session.commit()
-    print(f'CURRENT LIST = {selectedList}')
+    print(f'CURRENT LIST = {selectedSet}')
     return redirect('/late_fines')
 
 

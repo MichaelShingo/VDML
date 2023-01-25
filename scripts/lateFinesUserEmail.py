@@ -3,22 +3,16 @@
 
 import pyperclip
 
-def generateEmail(text):
-    textList = text.split('\t')
-    fine = textList[3].strip()
-    finePlusDays = fine
-    fineInt = int(fine[1:])
-    daysLate = fineInt // 25
-    if fine == '$25':
+def generateEmail(name, amount, details, date_range, return_time):
+    finePlusDays = str(amount)
+    daysLate = amount // 25
+    if amount == 25:
         finePlusDays += '.00 (1 day'
     else:
         finePlusDays += '.00 (' + str(daysLate) + ' days'
-    name = textList[0]
     firstName = name[0:name.index(' ')]
-    equipment = textList[5][6:]
-    scheduledReturn = textList[6]
-    scheduledReturn = scheduledReturn[scheduledReturn.index('-') + 2:]
-    actualReturn = textList[7]
+    scheduledReturn = date_range[date_range.index('-') + 2:]
+
     result = """Hi %s,
 
 Our records show you borrowed equipment from the Vitale Digital Media Lab and returned it late (see details below). 
@@ -29,10 +23,9 @@ If you have any questions, please feel free to reply to this email or contact th
 
 Details: Borrowed %s. 
 Scheduled return: %s. Actual return: %s.
-    """ % (firstName, finePlusDays, equipment, scheduledReturn, actualReturn)
+    """ % (firstName, finePlusDays, details, scheduledReturn, return_time)
 
-    pyperclip.copy(result)
-
+    print(result)
     return result
 
 
