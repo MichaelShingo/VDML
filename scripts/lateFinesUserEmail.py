@@ -21,11 +21,9 @@ The overdue fine of %s late @ $25/day) will be added to your library account by 
 
 If you have any questions, please feel free to reply to this email or contact the lab manager, David Toccafondi (davidtoc@pobox.upenn.edu, 215-746-2661).
 
-Details: Borrowed %s. 
-Scheduled return: %s. Actual return: %s.
-    """ % (firstName, finePlusDays, details, scheduledReturn, return_time)
+%s
 
-    print(result)
+Scheduled return: %s Actual return: %s""" % (firstName, finePlusDays, details, scheduledReturn, return_time)
     return result
 
 

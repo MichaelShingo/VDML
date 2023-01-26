@@ -8,17 +8,18 @@
     <div class="content">
 
         <form action="/update/{{task.id}}" method="POST">
-            <input tyñpe="text" name="name" id="content" value="{{task.name}}">
-            <input type="text" name="penn_id" id="content" value="{{task.penn_id}}">
-            <input type="text" name="email" id="content" value="{{task.email}}">
-            <input type="text" name="amount" id="content" value="{{task.amount}}">
-            <input type="text" name="booking_number" id="content" value="{{task.booking_number}}">
-            <input type="text" name="details" id="content" value="{{task.details}}">
-            <input type="text" name="schedule" id="content" value="{{task.schedule}}">
-            <input type="text" name="return_time" id="content" value="{{task.return_time}}">
-            <input type="text" name="operator" id="content" value="{{task.operator}}">
-            <input type="text" name="date_sent" id="content" value="{{task.date_sent}}">
-            <input type="text" name="forgiven" id="content" value="{{task.forgiven}}">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" value="{{task.name}}">
+            <input type="text" name="penn_id" id="penn_id" value="{{task.penn_id}}">
+            <input type="text" name="email" id="email" value="{{task.email}}">
+            <input type="text" name="amount" id="amount" value="{{task.amount}}">
+            <input type="text" name="booking_number" id="booking_number" value="{{task.booking_number}}">
+            <input type="text" name="details" id="details" value="{{task.details}}">
+            <input type="text" name="schedule" id="schedule" value="{{task.schedule}}">
+            <input type="text" name="return_time" id="return_time" value="{{task.return_time}}">
+            <input type="text" name="operator" id="operator" value="{{task.operator}}">
+            <input type="text" name="date_sent" id="date_sent" value="{{task.date_sent}}">
+            <input type="text" name="forgiven" id="forgiven" value="{{task.forgiven}}">
             <input type="submit" value="Update Task">
 
         </form>

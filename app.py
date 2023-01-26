@@ -1,6 +1,6 @@
-from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect
+from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template
 from flask import request
-import os
+import os, webbrowser, pyperclip
 from werkzeug.utils import secure_filename
 from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +8,14 @@ from datetime import datetime
 
 # virtualenv env 
 # cmd "source env/bin/activate"
-# TODO add a database, so you don't have to deal with excel and CSV's 
+
+#TODO fix date added to be a datetime object
+#TODO add sorting features
+#TODO add export csv option
+#TODO add error catching if text is blank
+#TODO labels on update page, larger textarea for late equipment and notes
+#TODO deselect all button
+#TODO If equipment name contains ‘&’ character you need to escape it 
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
@@ -16,6 +23,7 @@ ALLOWED_EXTENSIONS = {'.csv'}
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
+app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #three /'s is relative path, 4 is absolute path
 db.init_app(app)
@@ -65,9 +73,6 @@ def late_equipment_post(resultText=None, visibility='hidden'):
 
 @app.route("/late_fines", methods=['POST', 'GET'])
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
-    #add select button on database, adds LateFine object to list
-    #click on generate emails
-    #loop through list and run script for each 
     currentDB = LateFine.query.all()
     for entry in currentDB:
         if entry.selected:
@@ -112,7 +117,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
 
 
-@app.route('/delete/<int:id>') #id is primary key in database
+@app.route('/delete/<int:id>') 
 def delete(id):
     task_to_delete = LateFine.query.get_or_404(id)
     try:
@@ -133,6 +138,17 @@ def select(id):
         entry.selected = False
     db.session.commit()
     print(f'CURRENT LIST = {selectedSet}')
+    return redirect('/late_fines')
+
+@app.route('/generateUserEmail/<int:id>')
+def generateUserEmail(id):
+    currentEntry = LateFine.query.get_or_404(id)
+    subjectLine = 'Vitale Digital Media Lab - Late Fine'
+    userEmail = currentEntry.email
+    resultUser = lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, currentEntry.schedule, currentEntry.return_time)
+    webbrowser.open(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
+    #flash('Email for the user was copied to your clipboard.')
+    pyperclip.copy(resultUser)
     return redirect('/late_fines')
 
 

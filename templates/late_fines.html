@@ -6,6 +6,13 @@
 {% block body %}
     <h1>Late Fines Toolkit</h1>
     <div class="content">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <h3 class="alert">{{ message }}</h3>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
         {% if tasks|length < 1 %}
         <table class="table">
             <tr>
@@ -19,7 +26,7 @@
                 <th>Return Time</th>
                 <th>Staff</th>
                 <th>Date Added</th>
-                <th>Forgiven Note</th>
+                <th>Notes</th>
                 <th>Actions</th>
             </tr>
             <tr>
@@ -53,7 +60,7 @@
                 <th>Return Time</th>
                 <th>Staff</th>
                 <th>Date Added</th>
-                <th>Forgiven Note</th>
+                <th>Notes</th>
                 <th>Actions</th>
                 
             </tr>
@@ -61,9 +68,9 @@
                 <tr>
                     <td>{{ task.name }}</td>
                     <td>{{ task.penn_id }}</td>
-                    <td>{{ task.email }}</td>
-                    <td>{{ task.amount }}</td>
-                    <td>{{ task.booking_number }}</td>
+                    <td><a href="/generateUserEmail/{{task.id}}">{{ task.email }}</a></td>
+                    <td>${{ task.amount }}</td>
+                    <td><a target="_blank" href="https://pennmedialab.getconnect2.com/Bookings/View.aspx?id={{ task.booking_number[3:] }}">{{ task.booking_number }}</a></td>
                     <td>{{ task.details }}</td>
                     <td>{{ task.schedule }}</td>
                     <td>{{ task.return_time }}</td>
@@ -82,6 +89,8 @@
                                 Select
                             {% endif %}
                         </a>
+                  
+
                     </td>
                 </tr>
             {% endfor %}
@@ -101,22 +110,19 @@
         <br>
         <input name="add-entry" type="submit">
     </form>
-    <textarea style="visibility: {{ visibilityCSV }}" name="output" id="late-output" 
-        rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextCSV }}</textarea>
+
     <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
 
 
 
-    <h2>Generate emails for users and circulation</h2>
     <form method="POST">
-        <input name="generate-emails" type="submit">
+        <input name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
     </form>
     <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 
         rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextUser }}</textarea>
     <textarea style="visibility: {{ visibilityCirc }}" name="output" id="late-output" 
     rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextCirc }}</textarea>
     <p style="visibility: {{ visibilityUser }}" class="alert-message">The result has been copied to your clipboard.</p>
-    <p style="visibility: {{ visibilityCirc }}" class="alert-message">The result has been copied to your clipboard.</p>
     
 
 {% endblock %}
