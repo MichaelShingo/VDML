@@ -1,11 +1,13 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template
 from flask import request
-import os, webbrowser, pyperclip
+import sys, os, webbrowser, pyperclip
 from werkzeug.utils import secure_filename
 from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_fontawesome import FontAwesome
 
+print(sys.path)
 # virtualenv env 
 # cmd "source env/bin/activate"
 
@@ -15,14 +17,17 @@ from datetime import datetime
 #TODO add error catching if text is blank
 #TODO labels on update page, larger textarea for late equipment and notes
 #TODO deselect all button
-#TODO If equipment name contains ‘&’ character you need to escape it 
+
+#TODO poster printing receipt generator
+#TODO booking analysis with visualization data dashboard
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
-
+SQLALCHEMY_TRACK_MODIFICATIONS = False #you need this? 
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
+fa = FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #three /'s is relative path, 4 is absolute path
@@ -58,6 +63,7 @@ def index():
 
 
 selectedSet = set()
+sortingParameter = ''
 
 
 @app.route("/late_equipment")
@@ -73,7 +79,9 @@ def late_equipment_post(resultText=None, visibility='hidden'):
 
 @app.route("/late_fines", methods=['POST', 'GET'])
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
+
     currentDB = LateFine.query.all()
+
     for entry in currentDB:
         if entry.selected:
             selectedSet.add(entry.id)
@@ -81,17 +89,20 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
     if request.method == 'POST':
         if 'add-entry' in request.form:
             text = request.form['text']
-            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
-            pennID = request.form['penn-id']
-            email = request.form['user-email']
-            amount = request.form['fine-amount']
-            forgiven = request.form['forgiven']
+            try:
+                owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
+                pennID = request.form['penn-id']
+                email = request.form['user-email']
+                amount = request.form['fine-amount']
+                forgiven = request.form['forgiven']
 
-            new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
-                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
+                new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
+                    details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
 
-            db.session.add(new_entry)
-            db.session.commit()
+                db.session.add(new_entry)
+                db.session.commit()
+            except:
+                flash('The script failed to extract data from pasted text.')
             return redirect('/late_fines')
 
         elif 'generate-emails' in request.form:
@@ -106,9 +117,38 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                 
             return render_template('late_fines.html', methods=['POST'], visibilityUser='visible', resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visbilityCirc='hidden', tasks=tasks)
+        elif 'deselect-all' in request.form:
+            for id in selectedSet:
+                currentEntry = LateFine.query.get_or_404(id)
+                currentEntry.selected = False
+            db.session.commit()
+            selectedSet.clear()
+            return redirect('/late_fines')
+        elif 'select-all' in request.form:
+            for entry in currentDB:
+                entry.selected = True
+                selectedSet.add(entry.id)
+            db.session.commit()
+            return redirect('/late_fines')
+        elif 'filter-by-date-added' in request.form:
+            tasks = LateFine.query.filter_by(date_sent='2023-01-26').all()#added-date'])
+            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+        elif 'clear-filters' in request.form:
+            return redirect('/late_fines')
+
+
+
     else:
+        # if sortingParameter:
+        #     if sortingParameter == 'name':
+        #         sortingDBObject = LateFine.name
+        #     elif sortingParameter == 'email':
+        #         sortingDBObject = LateFine.email
+        #     elif sortingParameter == '':
+        #         sortingDBObject == LateFine.date_sent
+        
         try:
-            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
+            tasks = LateFine.query.order_by(sortingDBObject).all() #returns all 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             #if table todo does not exist, create table
@@ -116,6 +156,14 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
 
+@app.route('/sort-desc-name')
+def sortDescName():
+    sortingParameter = 'name'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-name')
+def sortAscName():
+    return redirect('/late_fines')
 
 @app.route('/delete/<int:id>') 
 def delete(id):

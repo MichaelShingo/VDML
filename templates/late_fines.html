@@ -5,6 +5,7 @@
 {% endblock %}
 {% block body %}
     <h1>Late Fines Toolkit</h1>
+
     <div class="content">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -50,6 +51,70 @@
         {% else %}
         <table class="table">
             <tr>
+                <th>
+                    <a href="/sort-desc-name">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-name">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>
+                <th></th>
+                <th>
+                    <a href="/sort-desc-email">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-email">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>
+                <th>
+                    <a href="/sort-desc-amount">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-amount">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>
+                <th>
+                    <a href="/sort-desc-amount">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-amount">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>
+                <th></th>
+                <th></th>
+                <th>
+                    <a href="/sort-desc-return-time">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-return-time">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>
+                <th>
+                    <a href="/sort-desc-staff">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-staff">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>
+                <th>
+                    <a href="/sort-desc-date-added">
+                        <i class="fa fa-arrow-up"></i>
+                    </a>
+                    <a href="/sort-asc-date-added">
+                        <i class="fa fa-arrow-down"></i>
+                    </a>
+                </th>                
+                <th></th>
+                <th></th>
+                
+            </tr>
+            <tr>
                 <th>Name</th>
                 <th>Penn ID</th>
                 <th>Email</th>
@@ -78,19 +143,15 @@
                     <td>{{ task.date_sent }}</td>
                     <td>{{ task.forgiven }}</td>
                     <td>
-                        <a href="/delete/{{task.id}}">Delete</a>
-                        <br>
-                        <a href="/update/{{task.id}}">Update</a>
-                        <br>
+                        <a href="/delete/{{task.id}}"><i class="fa fa-trash fa-lg"></i></a>
+                        <a href="/update/{{task.id}}"><i class="fa fa-pen fa-lg"></i></a>
                         <a href="/select/{{task.id}}">
                             {% if task.selected %}
-                                Deselect
+                                <i class="fa fa-square-check fa-lg"></i>
                             {% else %}
-                                Select
+                            <i class="fa fa-stop fa-lg"></i>
                             {% endif %}
                         </a>
-                  
-
                     </td>
                 </tr>
             {% endfor %}
@@ -98,6 +159,14 @@
         {% endif %}
 
     </div>
+    <form method="POST">
+        <input name="deselect-all" type="submit" value="Deselect All">
+        <input name="select-all" type="submit" value="Select All">
+        <input name="clear-filters" type="submit" value="Clear Filters">
+        <input name="filter-by-date-added" type="submit" value="Filter by Date Added">
+        <input name="added-date" type="date"> 
+        
+    </form>
 
 
     <h2>Add entry to the database</h2>
@@ -118,6 +187,7 @@
     <form method="POST">
         <input name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
     </form>
+
     <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 
         rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextUser }}</textarea>
     <textarea style="visibility: {{ visibilityCirc }}" name="output" id="late-output" 
