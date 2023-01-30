@@ -12,11 +12,8 @@ print(sys.path)
 # cmd "source env/bin/activate"
 
 #TODO fix date added to be a datetime object
-#TODO add sorting features
 #TODO add export csv option
-#TODO add error catching if text is blank
 #TODO labels on update page, larger textarea for late equipment and notes
-#TODO deselect all button
 
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
@@ -56,14 +53,14 @@ with app.app_context():
     db.create_all()
 
 
-
 @app.route('/')  #routes to index.html so you don't 404
 def index():
     return render_template('index.html')
 
 
 selectedSet = set()
-sortingParameter = ''
+sortingParameter = '' #database column name
+sortingOrder = '' #asc or desc
 
 
 @app.route("/late_equipment")
@@ -136,34 +133,164 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         elif 'clear-filters' in request.form:
             return redirect('/late_fines')
 
-
-
     else:
-        # if sortingParameter:
-        #     if sortingParameter == 'name':
-        #         sortingDBObject = LateFine.name
-        #     elif sortingParameter == 'email':
-        #         sortingDBObject = LateFine.email
-        #     elif sortingParameter == '':
-        #         sortingDBObject == LateFine.date_sent
-        
+        if sortingParameter:
+            print(f'--SORTING PARAMETER = {sortingParameter}--')
+            if sortingParameter == 'name' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.name.desc()).all() 
+            elif sortingParameter == 'name' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.name.asc()).all()
+            elif sortingParameter == 'email' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.email.desc()).all()
+            elif sortingParameter == 'email' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.email.asc()).all()
+            elif sortingParameter == 'amount' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.amount.desc()).all()
+            elif sortingParameter == 'amount' and sortingOrder =='asc':
+                tasks = LateFine.query.order_by(LateFine.amount.asc()).all()
+            elif sortingParameter == 'booking' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.booking_number.desc()).all()
+            elif sortingParameter == 'booking' and sortingOrder =='asc':
+                tasks = LateFine.query.order_by(LateFine.booking_number.asc()).all()
+            elif sortingParameter == 'return_time' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.return_time.desc()).all()
+            elif sortingParameter == 'return_time' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.return_time.asc()).all()
+            elif sortingParameter == 'operator' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.operator.desc()).all()
+            elif sortingParameter == 'operator' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.operator.asc()).all()
+            elif sortingParameter == 'date_sent' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.date_sent.desc()).all()
+            elif sortingParameter == 'date_sent' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.date_sent.asc()).all()
+
+        else:
+            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
+
         try:
-            tasks = LateFine.query.order_by(sortingDBObject).all() #returns all 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             #if table todo does not exist, create table
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
-
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
 
+
+       
 @app.route('/sort-desc-name')
 def sortDescName():
+    print('---SORT DESCENDING BY NAME')
+    global sortingParameter
+    global sortingOrder
     sortingParameter = 'name'
+    sortingOrder = 'desc'
+   
     return redirect('/late_fines')
 
 @app.route('/sort-asc-name')
 def sortAscName():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'name'
+    sortingOrder = 'asc'
     return redirect('/late_fines')
+
+@app.route('/sort-desc-email')
+def sortDescEmail():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'email'
+    sortingOrder = 'desc'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-email')
+def sortAscEmail():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'email'
+    sortingOrder = 'asc'
+    return redirect('/late_fines')
+
+@app.route('/sort-desc-amount')
+def sortDescAmount():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'amount'
+    sortingOrder = 'desc'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-amount')
+def sortAscAmount():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'amount'
+    sortingOrder = 'asc'
+    return redirect('/late_fines')
+
+@app.route('/sort-desc-booking')
+def sortDescBooking():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'booking'
+    sortingOrder = 'desc'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-booking')
+def sortAscBooking():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'booking_number'
+    sortingOrder = 'asc'
+    return redirect('/late_fines')
+
+@app.route('/sort-desc-return-time')
+def sortDescReturnTime():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'return_time'
+    sortingOrder = 'desc'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-return-time')
+def sortAscReturnTime():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'return_time'
+    sortingOrder = 'asc'
+    return redirect('/late_fines')
+
+@app.route('/sort-desc-staff')
+def sortDescStaff():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'operator'
+    sortingOrder = 'desc'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-staff')
+def sortAscStaff():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'operator'
+    sortingOrder = 'asc'
+    return redirect('/late_fines')
+
+@app.route('/sort-desc-date-sent')
+def sortDescDateSent():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'date_sent'
+    sortingOrder = 'desc'
+    return redirect('/late_fines')
+
+@app.route('/sort-asc-date-sent')
+def sortAscDateSent():
+    global sortingParameter
+    global sortingOrder
+    sortingParameter = 'date_sent'
+    sortingOrder = 'asc'
+    return redirect('/late_fines')
+
 
 @app.route('/delete/<int:id>') 
 def delete(id):

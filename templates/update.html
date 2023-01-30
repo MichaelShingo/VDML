@@ -10,16 +10,37 @@
         <form action="/update/{{task.id}}" method="POST">
             <label for="name">Name</label>
             <input type="text" name="name" id="name" value="{{task.name}}">
+
+            <label for="penn_id">Penn ID</label>
             <input type="text" name="penn_id" id="penn_id" value="{{task.penn_id}}">
+
+            <label for="email">Email</label>
             <input type="text" name="email" id="email" value="{{task.email}}">
+
+            <label for="amount">Amount</label>
             <input type="text" name="amount" id="amount" value="{{task.amount}}">
+
+            <label for="booking_number">Booking Number</label>
             <input type="text" name="booking_number" id="booking_number" value="{{task.booking_number}}">
+
+            <label for="details">Details</label>
             <input type="text" name="details" id="details" value="{{task.details}}">
+
+            <label for="schedule">Schedule</label>
             <input type="text" name="schedule" id="schedule" value="{{task.schedule}}">
+
+            <label for="return_time">Return Time</label>
             <input type="text" name="return_time" id="return_time" value="{{task.return_time}}">
+
+            <label for="Operator">Operator</label>
             <input type="text" name="operator" id="operator" value="{{task.operator}}">
+
+            <label for="Date Sent">Date Sent</label>
             <input type="text" name="date_sent" id="date_sent" value="{{task.date_sent}}">
-            <input type="text" name="forgiven" id="forgiven" value="{{task.forgiven}}">
+
+            <label for="Forgiven">Forgiven</label>
+            <input type="textarea" name="forgiven" id="forgiven" value="{{task.forgiven}}">
+
             <input type="submit" value="Update Task">
 
         </form>
