@@ -13,7 +13,8 @@ print(sys.path)
 
 #TODO fix date added to be a datetime object
 #TODO add export csv option
-#TODO labels on update page, larger textarea for late equipment and notes
+#TODO UPDATE PAGE - larger textarea for late equipment and notes, relink the inner text....
+#TODO add additional filtering and searching options
 
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
