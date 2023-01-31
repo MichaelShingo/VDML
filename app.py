@@ -6,6 +6,7 @@ from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, late
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_fontawesome import FontAwesome
+from flask_bootstrap import Bootstrap
 
 print(sys.path)
 # virtualenv env 
@@ -26,6 +27,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False #you need this?
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
+Bootstrap(app)
 fa = FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 

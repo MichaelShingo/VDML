@@ -16,7 +16,7 @@
         {% endwith %}
         {% if tasks|length < 1 %}
         <table class="table">
-            <tr>
+            <tr class="">
                 <th>Name</th>
                 <th>Penn ID</th>
                 <th>Email</th>
@@ -49,7 +49,7 @@
 
 
         {% else %}
-        <table class="table">
+        <table class="table table-light">
             <tr>
                 <th>
                     <a href="/sort-desc-name">
@@ -159,43 +159,48 @@
         {% endif %}
 
     </div>
-    <form method="POST">
-        <input name="deselect-all" type="submit" value="Deselect All">
-        <input name="select-all" type="submit" value="Select All">
-        <input name="clear-filters" type="submit" value="Clear Filters">
-        <input name="filter-by-date-added" type="submit" value="Filter by Date Added">
-        <input name="added-date" type="date"> 
-    </form>
-    <form method="POST">
-        <input name="search" type="text" placeholder="Search">
-        <input name="submit" type="submit">
-    </form>
 
+    <div class="form-controls sticky-bottom bg-light">
 
-    <h2>Add entry to the database</h2>
-    <form class="form" method="POST">
-        <textarea name="text" id="late-input" rows="10" cols="100" placeholder="Paste your text here.">{{ resultTextCSV }}</textarea><br>
-        <input name="penn-id" id="penn-id" placeholder="Penn ID"><br>
-        <input name="user-email" id="user-email" placeholder="User email"><br>
-        <input name="fine-amount" id="fine-amount" placeholder="Fine amount (number only)"><br>
-        <input name="forgiven" id="forgiven" placeholder="(Optional) Note if fine forgiven">
-        <br>
-        <input name="add-entry" type="submit">
-    </form>
-
-    <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
-
-
-
-    <form method="POST">
-        <input name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
-    </form>
-
-    <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 
-        rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextUser }}</textarea>
-    <textarea style="visibility: {{ visibilityCirc }}" name="output" id="late-output" 
-    rows="5" cols="100" placeholder="Result outputs here.">{{ resultTextCirc }}</textarea>
-    <p style="visibility: {{ visibilityUser }}" class="alert-message">The result has been copied to your clipboard.</p>
+        <form method="POST">
+            <input name="deselect-all" type="submit" value="Deselect All">
+            <input name="select-all" type="submit" value="Select All">
+            <input name="clear-filters" type="submit" value="Clear Filters">
+            <input name="filter-by-date-added" type="submit" value="Filter by Date Added">
+            <input name="added-date" type="date"> 
+        </form>
+        <form method="POST">
+            <input name="search" type="text" placeholder="Search">
+            <input name="submit" type="submit">
+        </form>
+    
+    
+        <h2>Add entry to the database</h2>
+        <form class="form" method="POST">
+            <textarea name="text" id="late-input" rows="1" cols="50" placeholder="Paste your text here.">{{ resultTextCSV }}</textarea><br>
+            <input name="penn-id" id="penn-id" placeholder="Penn ID">
+            <input name="user-email" id="user-email" placeholder="User email">
+            <input name="fine-amount" id="fine-amount" placeholder="Fine amount (number only)">
+            <input name="forgiven" id="forgiven" placeholder="(Optional) Note if fine forgiven">
+            <br>
+            <input name="add-entry" type="submit">
+        </form>
+    
+        <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
+    
+    
+    
+        <form method="POST">
+            <input name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
+        </form>
+    
+        <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 
+            rows="1" cols="100" placeholder="Result outputs here.">{{ resultTextUser }}</textarea>
+        <textarea style="visibility: {{ visibilityCirc }}" name="output" id="late-output" 
+        rows="1" cols="100" placeholder="Result outputs here.">{{ resultTextCirc }}</textarea>
+        <p style="visibility: {{ visibilityUser }}" class="alert-message">The result has been copied to your clipboard.</p>
+    </div>
+    
     
 
 {% endblock %}
