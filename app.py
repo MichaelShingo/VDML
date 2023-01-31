@@ -11,10 +11,11 @@ print(sys.path)
 # virtualenv env 
 # cmd "source env/bin/activate"
 
+#TODO filter by date added but descnding so you see most recent ones 
+#TODO style css, fixed position controls on bottom
 #TODO fix date added to be a datetime object
 #TODO add export csv option
 #TODO UPDATE PAGE - larger textarea for late equipment and notes, relink the inner text....
-#TODO add additional filtering and searching options
 
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
@@ -36,7 +37,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     name = db.Column(db.String(200), nullable=False)
     penn_id = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False)
-    amount = db.Column(db.Integer, nullable=False)
+    amount = db.Column(db.Integer, default=0, nullable=False)
     booking_number = db.Column(db.String(200), nullable=False)
     details = db.Column(db.String(200), nullable=False)
     schedule = db.Column(db.String(200), nullable=False)
@@ -62,7 +63,17 @@ def index():
 selectedSet = set()
 sortingParameter = '' #database column name
 sortingOrder = '' #asc or desc
+searchIDList = []
 
+def searchDatabase(searchTerm):
+    global searchIDList
+    searchIDList = []
+    allEntries = LateFine.query.all()
+    for entry in allEntries:
+        entryString = (entry.name + entry.penn_id + entry.email + str(entry.amount) + entry.details + entry.schedule + str(entry.return_time) + entry.operator + str(entry.date_sent) + entry.forgiven).lower()
+        if searchTerm in entryString:
+            searchIDList.append(entry.id)
+    return LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
 @app.route("/late_equipment")
 def late_equipment(visibility='hidden'):
@@ -77,9 +88,8 @@ def late_equipment_post(resultText=None, visibility='hidden'):
 
 @app.route("/late_fines", methods=['POST', 'GET'])
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
-
     currentDB = LateFine.query.all()
-
+    global searchIDList
     for entry in currentDB:
         if entry.selected:
             selectedSet.add(entry.id)
@@ -132,10 +142,23 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             tasks = LateFine.query.filter_by(date_sent='2023-01-26').all()#added-date'])
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         elif 'clear-filters' in request.form:
-            return redirect('/late_fines')
+            #global searchIDList
+            searchIDList = []
+            tasks = LateFine.query.all()
+            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+        elif 'search' in request.form:
+            searchTerm = request.form['search'].lower()
+            tasks = searchDatabase(searchTerm)
+
+            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+                
 
     else:
-        if sortingParameter:
+        if len(searchIDList) > 0:
+            print('search ID list -------------')
+            tasks = LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
+
+        elif sortingParameter:
             print(f'--SORTING PARAMETER = {sortingParameter}--')
             if sortingParameter == 'name' and sortingOrder == 'desc':
                 tasks = LateFine.query.order_by(LateFine.name.desc()).all() 
@@ -176,6 +199,8 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
 
+# @app.route('/search')
+# def search():
 
        
 @app.route('/sort-desc-name')

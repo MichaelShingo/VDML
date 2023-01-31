@@ -45,7 +45,7 @@
                 <td></td>
             </tr>
         </table>
-        <h4>There are no entries in table. Create one below.</h4>
+        <h4>No entries found. Clear filters or create an entry.</h4>
 
 
         {% else %}
@@ -165,7 +165,10 @@
         <input name="clear-filters" type="submit" value="Clear Filters">
         <input name="filter-by-date-added" type="submit" value="Filter by Date Added">
         <input name="added-date" type="date"> 
-        
+    </form>
+    <form method="POST">
+        <input name="search" type="text" placeholder="Search">
+        <input name="submit" type="submit">
     </form>
 
 
