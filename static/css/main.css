@@ -1,119 +1,134 @@
-:root {
-  --border-color1: #4CAF50;
-  --border-color-hover: #00c90a;
-  --light-green: #7db680;
-  --error-color: #AD4D51;
-  --light-gray: #dddddd;
-  font-family: "Quicksand", sans-serif;
-  margin: 0;
-  padding: 0;
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*, *::before, *::after {
   box-sizing: border-box;
-  font-size: 22px;
 }
 
-.btn {
-  background-color: red;
+/*
+  2. Remove default margin
+*/
+* {
+  margin: 0;
 }
 
-.main-container {
-  background-color: red;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.main-container .form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/*
+  3. Allow percentage-based heights in the application
+*/
+html, body {
+  height: 100%;
 }
 
-h1 {
-  font-size: 50px;
-  text-align: center;
-  padding: 10px;
+/*
+  Typographic tweaks!
+  4. Add accessible line-height
+  5. Improve text rendering
+*/
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-ol {
-  line-height: 1.5rem;
+/*
+  6. Improve media defaults
+*/
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
 }
 
-.btn-submit {
-  background-color: var(--border-color1);
-  width: 200px;
-  height: 50px;
-  color: white;
-  font-weight: bold;
-  font-size: 25px;
-  margin: 10px;
-  border: none;
-  border-radius: 10px;
-}
-.btn-submit:hover {
-  background-color: var(--border-color-hover);
+/*
+  7. Remove built-in form typography styles
+*/
+input, button, textarea, select {
+  font: inherit;
 }
 
-.drop-zone {
-  transition: 0.5s ease-in-out;
-  margin: 10px auto;
-  width: 250px;
-  height: 250px;
-  padding: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+/*
+  8. Avoid text overflows
+*/
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+:root {
   font-family: "Quicksand", sans-serif;
-  font-weight: 500;
-  font-size: 30px;
-  cursor: pointer;
-  color: #cccccc;
-  border: 4px dashed var(--border-color1);
-  border-radius: 10px;
+  --color-white: #fff;
+  --color-blue-light: #0989ba;
+  --color-pink: #ec153e;
+  --color-yellow: #cbc124;
+  --color-green: #00a778;
+  --color-black: #000;
+  --color-grey-1: #e2e2e2;
 }
 
-.drop-zone:hover {
-  border-color: var(--border-color-hover);
-  transition: 0.5s ease-in-out;
+.topnav {
+  background-color: var(--color-white);
+  height: 75px;
+  overflow: hidden;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
 }
-.drop-zone:hover .drop-zone__prompt {
-  font-size: 32px;
-  transition: 0.5s ease-in-out;
-}
-
-.drop-zone__prompt {
-  transition: 0.5s ease-in-out;
-}
-
-.drop-zone--over {
-  border-style: solid;
-}
-
-.drop-zone__input {
+.topnav .icon {
   display: none;
 }
-
-.drop-zone__thumb {
-  width: 125%;
-  height: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: #cccccc;
-  background-size: cover;
+.topnav a {
+  justify-content: center;
+  align-items: center;
+  float: left;
+  display: block;
+  color: var(--color-black);
+  text-align: center;
+  padding: 25px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: bold;
+}
+.topnav a .nav-logo {
   position: relative;
+  bottom: 50%;
+  height: 50px;
+}
+.topnav a:hover {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+.topnav a .active {
+  background-color: #04AA6D;
+  color: white;
 }
 
-.drop-zone__thumb::after {
-  content: attr(data-label); /*takes the content from data-label in the drop-zone__thumb div */
-  border-radius: 10px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 5px 0;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.5);
-  font-size: 14px;
-  text-align: center;
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+@media screen and (max-width: 600px) {
+  .topnav a:not(:first-child) {
+    display: none;
+  }
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+@media screen and (max-width: 600px) {
+  .topnav.responsive {
+    position: relative;
+  }
+  .topnav.responsive a.icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
 }/*# sourceMappingURL=main.css.map */

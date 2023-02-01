@@ -2,6 +2,8 @@
 
 {% block head %}
     <title>Late Fines</title>
+    <!-- <link rel="stylesheet" type="text/css" href="../static/css/main.css"> -->
+
 {% endblock %}
 {% block body %}
     <h1>Late Fines Toolkit</h1>
@@ -49,9 +51,9 @@
 
 
         {% else %}
-        <table class="table table-light">
-            <tr>
-                <th>
+        <table class="">
+            <tr class="">
+                <th class="">
                     <a href="/sort-desc-name">
                         <i class="fa fa-arrow-up"></i>
                     </a>
@@ -114,7 +116,7 @@
                 <th></th>
                 
             </tr>
-            <tr>
+            <tr class="sticky-th">
                 <th>Name</th>
                 <th>Penn ID</th>
                 <th>Email</th>
@@ -161,29 +163,81 @@
     </div>
 
     <div class="form-controls sticky-bottom bg-light">
+        <div class="row">
+            <div class="col">
 
-        <form method="POST">
-            <input name="deselect-all" type="submit" value="Deselect All">
-            <input name="select-all" type="submit" value="Select All">
-            <input name="clear-filters" type="submit" value="Clear Filters">
-            <input name="filter-by-date-added" type="submit" value="Filter by Date Added">
-            <input name="added-date" type="date"> 
-        </form>
-        <form method="POST">
-            <input name="search" type="text" placeholder="Search">
-            <input name="submit" type="submit">
-        </form>
-    
+                <form method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <input class="btn btn-secondary" name="deselect-all" type="submit" value="Deselect All">
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-secondary" name="select-all" type="submit" value="Select All">
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-secondary" name="clear-filters" type="submit" value="Clear Filters">
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-secondary" name="filter-by-date-added" type="submit" value="Filter by Date Added">
+                        </div>
+                        <div class="col">
+                            <input class="btn form-control" name="added-date" type="date"> 
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="col">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <input class="form-control" name="search" type="text" placeholder="Type your search term">
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-primary" name="Search" value="Search" type="submit">
+                        </div>
+                    </div>
+                </form>
+            
+            </div>
+        </div>
+
+
     
         <h2>Add entry to the database</h2>
         <form class="form" method="POST">
-            <textarea name="text" id="late-input" rows="1" cols="50" placeholder="Paste your text here.">{{ resultTextCSV }}</textarea><br>
-            <input name="penn-id" id="penn-id" placeholder="Penn ID">
-            <input name="user-email" id="user-email" placeholder="User email">
-            <input name="fine-amount" id="fine-amount" placeholder="Fine amount (number only)">
-            <input name="forgiven" id="forgiven" placeholder="(Optional) Note if fine forgiven">
+            <div class="row">
+
+                <div class="col">
+                    <div class="form-group">
+                    <textarea name="text" class="form-control custom-control-inline" id="late-input" rows="1" cols="50" placeholder="Paste connect2 text here.">{{ resultTextCSV }}</textarea><br>
+
+                </div>
+              
+            </div>
+            <div class="row">
+
+                <div class="col">
+                    <input name="user-email" class="form-control" id="user-email" placeholder="User email">
+                </div>
+                <div class="col">
+                    <input name="fine-amount" class="form-control" id="fine-amount" placeholder="Fine amount (number only)">
+                </div>
+                <div class="col">
+                    <input name="fine-amount" class="form-control" id="fine-amount" placeholder="Fine amount (number only)">
+                </div>
+                <div class="col">
+                    <input name="forgiven" class="form-control" id="forgiven" placeholder="(Optional) Note if fine forgiven">
+                </div>
+                <div class="col">
+                    <input name="add-entry" class="btn btn-primary" type="submit">
+
+                </div>
+              
+            </div>
+
+
             <br>
-            <input name="add-entry" type="submit">
         </form>
     
         <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
@@ -191,7 +245,7 @@
     
     
         <form method="POST">
-            <input name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
+            <input class="btn btn-primary" name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
         </form>
     
         <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 

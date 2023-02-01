@@ -1,3 +1,12 @@
+function myFunction() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+      x.className += " responsive";
+    } else {
+      x.className = "topnav";
+    }
+  }
+
 document.querySelectorAll(".drop-zone__input").forEach(inputElement => {
     const dropZoneElement = inputElement.closest(".drop-zone"); //start at input field and go up until it finds drop-zone
 
@@ -73,3 +82,5 @@ function updateThumbnail(dropZoneElement, file){
         dropZoneElement.style.borderColor = "var(--error-color)";
     }
 }
+
+
