@@ -52,14 +52,31 @@
   }
 
   :root {
-    font-family: 'Quicksand', sans-serif;
+    --font: 'Hind Madurai', sans-serif;
+
     --color-white: #fff;
-    --color-blue-light: #0989ba;
+    --color-white-trans: rgba(255, 255, 255, 0.65);
+
+    --color-blue: #0989ba;
+    --color-blue-dark: #024b68;
+
     --color-pink: #ec153e;
-    --color-yellow: #cbc124;
+    --color-pink-dark: #b1102e;
+
+    --color-yellow: #e3d726;
+    --color-yellow-dark: #958c0b;
+
     --color-green: #00a778;
+    --color-green-dark: #007b58;
     --color-black: #000;
-    --color-grey-1: #e2e2e2;
+    --color-grey-1: #f3f3f3;
+    --color-grey-2: #dddddd;
+    --color-grey-2-trans: #dddddd75;
+
+    --color-grey-3: #a2a2a2;
+    --default-shadow: 0 0 20px rgba(0,0,0,.15);
+    font-family: var(--font);
+
   }
   
 
@@ -72,7 +89,12 @@
     margin: 0;
     display: flex;
     flex-direction: row;
-
+    img {
+      opacity: 1;
+      &:hover {
+        opacity: .7;
+      }
+    }
     .icon {
         display: none;
       }
@@ -91,11 +113,14 @@
             position: relative;
             bottom: 50%;
             height: 50px;
+      
             
         }
-        &:hover {
-            background-color: var(--color-green);
-            color: var(--color-white);
+        
+        &:hover:not(:first-of-type) {
+            color: var(--color-green);
+           //border-bottom: 3px solid var(--color-green);
+
         }
         .active {
             background-color: #04AA6D;
@@ -107,6 +132,143 @@
 
 
 }
+
+body {
+  margin: 0px 25px 0px 25px;
+}
+a {
+  color: var(--color-blue);
+  &:hover {
+    color: var(--color-blue-dark);
+  }
+}
+
+p {
+  font-family: var(--font);
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+}
+.content-table {
+
+  position: relative;
+
+  border-collapse: collapse;
+  margin: 25px auto;
+  font-size: 1em;
+  min-width: 400px;
+  max-width: 2500px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: var(--default-shadow);
+  .date-sent {
+    min-width: 100px;
+  }
+  .actions {
+    min-width: 120px;
+    a {
+      margin: 0px 2px;
+      text-decoration: none;
+    }
+  }
+  .sticky-th {
+    position: sticky;
+    top: 0;
+  }
+  .sort-icons {
+    background-color: white !important;
+  }
+  .fa-trash {
+    color: var(--color-pink);
+    &:hover {
+      color: var(--color-pink-dark);
+    }
+  }
+  .fa-pen {
+    color: var(--color-green);
+    &:hover {
+      color: var(--color-green-dark);
+    }
+  }
+  th a {
+    color: var(--color-blue);
+    text-decoration: none;
+    margin: 0 .2em;
+    &:hover {
+      color: var(--color-blue-dark);
+    }
+  }
+  thead tr {
+    background-color: var(--color-green);
+    color: var(--color-white);
+    text-align: left;
+    font-weight: bold;
+  }
+
+  td, th {
+    padding: 12px 15px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--color-grey-2);
+  }
+
+  tbody tr:nth-of-type(even) {
+    background-color: var(--color-grey-1);
+  }
+
+  tbody tr:last-of-type {
+    border-bottom: 3px solid var(--color-green);
+  }
+
+
+
+}
+
+//ADD ENTRY -------------
+.add-entry-dialogue {
+  visibility: hidden;
+}
+
+//FORM--------------------
+.sticky-bottom {
+  display: flex;
+  flex-direction: row;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-white-trans);
+  padding: 20px;
+  border-radius: 10px;
+
+  min-width: 400px;
+  max-width: 2500px;
+  .field {
+    margin: 0 3px;
+  }
+  .btn {
+    background-color: var(--color-green);
+    min-width: fit-content;
+    max-width: 500px;
+    color: var(--color-white);
+    font-weight: bold;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin: 0px 4px 0px 0px;
+    &:hover {
+      background-color: var(--color-green-dark);
+    }
+  }
+}
+
+.update-form {
+  input[type="text"], input[type="textarea"] {
+    background-color: grey;
+  }
+}
+
 
   /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
 @media screen and (max-width: 600px) {

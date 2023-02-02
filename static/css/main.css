@@ -59,14 +59,24 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 :root {
-  font-family: "Quicksand", sans-serif;
+  --font: "Hind Madurai", sans-serif;
   --color-white: #fff;
-  --color-blue-light: #0989ba;
+  --color-white-trans: rgba(255, 255, 255, 0.65);
+  --color-blue: #0989ba;
+  --color-blue-dark: #024b68;
   --color-pink: #ec153e;
-  --color-yellow: #cbc124;
+  --color-pink-dark: #b1102e;
+  --color-yellow: #e3d726;
+  --color-yellow-dark: #958c0b;
   --color-green: #00a778;
+  --color-green-dark: #007b58;
   --color-black: #000;
-  --color-grey-1: #e2e2e2;
+  --color-grey-1: #f3f3f3;
+  --color-grey-2: #dddddd;
+  --color-grey-2-trans: #dddddd75;
+  --color-grey-3: #a2a2a2;
+  --default-shadow: 0 0 20px rgba(0,0,0,.15);
+  font-family: var(--font);
 }
 
 .topnav {
@@ -76,6 +86,12 @@ p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
   display: flex;
   flex-direction: row;
+}
+.topnav img {
+  opacity: 1;
+}
+.topnav img:hover {
+  opacity: 0.7;
 }
 .topnav .icon {
   display: none;
@@ -97,13 +113,140 @@ p, h1, h2, h3, h4, h5, h6 {
   bottom: 50%;
   height: 50px;
 }
-.topnav a:hover {
-  background-color: var(--color-green);
-  color: var(--color-white);
+.topnav a:hover:not(:first-of-type) {
+  color: var(--color-green);
 }
 .topnav a .active {
   background-color: #04AA6D;
   color: white;
+}
+
+body {
+  margin: 0px 25px 0px 25px;
+}
+
+a {
+  color: var(--color-blue);
+}
+a:hover {
+  color: var(--color-blue-dark);
+}
+
+p {
+  font-family: var(--font);
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+}
+
+.content-table {
+  position: relative;
+  border-collapse: collapse;
+  margin: 25px auto;
+  font-size: 1em;
+  min-width: 400px;
+  max-width: 2500px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: var(--default-shadow);
+}
+.content-table .date-sent {
+  min-width: 100px;
+}
+.content-table .actions {
+  min-width: 120px;
+}
+.content-table .actions a {
+  margin: 0px 2px;
+  text-decoration: none;
+}
+.content-table .sticky-th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+.content-table .sort-icons {
+  background-color: white !important;
+}
+.content-table .fa-trash {
+  color: var(--color-pink);
+}
+.content-table .fa-trash:hover {
+  color: var(--color-pink-dark);
+}
+.content-table .fa-pen {
+  color: var(--color-green);
+}
+.content-table .fa-pen:hover {
+  color: var(--color-green-dark);
+}
+.content-table th a {
+  color: var(--color-blue);
+  text-decoration: none;
+  margin: 0 0.2em;
+}
+.content-table th a:hover {
+  color: var(--color-blue-dark);
+}
+.content-table thead tr {
+  background-color: var(--color-green);
+  color: var(--color-white);
+  text-align: left;
+  font-weight: bold;
+}
+.content-table td, .content-table th {
+  padding: 12px 15px;
+}
+.content-table tbody tr {
+  border-bottom: 1px solid var(--color-grey-2);
+}
+.content-table tbody tr:nth-of-type(even) {
+  background-color: var(--color-grey-1);
+}
+.content-table tbody tr:last-of-type {
+  border-bottom: 3px solid var(--color-green);
+}
+
+.add-entry-dialogue {
+  visibility: hidden;
+}
+
+.sticky-bottom {
+  display: flex;
+  flex-direction: row;
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-white-trans);
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 400px;
+  max-width: 2500px;
+}
+.sticky-bottom .field {
+  margin: 0 3px;
+}
+.sticky-bottom .btn {
+  background-color: var(--color-green);
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  max-width: 500px;
+  color: var(--color-white);
+  font-weight: bold;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin: 0px 4px 0px 0px;
+}
+.sticky-bottom .btn:hover {
+  background-color: var(--color-green-dark);
+}
+
+.update-form input[type=text], .update-form input[type=textarea] {
+  background-color: grey;
 }
 
 /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */

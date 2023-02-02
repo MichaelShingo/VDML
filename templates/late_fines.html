@@ -17,21 +17,24 @@
         {% endif %}
         {% endwith %}
         {% if tasks|length < 1 %}
-        <table class="table">
-            <tr class="">
-                <th>Name</th>
-                <th>Penn ID</th>
-                <th>Email</th>
-                <th>Amount</th>
-                <th>Booking Number</th>
-                <th>Details</th>
-                <th>Schedule</th>
-                <th>Return Time</th>
-                <th>Operator</th>
-                <th>Date Sent</th>
-                <th>Forgiven</th>
-                <th>Actions</th>
-            </tr>
+        <table class="content-table">
+            <thead>
+                <tr class="">
+                    <th>Name</th>
+                    <th>Penn ID</th>
+                    <th>Email</th>
+                    <th>Amount</th>
+                    <th>Booking Number</th>
+                    <th>Details</th>
+                    <th>Schedule</th>
+                    <th>Return Time</th>
+                    <th>Operator</th>
+                    <th>Date Sent</th>
+                    <th>Forgiven</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+           
             <tr>
                 <td></td>
                 <td></td>
@@ -51,86 +54,89 @@
 
 
         {% else %}
-        <table class="">
-            <tr class="">
-                <th class="">
-                    <a href="/sort-desc-name">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-name">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>
-                <th></th>
-                <th>
-                    <a href="/sort-desc-email">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-email">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>
-                <th>
-                    <a href="/sort-desc-amount">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-amount">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>
-                <th>
-                    <a href="/sort-desc-booking">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-booking">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>
-                <th></th>
-                <th></th>
-                <th>
-                    <a href="/sort-desc-return-time">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-return-time">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>
-                <th>
-                    <a href="/sort-desc-staff">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-staff">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>
-                <th>
-                    <a href="/sort-desc-date-sent">
-                        <i class="fa fa-arrow-up"></i>
-                    </a>
-                    <a href="/sort-asc-date-sent">
-                        <i class="fa fa-arrow-down"></i>
-                    </a>
-                </th>                
-                <th></th>
-                <th></th>
-                
-            </tr>
-            <tr class="sticky-th">
-                <th>Name</th>
-                <th>Penn ID</th>
-                <th>Email</th>
-                <th>Amount</th>
-                <th>Booking Number</th>
-                <th>Details</th>
-                <th>Schedule</th>
-                <th>Return Time</th>
-                <th>Operator</th>
-                <th>Date Sent</th>
-                <th>Forgiven</th>
-                <th>Actions</th>
-                
-            </tr>
+        <table class="content-table">
+            <thead class="sticky-th">
+                <tr class="sort-icons">
+                    <th class="">
+                        <a href="/sort-desc-name">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-name">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>
+                    <th></th>
+                    <th>
+                        <a href="/sort-desc-email">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-email">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="/sort-desc-amount">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-amount">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="/sort-desc-booking">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-booking">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <a href="/sort-desc-return-time">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-return-time">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="/sort-desc-staff">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-staff">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="/sort-desc-date-sent">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                        <a href="/sort-asc-date-sent">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    </th>                
+                    <th></th>
+                    <th></th>
+                    
+                </tr>
+                <tr class="sticky-th">
+                    <th>Name</th>
+                    <th>Penn ID</th>
+                    <th>Email</th>
+                    <th>Amount</th>
+                    <th>Booking</th>
+                    <th>Details</th>
+                    <th>Schedule</th>
+                    <th>Return</th>
+                    <th>Operator</th>
+                    <th>Date Sent</th>
+                    <th>Forgiven</th>
+                    <th>Actions</th>
+                    
+                </tr>
+            </thead>
+            
             {% for task in tasks %}
                 <tr>
                     <td>{{ task.name }}</td>
@@ -142,11 +148,9 @@
                     <td>{{ task.schedule }}</td>
                     <td>{{ task.return_time }}</td>
                     <td>{{ task.operator }}</td>
-                    <td>{{ task.date_sent }}</td>
+                    <td class="date-sent">{{ task.date_sent }}</td>
                     <td>{{ task.forgiven }}</td>
-                    <td>
-                        <a href="/delete/{{task.id}}"><i class="fa fa-trash fa-lg"></i></a>
-                        <a href="/update/{{task.id}}"><i class="fa fa-pen fa-lg"></i></a>
+                    <td class="actions">
                         <a href="/select/{{task.id}}">
                             {% if task.selected %}
                                 <i class="fa fa-square-check fa-lg"></i>
@@ -154,6 +158,10 @@
                             <i class="fa fa-stop fa-lg"></i>
                             {% endif %}
                         </a>
+                        <a href="/update/{{task.id}}"><i class="fa fa-pen fa-lg"></i></a>
+
+                        <a href="/delete/{{task.id}}"><i class="fa fa-trash fa-lg"></i></a>
+
                     </td>
                 </tr>
             {% endfor %}
@@ -162,83 +170,64 @@
 
     </div>
 
-    <div class="form-controls sticky-bottom bg-light">
-        <div class="row">
-            <div class="col">
+    <div class="form-controls sticky-bottom">
 
-                <form method="POST">
-                    <div class="row">
-                        <div class="col">
-                            <input class="btn btn-secondary" name="deselect-all" type="submit" value="Deselect All">
-                        </div>
-                        <div class="col">
-                            <input class="btn btn-secondary" name="select-all" type="submit" value="Select All">
-                        </div>
-                        <div class="col">
-                            <input class="btn btn-secondary" name="clear-filters" type="submit" value="Clear Filters">
-                        </div>
-                        <div class="col">
-                            <input class="btn btn-secondary" name="filter-by-date-added" type="submit" value="Filter by Date Added">
-                        </div>
-                        <div class="col">
-                            <input class="btn form-control" name="added-date" type="date"> 
-                        </div>
-
-                    </div>
-                </form>
-            </div>
-            <div class="col">
-                <form method="POST">
-                    <div class="row">
-                        <div class="col">
-                            <input class="form-control" name="search" type="text" placeholder="Type your search term">
-                        </div>
-                        <div class="col">
-                            <input class="btn btn-primary" name="Search" value="Search" type="submit">
-                        </div>
-                    </div>
-                </form>
-            
-            </div>
-        </div>
-
-
-    
-        <h2>Add entry to the database</h2>
-        <form class="form" method="POST">
+        <form class="table-edit-form" method="POST">
             <div class="row">
-
-                <div class="col">
-                    <div class="form-group">
-                    <textarea name="text" class="form-control custom-control-inline" id="late-input" rows="1" cols="50" placeholder="Paste connect2 text here.">{{ resultTextCSV }}</textarea><br>
-
-                </div>
-              
+                <input class="btn" name="deselect-all" type="submit" value="Deselect All">
+                <input class="btn" name="select-all" type="submit" value="Select All">
+                <input class="btn" name="clear-filters" type="submit" value="Clear Filters">
+                <input class="btn" name="filter-by-date-added" type="submit" value="Filter by Date Added">
+                <input class="field" name="added-date" type="date"> 
             </div>
-            <div class="row">
-
-                <div class="col">
-                    <input name="user-email" class="form-control" id="user-email" placeholder="User email">
-                </div>
-                <div class="col">
-                    <input name="fine-amount" class="form-control" id="fine-amount" placeholder="Fine amount (number only)">
-                </div>
-                <div class="col">
-                    <input name="fine-amount" class="form-control" id="fine-amount" placeholder="Fine amount (number only)">
-                </div>
-                <div class="col">
-                    <input name="forgiven" class="form-control" id="forgiven" placeholder="(Optional) Note if fine forgiven">
-                </div>
-                <div class="col">
-                    <input name="add-entry" class="btn btn-primary" type="submit">
-
-                </div>
-              
-            </div>
-
-
-            <br>
         </form>
+        <form method="POST">
+            <input class="form-control field" name="search" type="text" placeholder="Type your search term">
+            <input class="btn" name="Search" value="Search" type="submit">
+        </form>
+            
+    </div>
+
+
+        <div class="add-entry-dialogue">
+            <h2>Add entry to the database</h2>
+            <form class="form" method="POST">
+                <div class="row">
+
+                    <div class="col">
+                        <div class="form-group">
+                        <textarea name="text" class="form-control custom-control-inline" id="late-input" rows="1" cols="50" placeholder="Paste connect2 text here.">{{ resultTextCSV }}</textarea><br>
+
+                    </div>
+                
+                </div>
+                <div class="row">
+
+                    <div class="col">
+                        <input name="user-email" class="form-control" id="user-email" placeholder="User email">
+                    </div>
+                    <div class="col">
+                        <input name="fine-amount" class="form-control" id="fine-amount" placeholder="Fine amount (number only)">
+                    </div>
+                    <div class="col">
+                        <input name="fine-amount" class="form-control" id="fine-amount" placeholder="Fine amount (number only)">
+                    </div>
+                    <div class="col">
+                        <input name="forgiven" class="form-control" id="forgiven" placeholder="(Optional) Note if fine forgiven">
+                    </div>
+                    <div class="col">
+                        <input name="add-entry" class="btn btn-primary" type="submit">
+
+                    </div>
+                
+                </div>
+
+
+                <br>
+            </form>
+
+        </div>
+        
     
         <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
     
