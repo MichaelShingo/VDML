@@ -228,11 +228,90 @@ h1 {
 }
 
 //ADD ENTRY -------------
-.add-entry-dialogue {
-  visibility: hidden;
+
+
+.generate-email-dialogue {
+  visibility: hidden !important;
 }
 
+
+
 //FORM--------------------
+
+.add-entry-dialogue {
+  .alert {
+    color: var(--color-pink);
+    text-align: center;
+  }
+  .input-container {
+    text-align: center;
+    .form-input, textarea{
+      border-radius: 10px;
+      margin: 10px auto;
+      border: none;
+      padding: 5px;
+      width: 50%;
+    }
+  }
+
+  h2 {
+    text-align: center;
+  }
+  .btn-submit {
+    display: block;
+    margin: 10px auto;
+  }
+  .x-mark {
+    color: var(--color-pink);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    &:hover {
+      color: var(--color-pink-dark);
+    }
+  }
+  background-color: var(--color-grey-1);
+  visibility: visible;
+  position: fixed;
+  width: 60vw;
+  height: 60vw;
+  min-width:550px;
+  max-width: 750px;
+  max-height: 650px;
+  min-height: 575px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  padding: 1%;
+  box-shadow: var(--default-shadow);
+
+
+}
+
+.show {
+  visibility: visible;
+}
+
+
+
+textarea {
+  height: 200px;
+}
+.btn {
+  background-color: var(--color-green);
+  min-width: fit-content;
+  max-width: 500px;
+  color: var(--color-white);
+  font-weight: bold;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin: 0px 4px 0px 0px;
+  &:hover {
+    background-color: var(--color-green-dark);
+  }
+}
 .sticky-bottom {
   display: flex;
   flex-direction: row;
@@ -247,20 +326,7 @@ h1 {
   .field {
     margin: 0 3px;
   }
-  .btn {
-    background-color: var(--color-green);
-    min-width: fit-content;
-    max-width: 500px;
-    color: var(--color-white);
-    font-weight: bold;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 10px;
-    margin: 0px 4px 0px 0px;
-    &:hover {
-      background-color: var(--color-green-dark);
-    }
-  }
+
 }
 
 .update-form {
@@ -268,6 +334,8 @@ h1 {
     background-color: grey;
   }
 }
+
+
 
 
   /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */

@@ -51,3 +51,6 @@ def generateCSV(text):
     #pyperclip.copy(result)
     equipmentString = equipmentString.replace('\t', '')
     return owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate
+
+
+# print(generateCSV('''))

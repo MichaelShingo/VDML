@@ -209,8 +209,81 @@ h1 {
   border-bottom: 3px solid var(--color-green);
 }
 
+.generate-email-dialogue {
+  visibility: hidden !important;
+}
+
 .add-entry-dialogue {
-  visibility: hidden;
+  background-color: var(--color-grey-1);
+  visibility: visible;
+  position: fixed;
+  width: 60vw;
+  height: 60vw;
+  min-width: 550px;
+  max-width: 750px;
+  max-height: 650px;
+  min-height: 575px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  padding: 1%;
+  box-shadow: var(--default-shadow);
+}
+.add-entry-dialogue .alert {
+  color: var(--color-pink);
+  text-align: center;
+}
+.add-entry-dialogue .input-container {
+  text-align: center;
+}
+.add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea {
+  border-radius: 10px;
+  margin: 10px auto;
+  border: none;
+  padding: 5px;
+  width: 50%;
+}
+.add-entry-dialogue h2 {
+  text-align: center;
+}
+.add-entry-dialogue .btn-submit {
+  display: block;
+  margin: 10px auto;
+}
+.add-entry-dialogue .x-mark {
+  color: var(--color-pink);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.add-entry-dialogue .x-mark:hover {
+  color: var(--color-pink-dark);
+}
+
+.show {
+  visibility: visible;
+}
+
+textarea {
+  height: 200px;
+}
+
+.btn {
+  background-color: var(--color-green);
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  max-width: 500px;
+  color: var(--color-white);
+  font-weight: bold;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin: 0px 4px 0px 0px;
+}
+.btn:hover {
+  background-color: var(--color-green-dark);
 }
 
 .sticky-bottom {
@@ -227,22 +300,6 @@ h1 {
 }
 .sticky-bottom .field {
   margin: 0 3px;
-}
-.sticky-bottom .btn {
-  background-color: var(--color-green);
-  min-width: -webkit-fit-content;
-  min-width: -moz-fit-content;
-  min-width: fit-content;
-  max-width: 500px;
-  color: var(--color-white);
-  font-weight: bold;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 10px;
-  margin: 0px 4px 0px 0px;
-}
-.sticky-bottom .btn:hover {
-  background-color: var(--color-green-dark);
 }
 
 .update-form input[type=text], .update-form input[type=textarea] {

@@ -99,20 +99,25 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
     if request.method == 'POST':
         if 'add-entry' in request.form:
             text = request.form['text']
+            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = ['', '', '', '', '', '', '']
+
             try:
-                owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
-                pennID = request.form['penn-id']
-                email = request.form['user-email']
-                amount = request.form['fine-amount']
-                forgiven = request.form['forgiven']
+                if not text == '':
+                    owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
 
-                new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
-                    details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
+            except Exception as e:
+                print(e)
+                flash('Error: The script failed to extract data from pasted text. Blank fields added.')
 
-                db.session.add(new_entry)
-                db.session.commit()
-            except:
-                flash('The script failed to extract data from pasted text.')
+            pennID = request.form['penn-id']
+            email = request.form['user-email']
+            amount = request.form['fine-amount']
+            forgiven = request.form['forgiven']
+            new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
+                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
+
+            db.session.add(new_entry)
+            db.session.commit()
             return redirect('/late_fines')
 
         elif 'generate-emails' in request.form:

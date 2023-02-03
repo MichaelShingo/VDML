@@ -1,3 +1,15 @@
+console.log('script is linked');
+const btnAddEntry = document.getElementById('add-entry');
+const addEntryDialogue = document.getElementById('add-entry-dialogue');
+btnAddEntry.addEventListener('click', () => {
+    addEntryDialogue.classList.add('show');
+});
+
+const btnCloseEntry = document.getElementById('entry-x-mark');
+btnCloseEntry.addEventListener('click', () => {
+    addEntryDialogue.classList.remove('show');
+})
+
 function myFunction() {
     var x = document.getElementById("myTopnav");
     if (x.className === "topnav") {
