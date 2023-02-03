@@ -213,9 +213,16 @@ h1 {
   visibility: hidden !important;
 }
 
-.add-entry-dialogue {
+.form-input, textarea {
+  border: 2px solid var(--color-grey-2);
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin: 0px 4px 0px 0px;
+}
+
+.add-entry-dialogue, .update-dialogue {
   background-color: var(--color-grey-1);
-  visibility: visible;
+  visibility: hidden;
   position: fixed;
   width: 60vw;
   height: 60vw;
@@ -230,34 +237,34 @@ h1 {
   padding: 1%;
   box-shadow: var(--default-shadow);
 }
-.add-entry-dialogue .alert {
+.add-entry-dialogue .alert, .update-dialogue .alert {
   color: var(--color-pink);
   text-align: center;
 }
-.add-entry-dialogue .input-container {
+.add-entry-dialogue .input-container, .update-dialogue .input-container {
   text-align: center;
 }
-.add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea {
+.add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea, .update-dialogue .input-container .form-input, .update-dialogue .input-container textarea {
   border-radius: 10px;
   margin: 10px auto;
   border: none;
   padding: 5px;
   width: 50%;
 }
-.add-entry-dialogue h2 {
+.add-entry-dialogue h2, .update-dialogue h2 {
   text-align: center;
 }
-.add-entry-dialogue .btn-submit {
+.add-entry-dialogue .btn-submit, .update-dialogue .btn-submit {
   display: block;
   margin: 10px auto;
 }
-.add-entry-dialogue .x-mark {
+.add-entry-dialogue .x-mark, .update-dialogue .x-mark {
   color: var(--color-pink);
   position: absolute;
   top: 10px;
   right: 10px;
 }
-.add-entry-dialogue .x-mark:hover {
+.add-entry-dialogue .x-mark:hover, .update-dialogue .x-mark:hover {
   color: var(--color-pink-dark);
 }
 

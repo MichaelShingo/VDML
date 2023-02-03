@@ -152,7 +152,7 @@
                             <i class="fa fa-stop fa-lg"></i>
                             {% endif %}
                         </a>
-                        <a href="/update/{{task.id}}"><i class="fa fa-pen fa-lg"></i></a>
+                        <a id="btn-update" ><i class="fa fa-pen fa-lg"></i></a> <!--href="/update/{{task.id}}"-->
 
                         <a href="/delete/{{task.id}}"><i class="fa fa-trash fa-lg"></i></a>
 
@@ -173,11 +173,11 @@
                 <input class="btn" name="select-all" type="submit" value="Select All">
                 <input class="btn" name="clear-filters" type="submit" value="Clear Filters">
                 <input class="btn" name="filter-by-date-added" type="submit" value="Filter by Date Added">
-                <input class="field" name="added-date" type="date"> 
+                <input class="form-input" name="added-date" type="date"> 
             </div>
         </form>
         <form method="POST">
-            <input class="form-control field" name="search" type="text" placeholder="Type your search term">
+            <input class="form-input" name="search" type="text" placeholder="Type your search term">
             <input class="btn" name="Search" value="Search" type="submit">
         </form>
             
@@ -192,19 +192,19 @@
                     <textarea name="text" class="form-control custom-control-inline" id="late-input" rows="20" cols="50" placeholder="Paste connect2 text here.">{{ resultTextCSV }}</textarea>
                 </div>
                 <div class="input-container">
-                    <input name="penn-id" class="form-input" id="penn-id" placeholder="Penn ID Barcode (numbers only)">
+                    <input name="penn-id" class="form-input" id="penn-id" placeholder="Penn ID Barcode (digits only)">
 
                 </div>
                 <div class="input-container">
-                    <input name="user-email" class="form-input" id="user-email" placeholder="User email">
+                    <input name="user-email" class="form-input" id="user-email" placeholder="email@upenn.edu">
                 </div>
 
                 <div class="input-container">
-                    <input name="fine-amount" class="form-input" id="fine-amount" placeholder="Fine amount (number only)">
+                    <input name="fine-amount" class="form-input" id="fine-amount" placeholder="Fine amount (digits only)">
 
                 </div>
                 <div class="input-container">
-                    <input name="forgiven" class="form-input" id="forgiven" placeholder="(Optional) Note if fine forgiven">
+                    <input name="forgiven" class="form-input" id="forgiven" placeholder="Notes">
 
                 </div>
                 <input name="add-entry" class="btn btn-submit" type="submit">
@@ -217,7 +217,10 @@
             {% endif %}
             {% endwith %}
         </div>
-        
+
+
+
+
     
         <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
     

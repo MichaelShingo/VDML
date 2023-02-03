@@ -10,6 +10,14 @@ btnCloseEntry.addEventListener('click', () => {
     addEntryDialogue.classList.remove('show');
 })
 
+
+const updateDialogue = document.getElementById('update-dialogue');
+btnUpdate = document.getElementById('btn-update');
+
+btnUpdate.addEventListener('click', () => {
+    updateDialogue.classList.add('show');
+})
+
 function myFunction() {
     var x = document.getElementById("myTopnav");
     if (x.className === "topnav") {

@@ -237,8 +237,31 @@ h1 {
 
 
 //FORM--------------------
+.form-input, textarea{
+  border: 2px solid var(--color-grey-2);
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin: 0px 4px 0px 0px;
 
-.add-entry-dialogue {
+}
+
+.add-entry-dialogue, .update-dialogue {
+  background-color: var(--color-grey-1);
+  visibility: hidden;
+  position: fixed;
+  width: 60vw;
+  height: 60vw;
+  min-width:550px;
+  max-width: 750px;
+  max-height: 650px;
+  min-height: 575px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  padding: 1%;
+  box-shadow: var(--default-shadow);
+
   .alert {
     color: var(--color-pink);
     text-align: center;
@@ -270,24 +293,15 @@ h1 {
       color: var(--color-pink-dark);
     }
   }
-  background-color: var(--color-grey-1);
-  visibility: visible;
-  position: fixed;
-  width: 60vw;
-  height: 60vw;
-  min-width:550px;
-  max-width: 750px;
-  max-height: 650px;
-  min-height: 575px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 10px;
-  padding: 1%;
-  box-shadow: var(--default-shadow);
 
 
 }
+
+
+
+
+
+
 
 .show {
   visibility: visible;
