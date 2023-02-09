@@ -133,6 +133,7 @@
             
             {% for task in tasks %}
                 <tr>
+                    <td style="display: none;">{{ task.id }}</td>
                     <td>{{ task.name }}</td>
                     <td>{{ task.penn_id }}</td>
                     <td><a href="/generateUserEmail/{{task.id}}">{{ task.email }}</a></td>
@@ -144,7 +145,7 @@
                     <td>{{ task.operator }}</td>
                     <td class="date-sent">{{ task.date_sent }}</td>
                     <td>{{ task.forgiven }}</td>
-                    <td class="actions">
+                    <td class="actions" alt="{{ task.id }}">
                         <a href="/select/{{task.id}}">
                             {% if task.selected %}
                                 <i class="fa fa-square-check fa-lg"></i>
@@ -152,7 +153,7 @@
                             <i class="fa fa-stop fa-lg"></i>
                             {% endif %}
                         </a>
-                        <a id="btn-update" ><i class="fa fa-pen fa-lg"></i></a> <!--href="/update/{{task.id}}"-->
+                        <a  id="btn-update"  onclick="updateEntry(this);" ><i class="fa fa-pen fa-lg"></i></a>  <!--href="/update/{{task.id}}"-->
 
                         <a href="/delete/{{task.id}}"><i class="fa fa-trash fa-lg"></i></a>
 
@@ -185,29 +186,108 @@
 
 
         <div class="add-entry-dialogue" id="add-entry-dialogue">
-            <h2>Add an Entry</h2>
+            <h2>Add Entry</h2>
             <div id="entry-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
             <form class="form" method="POST">
-                <div class="input-container">
-                    <textarea name="text" class="form-control custom-control-inline" id="late-input" rows="20" cols="50" placeholder="Paste connect2 text here.">{{ resultTextCSV }}</textarea>
+                <div class="col-2"></div>
+                <div class="form-inputs col-8">
+                    <div class="input-container">
+                        <label for="late-input">Connect2 Text</label>
+                        <textarea name="text" class="form-control custom-control-inline" id="late-input" rows="20" cols="50" placeholder="Paste connect2 text here.">{{ resultTextCSV }}</textarea>
+                    </div>
+                    <div class="input-container">
+                        <label for="penn-id">Penn ID</label>
+                        <input name="penn-id" class="form-input" id="penn-id" placeholder="Penn ID Barcode (digits only)">
+    
+                    </div>
+                    <div class="input-container">
+                        <label for="user-email">Email</label>
+                        <input name="user-email" class="form-input" id="user-email" placeholder="email@upenn.edu">
+                    </div>
+    
+                    <div class="input-container">
+                        <label for="fine-amount">Fine Amount (number only)</label>
+                        <input name="fine-amount" class="form-input" id="fine-amount" placeholder="Fine amount (digits only)">
+                    </div>
+                    <div class="input-container">
+                        <label for="forgiven">Forgiven</label>
+                        <input name="forgiven" class="form-input" id="forgiven" placeholder="Notes">
+    
+                    </div>
+                    <input name="add-entry" class="btn btn-submit" type="submit">
                 </div>
-                <div class="input-container">
-                    <input name="penn-id" class="form-input" id="penn-id" placeholder="Penn ID Barcode (digits only)">
+                <div class="col-2"></div>
+
+                
+            </form>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <h3 class="alert">{{ message }}</h3>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+
+        <div class="update-entry-dialogue" id="update-entry-dialogue" style="visibility: {{ visibilityUpdate }}" >
+            <h2>Update Entry</h2>
+            <div id="update-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
+            <form class="form" method="POST">
+                <div class="col-2"></div>
+                <div class="form-inputs col-8">
+                    <input name="id-to-update" id="id-to-update" type=number style="display: none;">
+                    <div class="input-container">
+                        <label for="name-update">Name</label>
+                        <input name="name" class="form-input" id="name-update" placeholder="Penn ID Barcode (digits only)">
+                    </div>
+                    <div class="input-container">
+                        <label for="penn-id-update">Penn ID</label>
+                        <input name="penn-id" class="form-input" id="penn-id-update" placeholder="Penn ID Barcode (digits only)">
+                    </div>
+                    <div class="input-container">
+                        <label for="email-update">Email</label>
+                        <input name="email" class="form-input" id="email-update" placeholder="email@upenn.edu">
+                    </div>
+    
+                    <div class="input-container">
+                        <label for="amount-update">Amount</label>
+                        <input name="amount" class="form-input" id="amount-update" placeholder="Fine amount (digits only)">
+                    </div>
+                    <div class="input-container">
+                        <label for="booking_number-update">Booking</label>
+                        <input name="booking_number" class="form-input" id="booking_number-update">
+                    </div>
+                    <div class="input-container">
+                        <label for="details-update">Details</label>
+                        <input name="details" class="form-input" id="details-update">
+                    </div>
+                    <div class="input-container">
+                        <label for="schedule-update">Schedule</label>
+                        <input name="schedule" class="form-input" id="schedule-update">
+                    </div>
+                    <div class="input-container">
+                        <label for="return_time-update">Return</label>
+                        <input name="return_time" class="form-input" id="return_time-update">
+                    </div>
+                    <div class="input-container">
+                        <label for="operator-update">Operator</label>
+                        <input name="operator" class="form-input" id="operator-update">
+                    </div>
+                    <div class="input-container">
+                        <label for="date_sent-update">Date Sent</label>
+                        <input name="date_sent" class="form-input" id="date_sent-update">
+                    </div>
+                    <div class="input-container">
+                        <label for="forgiven-update">Forgiven</label>
+                        <input name="forgiven" class="form-input" id="forgiven-update" placeholder="Notes">
+    
+                    </div>
+                    <input name="update-entry" class="btn btn-submit" type="submit">
 
                 </div>
-                <div class="input-container">
-                    <input name="user-email" class="form-input" id="user-email" placeholder="email@upenn.edu">
-                </div>
-
-                <div class="input-container">
-                    <input name="fine-amount" class="form-input" id="fine-amount" placeholder="Fine amount (digits only)">
-
-                </div>
-                <div class="input-container">
-                    <input name="forgiven" class="form-input" id="forgiven" placeholder="Notes">
-
-                </div>
-                <input name="add-entry" class="btn btn-submit" type="submit">
+                 <div class="col-2"></div>
+               
             </form>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
