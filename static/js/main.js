@@ -1,3 +1,43 @@
+const updateDialogue = document.getElementById('update-entry-dialogue');
+const btnCloseUpdate = document.getElementById('update-x-mark');
+const nameUpdate = document.getElementById('name-update');
+const pennIDUpdate = document.getElementById('penn-id-update');
+const emailUpdate = document.getElementById('email-update');
+const amountUpdate = document.getElementById('amount-update');
+const bookingNumberUpdate = document.getElementById('booking_number-update');
+const detailsUpdate = document.getElementById('details-update');
+const scheduleUpdate = document.getElementById('schedule-update');
+const returnTimeUpdate = document.getElementById('return_time-update');
+const operatorUpdate = document.getElementById('operator-update');
+const dateSentUpdate = document.getElementById('date_sent-update');
+const forgivenUpdate = document.getElementById('forgiven-update');
+const idToUpdate = document.getElementById('id-to-update');
+
+btnCloseUpdate.addEventListener('click', () => {
+    updateDialogue.classList.remove('show');
+})
+
+function updateEntry(ele) {
+    const id = parseInt(ele.closest('td').getAttribute('alt'));
+    const rowDataList = ele.closest('tr').querySelectorAll('td');
+    console.log(rowDataList[2].innerText);
+
+    idToUpdate.value = rowDataList[0].innerText;
+    nameUpdate.value = rowDataList[1].innerText;
+    pennIDUpdate.value = rowDataList[2].innerText;
+    emailUpdate.value = rowDataList[3].innerText;
+    amountUpdate.value = rowDataList[4].innerText.substring(1);
+    bookingNumberUpdate.value = rowDataList[5].innerText;
+    detailsUpdate.value = rowDataList[6].innerText;
+    scheduleUpdate.value = rowDataList[7].innerText;
+    returnTimeUpdate.value = rowDataList[8].innerText;
+    operatorUpdate.value = rowDataList[9].innerText;
+    dateSentUpdate.value = rowDataList[10].innerText;
+    forgivenUpdate.value = rowDataList[11].innerText;
+    updateDialogue.classList.add('show');
+}
+
+
 console.log('script is linked');
 const btnAddEntry = document.getElementById('add-entry');
 const addEntryDialogue = document.getElementById('add-entry-dialogue');
@@ -11,12 +51,6 @@ btnCloseEntry.addEventListener('click', () => {
 })
 
 
-const updateDialogue = document.getElementById('update-dialogue');
-btnUpdate = document.getElementById('btn-update');
-
-btnUpdate.addEventListener('click', () => {
-    updateDialogue.classList.add('show');
-})
 
 function myFunction() {
     var x = document.getElementById("myTopnav");
@@ -63,11 +97,6 @@ document.querySelectorAll(".drop-zone__input").forEach(inputElement => {
     });
 });
 
-
-
-
-
-
 /**
  * Updates the thumbnail on a drop zone element.
  * 
@@ -102,5 +131,3 @@ function updateThumbnail(dropZoneElement, file){
         dropZoneElement.style.borderColor = "var(--error-color)";
     }
 }
-
-
