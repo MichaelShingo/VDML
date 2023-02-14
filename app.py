@@ -11,6 +11,8 @@ print(sys.path)
 # virtualenv env 
 # cmd "source env/bin/activate"
 
+#filter by date doesn't work 
+
 #Explore selenium 
 #generate all emails lbutton, and popup 
 #TODO filter by date added but descnding so you see most recent ones 
@@ -123,7 +125,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         
         elif 'update-entry' in request.form:
             idToUpdate = request.form['id-to-update']
-            lateFine = LateFine.query.get_or_404(idToUpdate) #how to pass the id here? 
+            lateFine = LateFine.query.get_or_404(idToUpdate)
             lateFine.name = request.form['name']
             lateFine.penn_id = request.form['penn-id']
             lateFine.email = request.form['email']
@@ -133,7 +135,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             lateFine.schedule = request.form['schedule']
             lateFine.return_time = request.form['return_time']
             lateFine.operator = request.form['operator']
-            lateFine.date_sent = request.form['date_sent']
+            lateFine.date_sent = datetime.strptime(request.form['date_sent'], '%Y-%m-%d')
             lateFine.forgiven = request.form['forgiven']
             db.session.commit()
             return redirect('/late_fines')

@@ -32,7 +32,11 @@ function updateEntry(ele) {
     scheduleUpdate.value = rowDataList[7].innerText;
     returnTimeUpdate.value = rowDataList[8].innerText;
     operatorUpdate.value = rowDataList[9].innerText;
-    dateSentUpdate.value = rowDataList[10].innerText;
+    //get text of date, convert to format yyyy-mm-dd
+    let textDate = rowDataList[10].innerText;
+    isoDateFormat = `${textDate.substring(6, 10)}-${textDate.substring(0, 2)}-${textDate.substring(3, 5)}`;
+    dateSentUpdate.value = isoDateFormat; 
+
     forgivenUpdate.value = rowDataList[11].innerText;
     updateDialogue.classList.add('show');
 }
