@@ -143,7 +143,7 @@
                     <td>{{ task.schedule }}</td>
                     <td>{{ task.return_time }}</td>
                     <td>{{ task.operator }}</td>
-                    <td class="date-sent">{{ task.date_sent }}</td>
+                    <td class="date-sent">{{ task.date_sent.strftime('%m/%d/%Y') }}</td>
                     <td>{{ task.forgiven }}</td>
                     <td class="actions" alt="{{ task.id }}">
                         <a href="/select/{{task.id}}">
@@ -276,7 +276,7 @@
                     </div>
                     <div class="input-container">
                         <label for="date_sent-update">Date Sent</label>
-                        <input name="date_sent" class="form-input" id="date_sent-update">
+                        <input type="date" name="date_sent" class="form-input" id="date_sent-update">
                     </div>
                     <div class="input-container">
                         <label for="forgiven-update">Forgiven</label>

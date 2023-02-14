@@ -18,6 +18,8 @@ print(sys.path)
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO fix date added to be a datetime object
 #TODO add export csv option
+
+
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
 
@@ -30,7 +32,7 @@ app = Flask(__name__) #references this file
 fa = FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #three /'s is relative path, 4 is absolute path
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relative path, 4 is absolute path
 db.init_app(app)
 
 class LateFine(db.Model): #Todo is the table name, it's automatically lowercase when it's created
@@ -44,7 +46,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     schedule = db.Column(db.String(200), nullable=False)
     return_time = db.Column(db.String(200), nullable=False)
     operator = db.Column(db.String(200), nullable=False)
-    date_sent = db.Column(db.String(200), default=(datetime.utcnow()).strftime('%Y-%m-%d')) #2023-01-25 15:04:04.443131
+    date_sent = db.Column(db.DateTime, default=(datetime.utcnow()))
     forgiven = db.Column(db.String(200), nullable=False)
     selected = db.Column(db.Boolean, default=False)
 
