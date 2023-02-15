@@ -46,7 +46,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     booking_number = db.Column(db.String(200), nullable=False)
     details = db.Column(db.String(200), nullable=False)
     schedule = db.Column(db.String(200), nullable=False)
-    return_time = db.Column(db.String(200), nullable=False)
+    return_time = db.Column(db.DateTime, nullable=True)
     operator = db.Column(db.String(200), nullable=False)
     date_sent = db.Column(db.DateTime, default=(datetime.utcnow()))
     forgiven = db.Column(db.String(200), nullable=False)
@@ -102,15 +102,17 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
     if request.method == 'POST':
         if 'add-entry' in request.form:
             text = request.form['text']
-            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = ['', '', '', '', '', '', '']
-
+            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = ['', '', '', '', datetime(1900, 1, 1, 0), '', '']
             try:
                 if not text == '':
                     owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
+                    returnTime = datetime.strptime(returnTime, '%m/%d/%Y %I:%M %p')
+                    print(f'RETURN TIME!!!!!!!!!!!!!! = {returnTime}')
 
             except Exception as e:
                 print(e)
                 flash('Error: The script failed to extract data from pasted text. Blank fields added.')
+
 
             pennID = request.form['penn-id']
             email = request.form['user-email']
@@ -133,7 +135,8 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             lateFine.booking_number = request.form['booking_number']
             lateFine.details = request.form['details']
             lateFine.schedule = request.form['schedule']
-            lateFine.return_time = request.form['return_time']
+            format = '2018-06-07T00:00'
+            lateFine.return_time = datetime.strptime(request.form['return_time'], '%Y-%m-%dT%H:%M')
             lateFine.operator = request.form['operator']
             lateFine.date_sent = datetime.strptime(request.form['date_sent'], '%Y-%m-%d')
             lateFine.forgiven = request.form['forgiven']
