@@ -34,7 +34,13 @@ function updateEntry(ele) {
     const datetimeHTML = '02/13/2023 09:02 AM';
     let returnHour = parseInt(returnTimeString.substring(11, 13));
     let returnPeriod = returnTimeString.substring(17, 19);
-    returnHour = (returnHour + 12) % 12;
+    console.log(returnPeriod)
+    console.log(`Return hour before +12 %12 = ${returnHour}`);
+    if (returnPeriod === 'PM') {
+        returnHour += 12;
+    }
+    console.log(`Return hour AFTER +12 %12 = ${returnHour}`);
+
     
     returnHour = returnHour.toString();
     console.log(`return hour = ${returnHour}`)

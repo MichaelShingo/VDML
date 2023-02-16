@@ -21,6 +21,8 @@ print(sys.path)
 #TODO fix date added to be a datetime object
 #TODO add export csv option
 
+#TODO this entry
+
 
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
@@ -46,6 +48,8 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     booking_number = db.Column(db.String(200), nullable=False)
     details = db.Column(db.String(200), nullable=False)
     schedule = db.Column(db.String(200), nullable=False)
+    return_time = db.Column(db.String(200), nullable=True)
+
     return_time = db.Column(db.DateTime, nullable=True)
     operator = db.Column(db.String(200), nullable=False)
     date_sent = db.Column(db.DateTime, default=(datetime.utcnow()))
