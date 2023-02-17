@@ -6,18 +6,18 @@ from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, late
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_fontawesome import FontAwesome
-from flask_bootstrap import Bootstrap
 
 print(sys.path)
 # virtualenv env 
 # cmd "source env/bin/activate"
 
+#Explore selenium 
+#generate all emails lbutton, and popup 
 #TODO filter by date added but descnding so you see most recent ones 
-#TODO style css, fixed position controls on bottom
+#TODO allow sorting after searching and filtering is set
+#TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO fix date added to be a datetime object
 #TODO add export csv option
-#TODO UPDATE PAGE - larger textarea for late equipment and notes, relink the inner text....
-
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
 
@@ -27,7 +27,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False #you need this?
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
-Bootstrap(app)
 fa = FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
@@ -119,6 +118,23 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             db.session.add(new_entry)
             db.session.commit()
             return redirect('/late_fines')
+        
+        elif 'update-entry' in request.form:
+            idToUpdate = request.form['id-to-update']
+            lateFine = LateFine.query.get_or_404(idToUpdate) #how to pass the id here? 
+            lateFine.name = request.form['name']
+            lateFine.penn_id = request.form['penn-id']
+            lateFine.email = request.form['email']
+            lateFine.amount = request.form['amount']
+            lateFine.booking_number = request.form['booking_number']
+            lateFine.details = request.form['details']
+            lateFine.schedule = request.form['schedule']
+            lateFine.return_time = request.form['return_time']
+            lateFine.operator = request.form['operator']
+            lateFine.date_sent = request.form['date_sent']
+            lateFine.forgiven = request.form['forgiven']
+            db.session.commit()
+            return redirect('/late_fines')
 
         elif 'generate-emails' in request.form:
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
@@ -208,6 +224,39 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
 # @app.route('/search')
 # def search():
+entryToUpdateID = -1
+
+# @app.route('/update/<int:id>', methods=['GET', 'POST'])
+# def update(id):
+#     print('udpate route')
+#     tasks = LateFine.query.order_by(LateFine.date_sent).all()
+#     global entryToUpdateID
+#     entryToUpdateID = id
+#     return render_template('late_fines.html', visibilityUpdate='visible', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+
+#     task = LateFine.query.get_or_404(id)
+#     if request.method == 'POST':
+#         task.name = request.form['name']
+#         task.penn_id = request.form['penn_id']
+#         task.email = request.form['email']
+#         task.amount = request.form['amount']
+#         task.booking_number = request.form['booking_number']
+#         task.details = request.form['details']
+#         task.schedule = request.form['schedule']
+#         task.return_time = request.form['return_time']
+#         task.operator = request.form['operator']
+#         task.date_sent = request.form['date_sent']
+#         task.forgiven = request.form['forgiven']
+#         try:
+#             db.session.commit()
+#             return redirect('/late_fines')
+#         except:
+#             return 'There was an issue updating your task'
+#     else:
+#         #get all field values rendered in editable inputs 
+#         return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+
+#         return render_template('update.html', task=task)
 
        
 @app.route('/sort-desc-name')
@@ -359,30 +408,6 @@ def generateUserEmail(id):
     pyperclip.copy(resultUser)
     return redirect('/late_fines')
 
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = LateFine.query.get_or_404(id)
-    if request.method == 'POST':
-        task.name = request.form['name']
-        task.penn_id = request.form['penn_id']
-        task.email = request.form['email']
-        task.amount = request.form['amount']
-        task.booking_number = request.form['booking_number']
-        task.details = request.form['details']
-        task.schedule = request.form['schedule']
-        task.return_time = request.form['return_time']
-        task.operator = request.form['operator']
-        task.date_sent = request.form['date_sent']
-        task.forgiven = request.form['forgiven']
-        try:
-            db.session.commit()
-            return redirect('/late_fines')
-        except:
-            return 'There was an issue updating your task'
-    else:
-        #get all field values rendered in editable inputs 
-        return render_template('update.html', task=task)
 
 
 
