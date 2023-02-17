@@ -1,3 +1,9 @@
+const btnGenerateEmail = document.getElementById('generate-emails');
+btnGenerateEmail.addEventListener('click', () => {
+
+})
+
+
 const updateDialogue = document.getElementById('update-entry-dialogue');
 const btnCloseUpdate = document.getElementById('update-x-mark');
 const nameUpdate = document.getElementById('name-update');
@@ -36,7 +42,7 @@ function updateEntry(ele) {
     let returnPeriod = returnTimeString.substring(17, 19);
     console.log(returnPeriod)
     console.log(`Return hour before +12 %12 = ${returnHour}`);
-    if (returnPeriod === 'PM') {
+    if (returnPeriod === 'PM' && returnHour !== 12) {
         returnHour += 12;
     }
     console.log(`Return hour AFTER +12 %12 = ${returnHour}`);
@@ -75,6 +81,11 @@ btnCloseEntry.addEventListener('click', () => {
     addEntryDialogue.classList.remove('show');
 })
 
+const btnCloseEmail = document.getElementById('email-x-mark');
+const generateEmailsDialogue = document.getElementById('generate-emails-dialogue');
+btnCloseEmail.addEventListener('click', () => {
+    generateEmailsDialogue.style.visibility = 'hidden';
+})
 
 
 
