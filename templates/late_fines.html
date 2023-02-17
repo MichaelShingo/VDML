@@ -141,9 +141,9 @@
                     <td><a target="_blank" href="https://pennmedialab.getconnect2.com/Bookings/View.aspx?id={{ task.booking_number[3:] }}">{{ task.booking_number }}</a></td>
                     <td>{{ task.details }}</td>
                     <td>{{ task.schedule }}</td>
-                    <td>{{ task.return_time }}</td>
+                    <td>{{ task.return_time.strftime('%m/%d/%Y %I:%M %p') }}</td>
                     <td>{{ task.operator }}</td>
-                    <td class="date-sent">{{ task.date_sent }}</td>
+                    <td class="date-sent">{{ task.date_sent.strftime('%m/%d/%Y') }}</td>
                     <td>{{ task.forgiven }}</td>
                     <td class="actions" alt="{{ task.id }}">
                         <a href="/select/{{task.id}}">
@@ -170,20 +170,22 @@
         <form class="table-edit-form" method="POST">
             <div class="row">
                 <input class="btn" id="add-entry" name="Add Entry" type="button" value="Add Entry">
-                <input class="btn" name="deselect-all" type="submit" value="Deselect All">
-                <input class="btn" name="select-all" type="submit" value="Select All">
-                <input class="btn" name="clear-filters" type="submit" value="Clear Filters">
-                <input class="btn" name="filter-by-date-added" type="submit" value="Filter by Date Added">
-                <input class="form-input" name="added-date" type="date"> 
+                <input class="btn" id="select-all" name="select-all" type="submit" value="Select All">
+                <input class="btn" id="deselect-all" name="deselect-all" type="submit" value="Deselect All">
+                <input class="form-input" name="added-date" type="date" value="{{ filteredDate }}">
+                <input class="btn" id="filter-by-date-added" name="filter-by-date-added" type="submit" value="Filter by Date Added">
+                <input class="btn" id="clear-filters" name="clear-filters" type="submit" value="Clear Filters">
             </div>
         </form>
         <form method="POST">
             <input class="form-input" name="search" type="text" placeholder="Type your search term">
-            <input class="btn" name="Search" value="Search" type="submit">
+            <input class="btn" id="search" name="Search" value="Search" type="submit">
+            <input id="generate-emails" class="btn" name="generate-emails" type="submit" value="Generate Emails">
+        </form>
+        <form method="POST">
         </form>
             
     </div>
-
 
         <div class="add-entry-dialogue" id="add-entry-dialogue">
             <h2>Add Entry</h2>
@@ -239,7 +241,7 @@
                     <input name="id-to-update" id="id-to-update" type=number style="display: none;">
                     <div class="input-container">
                         <label for="name-update">Name</label>
-                        <input name="name" class="form-input" id="name-update" placeholder="Penn ID Barcode (digits only)">
+                        <input name="name" class="form-input" id="name-update" placeholder="">
                     </div>
                     <div class="input-container">
                         <label for="penn-id-update">Penn ID</label>
@@ -268,7 +270,7 @@
                     </div>
                     <div class="input-container">
                         <label for="return_time-update">Return</label>
-                        <input name="return_time" class="form-input" id="return_time-update">
+                        <input type="datetime-local" name="return_time" class="form-input" id="return_time-update">
                     </div>
                     <div class="input-container">
                         <label for="operator-update">Operator</label>
@@ -276,7 +278,7 @@
                     </div>
                     <div class="input-container">
                         <label for="date_sent-update">Date Sent</label>
-                        <input name="date_sent" class="form-input" id="date_sent-update">
+                        <input type="date" name="date_sent" class="form-input" id="date_sent-update">
                     </div>
                     <div class="input-container">
                         <label for="forgiven-update">Forgiven</label>
@@ -299,30 +301,27 @@
         </div>
 
 
+        <div class="generate-emails-dialogue" id="generate-emails-dialogue" style="visibility: {{ visibilityCirc }}";>
+            <h2>Generated Emails</h2>
+            <form class="form">
+                <div id="email-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
+                <textarea class="generated-textarea" name="output" id="late-output" rows="1" cols="50" placeholder="Please select entries before generating emails.">{{ resultTextUser }}</textarea>
+                 <textarea class="generated-textarea" name="output" id="late-output" rows="1" cols="" placeholder="Please select entries before generating emails.">{{ resultTextCirc }}</textarea>
+
+            </form>
 
 
-    
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <h3 class="alert">{{ message }}</h3>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
         <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
     
-    
-    
-        
     </div>
-
-
-    <div class="generate-email-dialogue ">
-        <form method="POST">
-            <input class="btn btn-primary" name="generate-emails" type="submit" value="Generate All Emails for Selected Users">
-        </form>
-    
-        <textarea style="visibility: {{ visibilityUser }}" name="output" id="late-output" 
-            rows="1" cols="100" placeholder="Result outputs here.">{{ resultTextUser }}</textarea>
-        <textarea style="visibility: {{ visibilityCirc }}" name="output" id="late-output" 
-        rows="1" cols="100" placeholder="Result outputs here.">{{ resultTextCirc }}</textarea>
-        <p style="visibility: {{ visibilityUser }}" class="alert-message">The result has been copied to your clipboard.</p>
-    </div>
-
-    
-    
 
 {% endblock %}

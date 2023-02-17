@@ -96,8 +96,12 @@ p, h1, h2, h3, h4, h5, h6 {
   --color-pink: #ec153e;
   --color-pink-dark: #b1102e;
 
-  --color-yellow: #e3d726;
+  --color-yellow-old: #e3d726;
+  --color-yellow-dark-old: #958c0b;
+
+  --color-yellow: #c4b810;
   --color-yellow-dark: #958c0b;
+
 
   --color-green: #00a778;
   --color-green-dark: #007b58;
@@ -268,7 +272,6 @@ h1 {
 }
 
 
-
 //FORM--------------------
 .form-input, textarea{
   border: 2px solid var(--color-grey-2);
@@ -280,7 +283,7 @@ h1 {
 .form {
   width: 100%;
 }
-.add-entry-dialogue, .update-entry-dialogue {
+.add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue {
   background-color: var(--color-grey-1);
   visibility: hidden;
   position: fixed;
@@ -294,6 +297,12 @@ h1 {
   border-radius: 10px;
   padding: 1%;
   box-shadow: var(--default-shadow);
+  .generated-textarea {
+    margin: 15px 0;
+    resize: none;
+    width: 100%;
+    min-height: 35vh;
+  }
 
   .alert {
     color: var(--color-pink);
@@ -335,14 +344,9 @@ h1 {
 }
 
 
-
-
-
-
 .show {
   visibility: visible;
 }
-
 
 
 textarea {
@@ -360,6 +364,30 @@ textarea {
   margin: 0px 4px 0px 0px;
   &:hover {
     background-color: var(--color-green-dark);
+  }
+}
+#deselect-all {
+  background-color: var(--color-pink);
+  &:hover{
+    background-color: var(--color-pink-dark);
+  }
+}
+#select-all {
+  background-color: var(--color-blue);
+  &:hover{
+    background-color: var(--color-blue-dark);
+  }
+}
+#clear-filters {
+  background-color: var(--color-pink);
+  &:hover{
+    background-color: var(--color-pink-dark);
+  }
+}
+#search {
+  background-color: var(--color-blue);
+  &:hover{
+    background-color: var(--color-blue-dark);
   }
 }
 .sticky-bottom {

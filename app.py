@@ -12,12 +12,18 @@ print(sys.path)
 # cmd "source env/bin/activate"
 
 #Explore selenium 
-#generate all emails lbutton, and popup 
-#TODO filter by date added but descnding so you see most recent ones 
+
 #TODO allow sorting after searching and filtering is set
+#authentication
+#populate filter date value in the date field 
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
-#TODO fix date added to be a datetime object
 #TODO add export csv option
+
+#TODO booking sorting is weird, maybe the name of the sorting parameter is "booking" and it should be "booking-number"
+
+
+
+#LATER...................
 #TODO poster printing receipt generator
 #TODO booking analysis with visualization data dashboard
 
@@ -30,7 +36,7 @@ app = Flask(__name__) #references this file
 fa = FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #three /'s is relative path, 4 is absolute path
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relative path, 4 is absolute path
 db.init_app(app)
 
 class LateFine(db.Model): #Todo is the table name, it's automatically lowercase when it's created
@@ -42,29 +48,31 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     booking_number = db.Column(db.String(200), nullable=False)
     details = db.Column(db.String(200), nullable=False)
     schedule = db.Column(db.String(200), nullable=False)
-    return_time = db.Column(db.String(200), nullable=False)
+    return_time = db.Column(db.String(200), nullable=True)
+    return_time = db.Column(db.DateTime, nullable=True)
     operator = db.Column(db.String(200), nullable=False)
-    date_sent = db.Column(db.String(200), default=(datetime.utcnow()).strftime('%Y-%m-%d')) #2023-01-25 15:04:04.443131
+    date_sent = db.Column(db.DateTime, default=(datetime.utcnow()))
     forgiven = db.Column(db.String(200), nullable=False)
     selected = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<Task %r>' % self.id #when you create new element, it returns the task and the id of the task created 
 
-
 with app.app_context():
     db.create_all()
-
 
 @app.route('/')  #routes to index.html so you don't 404
 def index():
     return render_template('index.html')
 
-
 selectedSet = set()
 sortingParameter = '' #database column name
 sortingOrder = '' #asc or desc
 searchIDList = []
+filteredDate = None
+filteredDateHTML = ''
+
+
 
 def searchDatabase(searchTerm):
     global searchIDList
@@ -91,6 +99,9 @@ def late_equipment_post(resultText=None, visibility='hidden'):
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
     currentDB = LateFine.query.all()
     global searchIDList
+    global filteredDate 
+    global filteredDateHTML
+
     for entry in currentDB:
         if entry.selected:
             selectedSet.add(entry.id)
@@ -98,11 +109,11 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
     if request.method == 'POST':
         if 'add-entry' in request.form:
             text = request.form['text']
-            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = ['', '', '', '', '', '', '']
-
+            owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = ['', '', '', '', datetime(1900, 1, 1, 0), '', '']
             try:
                 if not text == '':
                     owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
+                    returnTime = datetime.strptime(returnTime, '%m/%d/%Y %I:%M %p')
 
             except Exception as e:
                 print(e)
@@ -121,7 +132,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         
         elif 'update-entry' in request.form:
             idToUpdate = request.form['id-to-update']
-            lateFine = LateFine.query.get_or_404(idToUpdate) #how to pass the id here? 
+            lateFine = LateFine.query.get_or_404(idToUpdate)
             lateFine.name = request.form['name']
             lateFine.penn_id = request.form['penn-id']
             lateFine.email = request.form['email']
@@ -129,9 +140,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             lateFine.booking_number = request.form['booking_number']
             lateFine.details = request.form['details']
             lateFine.schedule = request.form['schedule']
-            lateFine.return_time = request.form['return_time']
+            format = '2018-06-07T00:00'
+            lateFine.return_time = datetime.strptime(request.form['return_time'], '%Y-%m-%dT%H:%M')
             lateFine.operator = request.form['operator']
-            lateFine.date_sent = request.form['date_sent']
+            lateFine.date_sent = datetime.strptime(request.form['date_sent'], '%Y-%m-%d')
             lateFine.forgiven = request.form['forgiven']
             db.session.commit()
             return redirect('/late_fines')
@@ -139,15 +151,17 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         elif 'generate-emails' in request.form:
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
             resultUser = ''
-            resultCirc = ''
-            for id in selectedSet:
-                currentEntry = LateFine.query.get_or_404(id)
-                resultUser += lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, 
-                    currentEntry.schedule, currentEntry.return_time) + '\n\n'
-                resultCirc += f'''{currentEntry.name}\n{currentEntry.penn_id}\n{currentEntry.email}\n${currentEntry.amount}\n{currentEntry.booking_number}\n{currentEntry.details}\n\n-----------------------------------------\n'''
-                
-            return render_template('late_fines.html', methods=['POST'], visibilityUser='visible', resultTextCirc=resultCirc, resultTextUser=resultUser,
-                visibilityCSV='hidden', visbilityCirc='hidden', tasks=tasks)
+            if selectedSet:
+                resultCirc = '-----------------------------------------\n'
+                for id in selectedSet:
+                    currentEntry = LateFine.query.get_or_404(id)
+                    resultUser += lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, 
+                        currentEntry.schedule, currentEntry.return_time) + '\n\n'
+                    resultCirc += f'''{currentEntry.name}\n{currentEntry.penn_id}\n{currentEntry.email}\n${currentEntry.amount}\n{currentEntry.booking_number}\n{currentEntry.details}\n\n-----------------------------------------\n'''
+            else:
+                resultCirc = ''
+            return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
+                visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         elif 'deselect-all' in request.form:
             for id in selectedSet:
                 currentEntry = LateFine.query.get_or_404(id)
@@ -162,11 +176,23 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             db.session.commit()
             return redirect('/late_fines')
         elif 'filter-by-date-added' in request.form:
-            tasks = LateFine.query.filter_by(date_sent='2023-01-26').all()#added-date'])
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            global filteredDate
+            global filteredDateHTML
+            dateAdded = request.form['added-date']
+            try:
+                filteredDate = datetime.strptime(dateAdded, '%Y-%m-%d')
+                filteredDateHTML = datetime.strftime(filteredDate, '%Y-%m-%d')
+                print(filteredDateHTML[2:])
+
+
+            except ValueError:
+                print(ValueError)
+            tasks = LateFine.query.filter_by(date_sent=filteredDate).all()
+            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', filteredDate=filteredDateHTML, visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         elif 'clear-filters' in request.form:
             #global searchIDList
             searchIDList = []
+            filteredDate = None
             tasks = LateFine.query.all()
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         elif 'search' in request.form:
@@ -174,15 +200,40 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             tasks = searchDatabase(searchTerm)
 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
-                
-
     else:
-        if len(searchIDList) > 0:
-            print('search ID list -------------')
-            tasks = LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
-
-        elif sortingParameter:
+        if sortingParameter and filteredDate:
             print(f'--SORTING PARAMETER = {sortingParameter}--')
+            if sortingParameter == 'name' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.name.desc()).filter_by(date_sent=filteredDate).all() 
+            elif sortingParameter == 'name' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.name.asc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'email' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.email.desc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'email' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.email.asc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'amount' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.amount.desc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'amount' and sortingOrder =='asc':
+                tasks = LateFine.query.order_by(LateFine.amount.asc()).filter_by(date_sent=filteredDate).all()
+
+            elif sortingParameter == 'booking' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.booking_number.desc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'booking' and sortingOrder =='asc':
+                tasks = LateFine.query.order_by(LateFine.booking_number.asc()).filter_by(date_sent=filteredDate).all()
+
+            elif sortingParameter == 'return_time' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.return_time.desc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'return_time' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.return_time.asc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'operator' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.operator.desc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'operator' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.operator.asc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'date_sent' and sortingOrder == 'desc':
+                tasks = LateFine.query.order_by(LateFine.date_sent.desc()).filter_by(date_sent=filteredDate).all()
+            elif sortingParameter == 'date_sent' and sortingOrder == 'asc':
+                tasks = LateFine.query.order_by(LateFine.date_sent.asc()).filter_by(date_sent=filteredDate).all()
+        elif sortingParameter and not filteredDate:
             if sortingParameter == 'name' and sortingOrder == 'desc':
                 tasks = LateFine.query.order_by(LateFine.name.desc()).all() 
             elif sortingParameter == 'name' and sortingOrder == 'asc':
@@ -211,54 +262,21 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                 tasks = LateFine.query.order_by(LateFine.date_sent.desc()).all()
             elif sortingParameter == 'date_sent' and sortingOrder == 'asc':
                 tasks = LateFine.query.order_by(LateFine.date_sent.asc()).all()
+        elif len(searchIDList) > 0:
+            tasks = LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
+        elif filteredDate:
+            tasks = LateFine.query.filter_by(date_sent=filteredDate).all()
         else:
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
 
         try:
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             #if table todo does not exist, create table
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
-
-# @app.route('/search')
-# def search():
-entryToUpdateID = -1
-
-# @app.route('/update/<int:id>', methods=['GET', 'POST'])
-# def update(id):
-#     print('udpate route')
-#     tasks = LateFine.query.order_by(LateFine.date_sent).all()
-#     global entryToUpdateID
-#     entryToUpdateID = id
-#     return render_template('late_fines.html', visibilityUpdate='visible', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
-
-#     task = LateFine.query.get_or_404(id)
-#     if request.method == 'POST':
-#         task.name = request.form['name']
-#         task.penn_id = request.form['penn_id']
-#         task.email = request.form['email']
-#         task.amount = request.form['amount']
-#         task.booking_number = request.form['booking_number']
-#         task.details = request.form['details']
-#         task.schedule = request.form['schedule']
-#         task.return_time = request.form['return_time']
-#         task.operator = request.form['operator']
-#         task.date_sent = request.form['date_sent']
-#         task.forgiven = request.form['forgiven']
-#         try:
-#             db.session.commit()
-#             return redirect('/late_fines')
-#         except:
-#             return 'There was an issue updating your task'
-#     else:
-#         #get all field values rendered in editable inputs 
-#         return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
-
-#         return render_template('update.html', task=task)
-
-       
+  
 @app.route('/sort-desc-name')
 def sortDescName():
     print('---SORT DESCENDING BY NAME')
@@ -321,7 +339,7 @@ def sortDescBooking():
 def sortAscBooking():
     global sortingParameter
     global sortingOrder
-    sortingParameter = 'booking_number'
+    sortingParameter = 'booking'
     sortingOrder = 'asc'
     return redirect('/late_fines')
 
@@ -408,9 +426,6 @@ def generateUserEmail(id):
     pyperclip.copy(resultUser)
     return redirect('/late_fines')
 
-
-
-
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -441,7 +456,6 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
-
 
 if __name__ == "__main__": # watches for changes and updates
     app.run(debug=True)
