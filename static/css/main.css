@@ -295,11 +295,7 @@ h1 {
   width: 100%;
 }
 
-<<<<<<< HEAD
-.add-entry-dialogue, .update-entry-dialogue {
-=======
 .add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue {
->>>>>>> datetime
   background-color: var(--color-grey-1);
   visibility: hidden;
   position: fixed;
@@ -316,20 +312,6 @@ h1 {
   padding: 1%;
   box-shadow: var(--default-shadow);
 }
-<<<<<<< HEAD
-.add-entry-dialogue .alert, .update-entry-dialogue .alert {
-  color: var(--color-pink);
-  text-align: center;
-}
-.add-entry-dialogue .input-container, .update-entry-dialogue .input-container {
-  text-align: center;
-}
-.add-entry-dialogue .input-container label, .update-entry-dialogue .input-container label {
-  display: block;
-  text-align: left;
-}
-.add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea, .update-entry-dialogue .input-container .form-input, .update-entry-dialogue .input-container textarea {
-=======
 .add-entry-dialogue .generated-textarea, .update-entry-dialogue .generated-textarea, .generate-emails-dialogue .generated-textarea {
   margin: 15px 0;
   resize: none;
@@ -348,23 +330,12 @@ h1 {
   text-align: left;
 }
 .add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea, .update-entry-dialogue .input-container .form-input, .update-entry-dialogue .input-container textarea, .generate-emails-dialogue .input-container .form-input, .generate-emails-dialogue .input-container textarea {
->>>>>>> datetime
   border-radius: 10px;
   margin: 10px auto;
   border: none;
   padding: 5px;
   width: 100%;
 }
-<<<<<<< HEAD
-.add-entry-dialogue h2, .update-entry-dialogue h2 {
-  text-align: center;
-}
-.add-entry-dialogue .btn-submit, .update-entry-dialogue .btn-submit {
-  display: block;
-  margin: 10px auto;
-}
-.add-entry-dialogue .x-mark, .update-entry-dialogue .x-mark {
-=======
 .add-entry-dialogue h2, .update-entry-dialogue h2, .generate-emails-dialogue h2 {
   text-align: center;
 }
@@ -373,17 +344,12 @@ h1 {
   margin: 10px auto;
 }
 .add-entry-dialogue .x-mark, .update-entry-dialogue .x-mark, .generate-emails-dialogue .x-mark {
->>>>>>> datetime
   color: var(--color-pink);
   position: absolute;
   top: 10px;
   right: 10px;
 }
-<<<<<<< HEAD
-.add-entry-dialogue .x-mark:hover, .update-entry-dialogue .x-mark:hover {
-=======
 .add-entry-dialogue .x-mark:hover, .update-entry-dialogue .x-mark:hover, .generate-emails-dialogue .x-mark:hover {
->>>>>>> datetime
   color: var(--color-pink-dark);
 }
 
