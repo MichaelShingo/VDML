@@ -156,6 +156,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             return redirect('/late_fines')
 
         elif 'generate-emails' in request.form:
+
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
             resultUser = ''
             if selectedSet:
@@ -167,7 +168,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                     resultCirc += f'''{currentEntry.name}\n{currentEntry.penn_id}\n{currentEntry.email}\n${currentEntry.amount}\n{currentEntry.booking_number}\n{currentEntry.details}\n\n-----------------------------------------\n'''
             else:
                 resultCirc = ''
-            
+            #change this to redirect?? 
             return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         elif 'deselect-all' in request.form:
@@ -190,15 +191,11 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             try:
                 filteredDate = datetime.strptime(dateAdded, '%Y-%m-%d')
                 filteredDateHTML = datetime.strftime(filteredDate, '%Y-%m-%d')
-                print(filteredDateHTML[2:])
-
-
             except ValueError:
                 print(ValueError)
             tasks = LateFine.query.filter_by(date_sent=filteredDate).all()
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', filteredDate=filteredDateHTML, visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         elif 'clear-filters' in request.form:
-            #global searchIDList
             searchIDList = []
             filteredDate = None
             tasks = LateFine.query.all()
@@ -206,7 +203,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         elif 'search' in request.form:
             searchTerm = request.form['search'].lower()
             tasks = searchDatabase(searchTerm)
-
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
     else:
         if sortingParameter and filteredDate:
@@ -276,7 +272,9 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         elif filteredDate:
             tasks = LateFine.query.filter_by(date_sent=filteredDate).all()
         else:
-            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
+            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all
+
+        #set generate emails variables as global and check for them here, return different render template if so....
 
         try:
             return render_template('late_fines.html', filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
