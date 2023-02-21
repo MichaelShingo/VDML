@@ -14,11 +14,10 @@ print(sys.path)
 #Explore selenium 
 
 
-#TODO Does filter by date added work when you first add an entry???? format is incorrect
-#Todo generate emails clears filter by date....
 #TODO allow sorting after searching and filtering is set
+#TODO generate emails needs try-except incase there are blank entries 
+#TODO generate emails when nothing is selected, it doesn't do anything....
 #authentication
-#populate filter date value in the date field 
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO add export csv option
 
@@ -74,6 +73,9 @@ sortingOrder = '' #asc or desc
 searchIDList = []
 filteredDate = None
 filteredDateHTML = ''
+resultUser = ''
+resultCirc = ''
+generateEmailCount = 0
 
 
 
@@ -87,16 +89,24 @@ def searchDatabase(searchTerm):
             searchIDList.append(entry.id)
     return LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
-@app.route("/late_equipment")
+@app.route("/late_equipment", methods=['POST', 'GET'])
 def late_equipment(visibility='hidden'):
-    return render_template('late_equipment.html', visibility='hidden')
+    if request.method == 'POST':
+        text = request.form['text']
+        processed_text = ''
+        try:
+            processed_text = lateEquipment.generateEmail(text)
+        except:
+            processed_text = 'Failed to extract data.'
+        
+        return render_template('late_equipment.html', originalText=text, resultText=processed_text, methods=['POST'], visibility='visible')
+    else:
+        return render_template('late_equipment.html', visibility='hidden')
 
-@app.route("/late_equipment", methods=['POST'])
-def late_equipment_post(resultText=None, visibility='hidden'):
-    text = request.form['text']
-    processed_text = lateEquipment.generateEmail(text)
-    return render_template('late_equipment.html', originalText=text, resultText=processed_text, methods=['POST'], visibility='visible')
 
+@app.route('/booking_analysis', methods=['POST', 'GET'])
+def booking_analysis():
+    return render_template('booking_analysis.html')
 
 @app.route("/late_fines", methods=['POST', 'GET'])
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
@@ -104,6 +114,9 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
     global searchIDList
     global filteredDate 
     global filteredDateHTML
+    global resultUser
+    global resultCirc
+    global generateEmailCount
 
     for entry in currentDB:
         if entry.selected:
@@ -157,6 +170,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
         elif 'generate-emails' in request.form:
 
+            generateEmailCount = 0
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
             resultUser = ''
             if selectedSet:
@@ -169,6 +183,8 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             else:
                 resultCirc = ''
             #change this to redirect?? 
+            return redirect('/late_fines')
+
             return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         elif 'deselect-all' in request.form:
@@ -275,7 +291,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all
 
         #set generate emails variables as global and check for them here, return different render template if so....
-
+        if len(resultUser) > 0 and generateEmailCount == 0:
+            generateEmailCount += 1
+            return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
+                visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         try:
             return render_template('late_fines.html', filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
             
