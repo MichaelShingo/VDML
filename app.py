@@ -13,6 +13,9 @@ print(sys.path)
 
 #Explore selenium 
 
+
+#TODO Does filter by date added work when you first add an entry???? format is incorrect
+#Todo generate emails clears filter by date....
 #TODO allow sorting after searching and filtering is set
 #authentication
 #populate filter date value in the date field 
@@ -123,8 +126,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             email = request.form['user-email']
             amount = request.form['fine-amount']
             forgiven = request.form['forgiven']
+            dateSent = datetime.utcnow()
+            print(dateSent)
             new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
-                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, forgiven=forgiven)
+                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateSent, forgiven=forgiven)
 
             db.session.add(new_entry)
             db.session.commit()
@@ -160,6 +165,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                     resultCirc += f'''{currentEntry.name}\n{currentEntry.penn_id}\n{currentEntry.email}\n${currentEntry.amount}\n{currentEntry.booking_number}\n{currentEntry.details}\n\n-----------------------------------------\n'''
             else:
                 resultCirc = ''
+            
             return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         elif 'deselect-all' in request.form:
@@ -272,6 +278,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
         try:
             return render_template('late_fines.html', filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            
         except:
             #if table todo does not exist, create table
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
@@ -432,6 +439,7 @@ def allowed_file(filename):
 
 @app.route('/booking_analysis', methods=['GET', 'POST'])
 def upload_file():
+    return 
     if request.method == 'POST':
         #check if the post request has the file part
         if 'file' not in request.files:
