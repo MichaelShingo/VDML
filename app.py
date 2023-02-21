@@ -54,7 +54,7 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     return_time = db.Column(db.String(200), nullable=True)
     return_time = db.Column(db.DateTime, nullable=True)
     operator = db.Column(db.String(200), nullable=False)
-    date_sent = db.Column(db.DateTime, default=(datetime.utcnow()))
+    date_sent = db.Column(db.DateTime, default=(datetime.now()))
     forgiven = db.Column(db.String(200), nullable=False)
     selected = db.Column(db.Boolean, default=False)
 
@@ -126,10 +126,12 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             email = request.form['user-email']
             amount = request.form['fine-amount']
             forgiven = request.form['forgiven']
-            dateSent = datetime.utcnow()
+            dateSent = datetime.now()
             print(dateSent)
+            dateUpdate = dateSent.replace(hour=0, minute=0, second=0, microsecond=0)
+            print(dateUpdate)
             new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
-                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateSent, forgiven=forgiven)
+                details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateUpdate, forgiven=forgiven)
 
             db.session.add(new_entry)
             db.session.commit()
