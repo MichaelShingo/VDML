@@ -9,11 +9,10 @@ from flask_fontawesome import FontAwesome
 
 # virtualenv env 
 # cmd "source env/bin/activate"
-
+# git push heroku main 
 #Explore selenium 
 
 #authentication
-#TODO pop up dialogues should respond to vertical height 
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO add export csv option
 
