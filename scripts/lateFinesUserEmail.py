@@ -12,8 +12,14 @@ def generateEmail(name, amount, details, date_range, return_time):
         finePlusDays += '.00 (1 day'
     else:
         finePlusDays += '.00 (' + str(daysLate) + ' days'
-    firstName = name[0:name.index(' ')]
-    scheduledReturn = date_range[date_range.index('-') + 2:]
+    if name:
+        firstName = name[0:name.index(' ')]
+    else:
+        firstName = ''
+    if date_range:
+        scheduledReturn = date_range[date_range.index('-') + 2:]
+    else:
+        scheduledReturn = ''
 
     result = """Hi %s,
 

@@ -141,7 +141,12 @@
                     <td><a target="_blank" href="https://pennmedialab.getconnect2.com/Bookings/View.aspx?id={{ task.booking_number[3:] }}">{{ task.booking_number }}</a></td>
                     <td>{{ task.details }}</td>
                     <td>{{ task.schedule }}</td>
-                    <td>{{ task.return_time.strftime('%m/%d/%Y %I:%M %p') }}</td>
+                    <td>
+                        {% if task.return_time.strftime('%Y') == '1900' %}
+                        {% else %}
+                            {{ task.return_time.strftime('%m/%d/%Y %I:%M %p') }}
+                        {% endif %}
+                    </td>
                     <td>{{ task.operator }}</td>
                     <td class="date-sent">{{ task.date_sent.strftime('%m/%d/%Y') }}</td>
                     <td>{{ task.forgiven }}</td>

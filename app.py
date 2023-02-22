@@ -7,22 +7,15 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_fontawesome import FontAwesome
 
-print(sys.path)
 # virtualenv env 
 # cmd "source env/bin/activate"
 
 #Explore selenium 
 
-
-#TODO allow sorting after searching and filtering is set
-#TODO generate emails needs try-except incase there are blank entries 
-#TODO generate emails when nothing is selected, it doesn't do anything....
 #authentication
+#TODO pop up dialogues should respond to vertical height 
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO add export csv option
-
-#TODO booking sorting is weird, maybe the name of the sorting parameter is "booking" and it should be "booking-number"
-
 
 
 #LATER...................
@@ -32,6 +25,7 @@ print(sys.path)
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
 SQLALCHEMY_TRACK_MODIFICATIONS = False #you need this? 
+SEPARATOR = '-----------------------------------------\n'
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
@@ -50,8 +44,8 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
     booking_number = db.Column(db.String(200), nullable=False)
     details = db.Column(db.String(200), nullable=False)
     schedule = db.Column(db.String(200), nullable=False)
-    return_time = db.Column(db.String(200), nullable=True)
-    return_time = db.Column(db.DateTime, nullable=True)
+    #return_time = db.Column(db.String(200), nullable=True)
+    return_time = db.Column(db.DateTime)
     operator = db.Column(db.String(200), nullable=False)
     date_sent = db.Column(db.DateTime, default=(datetime.now()))
     forgiven = db.Column(db.String(200), nullable=False)
@@ -75,7 +69,7 @@ filteredDate = None
 filteredDateHTML = ''
 resultUser = ''
 resultCirc = ''
-generateEmailCount = 0
+generateEmailCount = 1
 
 
 
@@ -161,7 +155,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             lateFine.details = request.form['details']
             lateFine.schedule = request.form['schedule']
             format = '2018-06-07T00:00'
-            lateFine.return_time = datetime.strptime(request.form['return_time'], '%Y-%m-%dT%H:%M')
+            if request.form['return_time']:
+                lateFine.return_time = datetime.strptime(request.form['return_time'], '%Y-%m-%dT%H:%M')
+            else:
+                lateFine.return_time = datetime.strptime('1900-01-01T00:00', '%Y-%m-%dT%H:%M')
             lateFine.operator = request.form['operator']
             lateFine.date_sent = datetime.strptime(request.form['date_sent'], '%Y-%m-%d')
             lateFine.forgiven = request.form['forgiven']
@@ -169,24 +166,21 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             return redirect('/late_fines')
 
         elif 'generate-emails' in request.form:
-
             generateEmailCount = 0
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
             resultUser = ''
             if selectedSet:
-                resultCirc = '-----------------------------------------\n'
+                resultCirc = SEPARATOR
                 for id in selectedSet:
                     currentEntry = LateFine.query.get_or_404(id)
-                    resultUser += lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, 
+                    resultUser += SEPARATOR + lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, 
                         currentEntry.schedule, currentEntry.return_time) + '\n\n'
                     resultCirc += f'''{currentEntry.name}\n{currentEntry.penn_id}\n{currentEntry.email}\n${currentEntry.amount}\n{currentEntry.booking_number}\n{currentEntry.details}\n\n-----------------------------------------\n'''
+                resultUser += SEPARATOR
             else:
                 resultCirc = ''
-            #change this to redirect?? 
             return redirect('/late_fines')
 
-            return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
-                visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         elif 'deselect-all' in request.form:
             for id in selectedSet:
                 currentEntry = LateFine.query.get_or_404(id)
@@ -291,7 +285,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all
 
         #set generate emails variables as global and check for them here, return different render template if so....
-        if len(resultUser) > 0 and generateEmailCount == 0:
+        if generateEmailCount == 0:
             generateEmailCount += 1
             return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
