@@ -296,12 +296,14 @@ h1 {
 }
 
 .add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue {
+  overflow-y: auto;
   background-color: var(--color-grey-1);
   visibility: hidden;
   position: fixed;
   width: 60vw;
   min-width: 550px;
   max-width: 750px;
+  max-height: 95vh;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
