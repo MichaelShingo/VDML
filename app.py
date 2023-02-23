@@ -70,8 +70,6 @@ resultUser = ''
 resultCirc = ''
 generateEmailCount = 1
 
-
-
 def searchDatabase(searchTerm):
     global searchIDList
     searchIDList = []
@@ -138,7 +136,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             print(dateUpdate)
             new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
                 details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateUpdate, forgiven=forgiven)
-
             db.session.add(new_entry)
             db.session.commit()
             return redirect('/late_fines')
@@ -215,7 +212,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
     else:
         if sortingParameter and filteredDate:
-            print(f'--SORTING PARAMETER = {sortingParameter}--')
             if sortingParameter == 'name' and sortingOrder == 'desc':
                 tasks = LateFine.query.order_by(LateFine.name.desc()).filter_by(date_sent=filteredDate).all() 
             elif sortingParameter == 'name' and sortingOrder == 'asc':
@@ -228,12 +224,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                 tasks = LateFine.query.order_by(LateFine.amount.desc()).filter_by(date_sent=filteredDate).all()
             elif sortingParameter == 'amount' and sortingOrder =='asc':
                 tasks = LateFine.query.order_by(LateFine.amount.asc()).filter_by(date_sent=filteredDate).all()
-
             elif sortingParameter == 'booking' and sortingOrder == 'desc':
                 tasks = LateFine.query.order_by(LateFine.booking_number.desc()).filter_by(date_sent=filteredDate).all()
             elif sortingParameter == 'booking' and sortingOrder =='asc':
                 tasks = LateFine.query.order_by(LateFine.booking_number.asc()).filter_by(date_sent=filteredDate).all()
-
             elif sortingParameter == 'return_time' and sortingOrder == 'desc':
                 tasks = LateFine.query.order_by(LateFine.return_time.desc()).filter_by(date_sent=filteredDate).all()
             elif sortingParameter == 'return_time' and sortingOrder == 'asc':
