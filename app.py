@@ -478,4 +478,4 @@ def upload_file():
     '''
 
 if __name__ == "__main__": # watches for changes and updates
-    app.run(debug=True)
+    app.run(debug=False)
