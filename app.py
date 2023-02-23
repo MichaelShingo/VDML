@@ -130,9 +130,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             amount = request.form['fine-amount']
             forgiven = request.form['forgiven']
             dateSent = datetime.now()
-            print(dateSent)
             dateUpdate = dateSent.replace(hour=0, minute=0, second=0, microsecond=0)
-            print(dateUpdate)
             new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
                 details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateUpdate, forgiven=forgiven)
             db.session.add(new_entry)
@@ -291,7 +289,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
   
 @app.route('/sort-desc-name')
 def sortDescName():
-    print('---SORT DESCENDING BY NAME')
     global sortingParameter
     global sortingOrder
     sortingParameter = 'name'
@@ -424,7 +421,6 @@ def select(id):
         selectedSet.remove(id)
         entry.selected = False
     db.session.commit()
-    print(f'CURRENT LIST = {selectedSet}')
     return redirect('/late_fines')
 
 @app.route('/generateUserEmail/<int:id>')

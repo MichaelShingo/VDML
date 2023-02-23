@@ -1,5 +1,5 @@
 #! Takes text input and generates a csv
-import pyperclip, re, datetime
+import re, datetime
 
 def generateCSV(text):
     todayDate = datetime.datetime.today().strftime('%m/%d/%Y')
