@@ -1,5 +1,4 @@
 import re
-import pyperclip
 
 def generateEmail(text):
     bookingRegex = re.compile(r'Con\d{6}')
@@ -59,7 +58,6 @@ Items:
 
 
 Let us know if you have any concerns or questions.""" % (owner, bookingNum, dateRange, equipmentString)
-    pyperclip.copy(resultString)
     return resultString
 
 

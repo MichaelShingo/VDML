@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template
 from flask import request
-import sys, os, webbrowser, pyperclip
+import sys, os, webbrowser
 from werkzeug.utils import secure_filename
 from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
 from flask_sqlalchemy import SQLAlchemy
@@ -434,8 +434,6 @@ def generateUserEmail(id):
     userEmail = currentEntry.email
     resultUser = lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, currentEntry.schedule, currentEntry.return_time)
     webbrowser.open(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
-    #flash('Email for the user was copied to your clipboard.')
-    pyperclip.copy(resultUser)
     return redirect('/late_fines')
 
 def allowed_file(filename):
@@ -471,4 +469,4 @@ def upload_file():
     '''
 
 if __name__ == "__main__": # watches for changes and updates
-    app.run(debug=False)
+    app.run(debug=True)

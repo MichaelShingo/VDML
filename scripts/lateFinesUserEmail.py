@@ -1,7 +1,6 @@
 #! lateFinesEmail.py
 #copy data from the excel spreadsheet 
 
-import pyperclip
 
 def generateEmail(name, amount, details, date_range, return_time):
     finePlusDays = str(amount)
