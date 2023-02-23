@@ -1,4 +1,3 @@
-import pyperclip
 
 def generateEmail(name, penn_id, email, amount, booking, details, schedule, return_time, operator, date_sent):
     excelRowsList = excelText.split('\n')
@@ -14,9 +13,7 @@ def generateEmail(name, penn_id, email, amount, booking, details, schedule, retu
         finalText += '-----------------------------------------\n'
         finalText +=  + '\n' + row[1] + '\n' + row[2] + '\n' + row[3] + '\n' + row[4] + '\n' + row[5] + '\n\n' + '-----------------------------------------'
         
-    print(finalText)
 
-    pyperclip.copy(finalText)
     return finalText
 
 
