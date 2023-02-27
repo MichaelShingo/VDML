@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from Flask_FontAwesome import FontAwesome
+from Flask-FontAwesome import FontAwesome
 
 # virtualenv env 
 # cmd "source env/bin/activate"
