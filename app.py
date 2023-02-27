@@ -5,7 +5,6 @@ from werkzeug.utils import secure_filename
 from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from Flask-FontAwesome import FontAwesome
 
 # virtualenv env 
 # cmd "source env/bin/activate"
@@ -28,7 +27,6 @@ SEPARATOR = '-----------------------------------------\n'
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
-fa = FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relative path, 4 is absolute path
