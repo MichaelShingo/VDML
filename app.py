@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-#from flask_fontawesome import FontAwesome
+from flask_fontawesome import FontAwesome
 
 # virtualenv env 
 # cmd "source env/bin/activate"
@@ -464,5 +464,5 @@ def upload_file():
     </form>
     '''
 
-# if __name__ == "__main__": # watches for changes and updates
-#     app.run(debug=True)
+if __name__ == "__main__": # watches for changes and updates
+    app.run(debug=True)
