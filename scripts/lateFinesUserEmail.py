@@ -1,9 +1,12 @@
 #! lateFinesEmail.py
 #copy data from the excel spreadsheet 
-
+from datetime import datetime
 
 def generateEmail(name, amount, details, date_range, return_time):
     finePlusDays = str(amount)
+    dateFormat = '2/9/2023 4:30 PM'
+    actualReturn = datetime.strftime(return_time, '%m/%d/%Y %I:%M %p')
+    actualReturn = actualReturn.replace('/0', '/').lstrip('0').replace(' 0', ' ')
     if amount == '':
         amount = 0
     daysLate = amount // 25
@@ -32,7 +35,7 @@ If you have any questions, please feel free to reply to this email or contact th
 
 Scheduled return: %s
 
-Actual return: %s""" % (firstName, finePlusDays, details, scheduledReturn, return_time)
+Actual return: %s""" % (firstName, finePlusDays, details, scheduledReturn, actualReturn)
     return result.replace('&', 'and')
 
 
