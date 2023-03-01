@@ -28,7 +28,7 @@ SEPARATOR = '-----------------------------------------\n'
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
-fa = FontAwesome(app)
+FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relative path, 4 is absolute path
