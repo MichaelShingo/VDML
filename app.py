@@ -1,11 +1,14 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template
 from flask import request
-import sys, os, webbrowser
+import os, webbrowser, json
 from werkzeug.utils import secure_filename
-from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail
+from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail, bookingAnalysis
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_fontawesome import FontAwesome
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField
+from wtforms.validators import InputRequired
 
 # virtualenv env 
 # cmd "source env/bin/activate"
@@ -32,7 +35,13 @@ FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relative path, 4 is absolute path
+app.config['UPLOAD_FOLDER'] = 'static/files'
+app.config['SECRET_KEY'] = 'jj8^^83jd)))ueid9ieSHI!!'
 db.init_app(app)
+
+class UploadFileForm(FlaskForm):
+    file = FileField('File', validators=[InputRequired()])
+    submit = SubmitField('Upload File')
 
 class LateFine(db.Model): #Todo is the table name, it's automatically lowercase when it's created
     id = db.Column(db.Integer, primary_key=True)
@@ -79,6 +88,23 @@ def searchDatabase(searchTerm):
             searchIDList.append(entry.id)
     return LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
+
+@app.route('/booking_analysis', methods=['POST', 'GET'])
+def booking_analysis():
+    form = UploadFileForm()
+    data1 = bookingAnalysis.analyzeCSV()
+
+
+    if form.validate_on_submit():
+    
+        file = form.file.data
+        file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
+        print('file has been uploaded')
+
+
+    return render_template('booking_analysis.html', form=form, chart_data = json.dumps(data))
+
+
 @app.route("/late_equipment", methods=['POST', 'GET'])
 def late_equipment(visibility='hidden'):
     if request.method == 'POST':
@@ -94,9 +120,6 @@ def late_equipment(visibility='hidden'):
         return render_template('late_equipment.html', visibility='hidden')
 
 
-@app.route('/booking_analysis', methods=['POST', 'GET'])
-def booking_analysis():
-    return render_template('booking_analysis.html')
 
 @app.route("/late_fines", methods=['POST', 'GET'])
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
@@ -437,33 +460,9 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/booking_analysis', methods=['GET', 'POST'])
-def upload_file():
-    return 
-    if request.method == 'POST':
-        #check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return '''
-     <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+
+
+
 
 if __name__ == "__main__": # watches for changes and updates
     app.run(debug=True)

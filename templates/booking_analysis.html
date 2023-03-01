@@ -3,10 +3,43 @@
 {% block head %}
 {% endblock %}
 {% block body %}
-    <h1>Coming Soon!</h1>
+    <h1>Booking Analysis</h1>
     <h2>Upload a CSV file</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{form.hidden_tag()}}
+        {{form.file()}}
+        {{form.submit()}}
+    </form>
+    <div>
+    <canvas id="myChart"></canvas>
+      </div>
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      
+      <script>
+        let data = JSON.parse({{ chart_data | tojson }});
 
-
+        const ctx = document.getElementById('myChart');
+      
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+              label: '# of Votes',
+              data: data,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      </script>
 
 
 {% endblock %}
