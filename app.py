@@ -429,6 +429,7 @@ def generateUserEmail(id):
     subjectLine = 'Vitale Digital Media Lab - Late Fine'
     userEmail = currentEntry.email
     resultUser = lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, currentEntry.schedule, currentEntry.return_time)
+    return redirect(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
     webbrowser.open(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
     return redirect('/late_fines')
 
