@@ -92,17 +92,25 @@ def searchDatabase(searchTerm):
 @app.route('/booking_analysis', methods=['POST', 'GET'])
 def booking_analysis():
     form = UploadFileForm()
-    data1 = bookingAnalysis.analyzeCSV()
-
+    filename = ''
 
     if form.validate_on_submit():
-    
         file = form.file.data
         file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
         print('file has been uploaded')
+        filename = file.filename
+        print(filename)
+        filename = filename.replace(' ', '_')
+
+        equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, categoryList, categoryCount, noShowUsername, noShowCount, timeDiff, timeDiffCount, nameToBookings, nameToBookingsCount, nameToLateReturn, nameToLateReturnCount = bookingAnalysis.analyzeCSV(filename)
+
+        return render_template('booking_analysis_chart.html', form=form, equipmentList = json.dumps(equipmentList), countList = json.dumps(countList),
+            dayList = json.dumps(dayList), popularDayCount = json.dumps(popularDayCount), hourList = json.dumps(hourList),
+            hourCountList = json.dumps(hourCountList), dayHour = json.dumps(dayHour), dayHourCount = json.dumps(dayHourCount))
+
+    return render_template('booking_analysis.html', form=form)
 
 
-    return render_template('booking_analysis.html', form=form, chart_data = json.dumps(data))
 
 
 @app.route("/late_equipment", methods=['POST', 'GET'])

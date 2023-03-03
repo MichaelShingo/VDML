@@ -38,7 +38,7 @@ def setTotal(wsName, heading, bEndNumber, columnWidth=22):
 
 #Data retrieval and calculations
 
-def analyzeCSV():
+def analyzeCSV(filename):
     equipmentToCount = {}
     equipmentBarcodeCount = []
     dayToCount = {i:0 for i in range(7)}
@@ -66,10 +66,12 @@ def analyzeCSV():
     nameToLateReturn = [] #maps username to how late equipment was returned, per booking 
 
     currentDir = pathlib.Path(__file__).parent.resolve()
-    os.chdir(currentDir)
+    os.chdir(os.path.join(currentDir, './../static/files/'))
     rowCount = 0
 
-    with open('./../static/files/bookingsFall2022.csv', 'r', encoding='utf-16') as csv_file:
+    print(f'current directory = {os.getcwd()}/{filename}')
+
+    with open(filename, 'r', encoding='utf-16') as csv_file:
         print('opened the csv file')
         csv_reader = csv.reader(csv_file, delimiter='\t')
         next(csv_reader)
@@ -223,6 +225,8 @@ def analyzeCSV():
 
     #Most Popular Hours
     for i in range(len(hourList)):
+        hourList[i] = str(hourList[i]) + ':00'
+    for i in range(len(hourList)):
         wsPopularHours['A' + str(i + 2)] = str(hourList[i]) + ':00'
         wsPopularHours['B' + str(i + 2)] = hourCountList[i]
     wsPopularHours.column_dimensions['A'].width = 8
@@ -234,6 +238,8 @@ def analyzeCSV():
 
     #Bookings by Hour and Day
     i = 0
+    # for i in range(len(dayHourToCount)):
+    #     dayHourToCount[i] = dayHourToCount[i] + ':00'
     for key in dayHourToCount:
         wsHourAndDay['A' + str(i + 2)] = dayListMon[key[0]] + ' ' + str(key[1]) + ':00'
         wsHourAndDay['B' + str(i + 2)] = dayHourToCount[key]
@@ -302,8 +308,10 @@ def analyzeCSV():
         sheet.sheet_view.zoomScale = 300
 
     #Save the Worbook
-    wb.save('bookingCount.xlsx')
-
+    wb.save('bookingAnalysis.xlsx')
+    return (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, list(dayHourToCount.keys()), 
+        list(dayHourToCount.values()), categoryList, categoryCount, noShowUsername, noShowCount, timeDiffToCount[0], timeDiffToCount[1],
+        list(nameToBookings.keys()), list(nameToBookings.values()), nameToLateReturn[0], nameToLateReturn[1])
 
 #3454 is the total number of items booked (Number of Bookings by Equipment Total, Bookings by Category)
 #1985 is the total number of unique bookings (Bookings by Hour and , most popular hours, Most Popular Days, ) 

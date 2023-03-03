@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+{% block body %}
+    <h1>Booking Analysis</h1>
+    <h2>Upload a CSV file</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{form.hidden_tag()}}
+        {{form.file()}}
+        {{form.submit()}}
+    </form>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    <div>
+        <canvas id="popularDaysChart"></canvas>
+    </div>
+    <div>
+        <canvas id="popularHoursChart"></canvas>
+    </div>
+    <div>
+        <canvas id="dayHourChart"></canvas>
+    </div>
+    <div>
+        <canvas id="bookingByCategoryChart"></canvas>
+    </div>
+    <div>
+        <canvas id="timeDifferenceChart"></canvas>
+    </div>
+    <div>
+        <canvas id="popularUsersChart"></canvas>
+    </div>
+    <div>
+        <canvas id="lateReturnChart"></canvas>
+    </div>
+      
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      
+      <script>
+        const ctx = document.getElementById('myChart');
+        let equipmentList = JSON.parse({{ equipmentList | tojson }});
+        let countList = JSON.parse({{ countList | tojson }});
+
+        const popularDaysChart = document.getElementById('popularDaysChart');
+        let dayList = JSON.parse({{ dayList | tojson }});
+        let popularDayCount = JSON.parse({{ popularDayCount | tojson }});
+
+        const popularHoursChart = document.getElementById('popularHoursChart');
+        let hourList = JSON.parse({{ hourList | tojson }});
+
+        const dayHourChart = document.getElementById('dayHourChart');
+        let dayHour = JSON.parse({ dayHour | tojson }});
+        let dayHourCount = JSON.parse({{ dayHourCount | tojson }})
+        
+        const bookingByCategoryChart = document.getElementById('bookingByCategoryChart');
+
+        const timeDifferenceChart = document.getElementById('timeDifferenceChart');
+
+        const popularUsersChart = document.getElementById('popularUsersChart');
+
+        const lateReturnChart = document.getElementByID('lateReturnChart');
+
+
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: equipmentList,
+            datasets: [{
+              label: 'Number of Bookings by Equipment',
+              data: countList,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        new Chart(popularDaysChart, {
+            type: 'bar',
+            data: {
+                labels: dayList,
+                datasets: [{
+                    label: 'Number of Bookings by Day of the Week',
+                    data: popularDayCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(popularHoursChart, {
+            type: 'bar',
+            scaleOverride: true,
+            scaleStepWidth: 1,
+            scaleSteps: 10,
+            data: {
+                labels: hourList,
+                datasets: [{
+                    label: 'Number of Bookings by Hour of the Day',
+                    data: hourCountList,
+                    borderWidth: 1
+                }]
+            },
+            beginAtZero: true,
+            options: {  
+                scales: {
+                    y: [{
+                        ticks: {
+                            precision: 0,
+                            beginAtZero: true,
+                            stepSize: 1,
+                            callback: function (value) { if (Number.isInteger(value)) { return value; } }
+
+
+                        }
+                    }]
+                }
+            }
+    
+        });
+
+
+        new Chart(dayHourChart, {
+            type: 'bar',
+            data: {
+                labels: dayHour,
+                datasets: [{
+                    label: 'Number of Bookings by Day and Hour',
+                    data: popularDayCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+      </script>
+
+
+{% endblock %}
