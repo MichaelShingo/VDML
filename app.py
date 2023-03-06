@@ -18,6 +18,7 @@ from wtforms.validators import InputRequired
 #authentication
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO add export csv option
+#TODO automatically open email program for late equipjment generator 
 
 
 #LATER...................
@@ -102,11 +103,17 @@ def booking_analysis():
         print(filename)
         filename = filename.replace(' ', '_')
 
-        equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, categoryList, categoryCount, noShowUsername, noShowCount, timeDiff, timeDiffCount, nameToBookings, nameToBookingsCount, nameToLateReturn, nameToLateReturnCount = bookingAnalysis.analyzeCSV(filename)
+        (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, 
+        categoryList, categoryCount, noShowUsername, noShowCount, timeDifferenceList, timeDifferenceCount, sortedPopularUsers, 
+        numberEquipment, numberUniqueBookings, lateReturnNames, lateReturnMinutes) = bookingAnalysis.analyzeCSV(filename)
 
         return render_template('booking_analysis_chart.html', form=form, equipmentList = json.dumps(equipmentList), countList = json.dumps(countList),
             dayList = json.dumps(dayList), popularDayCount = json.dumps(popularDayCount), hourList = json.dumps(hourList),
-            hourCountList = json.dumps(hourCountList), dayHour = json.dumps(dayHour), dayHourCount = json.dumps(dayHourCount))
+            hourCountList = json.dumps(hourCountList), dayHour = json.dumps(dayHour), dayHourCount = json.dumps(dayHourCount), categoryList = json.dumps(categoryList),
+            categoryCount = json.dumps(categoryCount), noShowUsername = json.dumps(noShowUsername), noShowCount = json.dumps(noShowCount),
+            timeDifferenceList = json.dumps(timeDifferenceList), timeDifferenceCount = json.dumps(timeDifferenceCount), sortedPopularUsers = json.dumps(sortedPopularUsers),
+            numberEquipment = json.dumps(numberEquipment), numberUniqueBookings = json.dumps(numberUniqueBookings), lateReturnNames = json.dumps(lateReturnNames),
+            lateReturnMinutes = json.dumps(lateReturnMinutes))
 
     return render_template('booking_analysis.html', form=form)
 
@@ -473,4 +480,4 @@ def allowed_file(filename):
 
 
 if __name__ == "__main__": # watches for changes and updates
-    app.run(debug=True)
+    app.run(port=8000, debug=True)

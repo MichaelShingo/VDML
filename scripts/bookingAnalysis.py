@@ -39,6 +39,7 @@ def setTotal(wsName, heading, bEndNumber, columnWidth=22):
 #Data retrieval and calculations
 
 def analyzeCSV(filename):
+
     equipmentToCount = {}
     equipmentBarcodeCount = []
     dayToCount = {i:0 for i in range(7)}
@@ -69,10 +70,8 @@ def analyzeCSV(filename):
     os.chdir(os.path.join(currentDir, './../static/files/'))
     rowCount = 0
 
-    print(f'current directory = {os.getcwd()}/{filename}')
 
     with open(filename, 'r', encoding='utf-16') as csv_file:
-        print('opened the csv file')
         csv_reader = csv.reader(csv_file, delimiter='\t')
         next(csv_reader)
         line_count = 0
@@ -140,6 +139,7 @@ def analyzeCSV(filename):
                 nameToBookings[row[1]][1] += 1
 
             #Late Returns
+
             if not row[15] == '' and not row[0] in uniqueCons:
                 checkInTime = datetime.strptime(row[15], DATEREGEX)
                 dueTime = datetime.strptime(row[5], DATEREGEX)
@@ -148,6 +148,7 @@ def analyzeCSV(filename):
                 amountLate = timeDelta.total_seconds()
                 if amountLate > 0:
                     nameToLateReturn.append([amountLate, row[1], lateString])
+    
 
             uniqueCons.add(row[0]) #this must be at the end of the loop
 
@@ -261,11 +262,20 @@ def analyzeCSV(filename):
     wsNoShows.column_dimensions['B'].width = 22
 
     #Time Difference
+    timeDifferenceList.clear()
+    timeDifferenceCount.clear()
     for i in range(len(timeDiffToCount)):
-        wsTimeDifference['A' + str(i + 2)] = timeDiffToCount[i][0]
-        wsTimeDifference['B' + str(i + 2)] = timeDiffToCount[i][1]
         if i > 2:
             wsTimeDifference['A' + str(i + 2)] = f'between {str(timeDiffToCount[i][0])} and {str(timeDiffToCount[i][0] + 1)} days'
+            timeDifferenceList.append(f'between {str(timeDiffToCount[i][0])} and {str(timeDiffToCount[i][0] + 1)} days')
+            timeDifferenceCount.append(timeDiffToCount[i][1])
+        else:
+            wsTimeDifference['A' + str(i + 2)] = timeDiffToCount[i][0]
+            timeDifferenceList.append(timeDiffToCount[i][0])
+            timeDifferenceCount.append(timeDiffToCount[i][1])
+        wsTimeDifference['B' + str(i + 2)] = timeDiffToCount[i][1]
+
+
     setTotal(wsTimeDifference, 'Total Reservations', 100)
     wsTimeDifference['A2'] = 'Immediate Checkouts'
     wsTimeDifference['A3'] = '< 1 hour'
@@ -292,6 +302,13 @@ def analyzeCSV(filename):
     wsPopularUsers.column_dimensions['A'].width = 20
     wsPopularUsers.column_dimensions['B'].width = 22
     wsPopularUsers.column_dimensions['C'].width = 25
+    numberUniqueBookings = []
+    numberEquipment = []
+    for i in range(len(equipmentAndBookings)):
+        numberUniqueBookings.append(equipmentAndBookings[i][0])
+        numberEquipment.append(equipmentAndBookings[i][1])
+    
+
 
     #Late Returns
     nameToLateReturn.sort(reverse=True)
@@ -301,17 +318,25 @@ def analyzeCSV(filename):
         wsLateReturns['A' + str(i + 2)] = nameToLateReturn[i][1]
         wsLateReturns['B' + str(i + 2)] = nameToLateReturn[i][2]
     wsLateReturns.column_dimensions['B'].width = 30
+    print(nameToLateReturn)
+    lateReturnMinutes = []
+    lateReturnNames = []
+    for i in range(len(nameToLateReturn)):
+        lateReturnMinutes.append(int(nameToLateReturn[i][0] // 60))
+        lateReturnNames.append(nameToLateReturn[i][1])
 
-
+    print(lateReturnNames)
+    print(lateReturnMinutes)
     #Sets zoom level for all worksheets
     for sheet in wb.worksheets:
         sheet.sheet_view.zoomScale = 300
 
     #Save the Worbook
     wb.save('bookingAnalysis.xlsx')
+   
     return (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, list(dayHourToCount.keys()), 
-        list(dayHourToCount.values()), categoryList, categoryCount, noShowUsername, noShowCount, timeDiffToCount[0], timeDiffToCount[1],
-        list(nameToBookings.keys()), list(nameToBookings.values()), nameToLateReturn[0], nameToLateReturn[1])
+        list(dayHourToCount.values()), categoryList, categoryCount, noShowUsername, noShowCount, timeDifferenceList, timeDifferenceCount,
+        sortedPopularUsers, numberEquipment, numberUniqueBookings, lateReturnNames, lateReturnMinutes)
 
 #3454 is the total number of items booked (Number of Bookings by Equipment Total, Bookings by Category)
 #1985 is the total number of unique bookings (Bookings by Hour and , most popular hours, Most Popular Days, ) 
