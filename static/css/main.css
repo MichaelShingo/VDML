@@ -17,6 +17,9 @@
 */
 html, body {
   height: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
 }
 
 /*
@@ -359,11 +362,20 @@ h1 {
   visibility: visible;
 }
 
+.hide {
+  visibility: hidden;
+  display: none;
+}
+
+.blue {
+  background-color: var(--color-blue) !important;
+}
+
 textarea {
   height: 200px;
 }
 
-.btn {
+.btn, .file-upload-form input, #file-upload-button {
   background-color: var(--color-green);
   min-width: -webkit-fit-content;
   min-width: -moz-fit-content;
@@ -374,9 +386,9 @@ textarea {
   border: none;
   padding: 8px 12px;
   border-radius: 10px;
-  margin: 0px 4px 0px 0px;
+  margin: 5px 4px 5px 0px;
 }
-.btn:hover {
+.btn:hover, .file-upload-form input:hover, #file-upload-button:hover {
   background-color: var(--color-green-dark);
 }
 
@@ -453,4 +465,10 @@ textarea {
     display: block;
     text-align: left;
   }
+}
+.chart-options {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 20px;
+  margin: 20px 0;
 }/*# sourceMappingURL=main.css.map */

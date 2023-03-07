@@ -325,16 +325,36 @@ def analyzeCSV(filename):
         lateReturnMinutes.append(int(nameToLateReturn[i][0] // 60))
         lateReturnNames.append(nameToLateReturn[i][1])
 
-    print(lateReturnNames)
-    print(lateReturnMinutes)
     #Sets zoom level for all worksheets
     for sheet in wb.worksheets:
         sheet.sheet_view.zoomScale = 300
 
     #Save the Worbook
     wb.save('bookingAnalysis.xlsx')
+
+    dayHourListChart = []
+    for dayHour in dayHourList:
+        if dayHour[0] == 0:
+            dayHourListChart.append(f'Monday {dayHour[1]}:00')
+        elif dayHour[0] == 1:
+            dayHourListChart.append(f'Tuesday {dayHour[1]}:00')
+        elif dayHour[0] == 2:
+            dayHourListChart.append(f'Wednesday {dayHour[1]}:00')
+        elif dayHour[0] == 3:
+            dayHourListChart.append(f'Thursday {dayHour[1]}:00')
+        elif dayHour[0] == 4:
+            dayHourListChart.append(f'Friday {dayHour[1]}:00')
+        elif dayHour[0] == 5:
+            dayHourListChart.append(f'Saturday {dayHour[1]}:00')
+        elif dayHour[0] == 6:
+            dayHourListChart.append(f'Sunday {dayHour[1]}:00')
+
+    print(timeDifferenceList)
+    timeDifferenceList[0] = 'Immediate Checkout'
+    timeDifferenceList[1] = '< 1 hour'
+    timeDifferenceList[2] = 'between 1 hour and 1 day'
    
-    return (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, list(dayHourToCount.keys()), 
+    return (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHourListChart, 
         list(dayHourToCount.values()), categoryList, categoryCount, noShowUsername, noShowCount, timeDifferenceList, timeDifferenceCount,
         sortedPopularUsers, numberEquipment, numberUniqueBookings, lateReturnNames, lateReturnMinutes)
 

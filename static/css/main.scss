@@ -15,6 +15,7 @@
 */
 html, body {
   height: 100%;
+  height: fit-content;
 }
 /*
   Typographic tweaks!
@@ -86,30 +87,22 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root {
   --font: 'Hind Madurai', sans-serif;
-
   --color-white: #fff;
   --color-white-trans: rgba(255, 255, 255, 0.65);
-
   --color-blue: #0989ba;
   --color-blue-dark: #024b68;
-
   --color-pink: #ec153e;
   --color-pink-dark: #b1102e;
-
   --color-yellow-old: #e3d726;
   --color-yellow-dark-old: #958c0b;
-
   --color-yellow: #c4b810;
   --color-yellow-dark: #958c0b;
-
-
   --color-green: #00a778;
   --color-green-dark: #007b58;
   --color-black: #000;
   --color-grey-1: #f3f3f3;
   --color-grey-2: #dddddd;
   --color-grey-2-trans: #dddddd75;
-
   --color-grey-3: #a2a2a2;
   --default-shadow: 0 0 20px rgba(0,0,0,.15);
   font-family: var(--font);
@@ -349,12 +342,19 @@ h1 {
 .show {
   visibility: visible;
 }
+.hide {
+  visibility: hidden;
+  display: none;
+}
+.blue {
+  background-color: var(--color-blue) !important;
+}
 
 
 textarea {
   height: 200px;
 }
-.btn {
+.btn, .file-upload-form input, #file-upload-button {
   background-color: var(--color-green);
   min-width: fit-content;
   max-width: 500px;
@@ -363,7 +363,7 @@ textarea {
   border: none;
   padding: 8px 12px;
   border-radius: 10px;
-  margin: 0px 4px 0px 0px;
+  margin: 5px 4px 5px 0px;
   &:hover {
     background-color: var(--color-green-dark);
   }
@@ -457,9 +457,9 @@ textarea {
   //   pointer-events: none;
   // }
 
-  // .chart-container {
-  
-  //   overflow-x: scroll;
-  // }
-
+.chart-options {
+  position: sticky !important;
+  top: 20px;
+  margin: 20px 0;
+}
   

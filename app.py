@@ -12,18 +12,13 @@ from wtforms.validators import InputRequired
 
 # virtualenv env 
 # cmd "source env/bin/activate"
-# git push heroku main 
-#Explore selenium 
 
+#Explore selenium 
 #authentication
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODO add export csv option
+#Add excel file download option
 #TODO automatically open email program for late equipjment generator 
-
-
-#LATER...................
-#TODO poster printing receipt generator
-#TODO booking analysis with visualization data dashboard
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
@@ -78,6 +73,7 @@ filteredDateHTML = ''
 resultUser = ''
 resultCirc = ''
 generateEmailCount = 1
+chartSelection = ''
 
 def searchDatabase(searchTerm):
     global searchIDList
@@ -92,6 +88,7 @@ def searchDatabase(searchTerm):
 
 @app.route('/booking_analysis', methods=['POST', 'GET'])
 def booking_analysis():
+    global chartSelection
     form = UploadFileForm()
     filename = ''
 
@@ -113,10 +110,10 @@ def booking_analysis():
             categoryCount = json.dumps(categoryCount), noShowUsername = json.dumps(noShowUsername), noShowCount = json.dumps(noShowCount),
             timeDifferenceList = json.dumps(timeDifferenceList), timeDifferenceCount = json.dumps(timeDifferenceCount), sortedPopularUsers = json.dumps(sortedPopularUsers),
             numberEquipment = json.dumps(numberEquipment), numberUniqueBookings = json.dumps(numberUniqueBookings), lateReturnNames = json.dumps(lateReturnNames),
-            lateReturnMinutes = json.dumps(lateReturnMinutes))
+            lateReturnMinutes = json.dumps(lateReturnMinutes), equipmentListLength = len(equipmentList), timeDifferenceLength = len(timeDifferenceList),
+            popularUsersLength = len(sortedPopularUsers), lateReturnLength = len(lateReturnNames), chartSelection = chartSelection)
 
     return render_template('booking_analysis.html', form=form)
-
 
 
 
@@ -468,15 +465,10 @@ def generateUserEmail(id):
     userEmail = currentEntry.email
     resultUser = lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, currentEntry.schedule, currentEntry.return_time)
     return redirect(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
-    webbrowser.open(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
-    return redirect('/late_fines')
 
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-
 
 
 if __name__ == "__main__": # watches for changes and updates
