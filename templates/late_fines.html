@@ -6,7 +6,36 @@
 
 {% endblock %}
 {% block body %}
-    <h1>Late Fines Toolkit</h1>
+    <h1>Late Fines Toolkit <i class="fa fa-circle-info" id="info-button"></i></h1>
+    <div class="row hide" id="instruction-list">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <ol>
+                <li>This page contains a table displaying a record of all late fines.</li>
+                <li>In connect2 go to the "Reports" tab and click on "User debt."</li>
+                <li>Hit the submit button on the right-hand column without entering any values. This generates a PDF listing all outstanding fines.</li>
+                <li>Click on the "Users" tab and search the username of the user listed in the late fine PDF. </li>
+                <li>Click on the user, and on the following page, click on "View debt account details."</li>
+                <li>Click on the Con number of the booking associated with the fine. This takes you to the “Resource booking summary" page. </li>
+                <li>Hit cmd + a to copy all of the text on the page. ** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
+                <li>In the app, click on "Add Entry" and paste the text you copied in the "Connect2 Text" box.</li>
+                <li>In connect2, click on the name of the user to navigate to the "User details" page. In the app, fill in the remaining fields based on the data on this connect2 page.</li>
+                <li>Click the “Submit” button. The entry will be added to the table. Repeat this for every user in the PDF.</li>
+                <li>In the "emails" column, click on the link to generate an email to the user. This will open your default email application and autofill all of the fields. Repeat this for every user who needs to be notified. This is generally done on Wednesday, and we give the users 2 days to respond before sending the fines to circulation on Friday.</li>
+                <li>To generate the email to circulation, first select the entries you want to include. This is done in the "Actions" column by clicking on the blue checkboxes.</li>
+                <li>Click on "Generate Emails" on the bottom menu. This brings up a dialogue that generates emails for users and circulation.</li>
+                <li>Sort by various columns by clicking on the arrows at the top of the table.</li>
+                <li>Select all or deselect all checkboxes by clicking on the corresponding buttons in the bottom menu.</li>
+                <li>Filter by date added by entering a date and clicking the "Filter by Date Added" button.</li>
+                <li>Search for specific terms using the "Type your search term" box at the bottom menu.</li>
+                <li>To clear search and filtering, click on the "Clear Filters" button.</li>
+                <li>Click the green pencil icon in the "Actions" column to edit an entry.</li>
+                <li>Click on the red trash icon in the "Actions" column to delete an entry.</li>
+            </ol>
+        </div>
+        <div class="col-2"></div>
+    </div>
+   
 
     <div class="content">
        
@@ -328,5 +357,94 @@
         <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
     
     </div>
+    <script>
+
+const btnGenerateEmail = document.getElementById('generate-emails');
+const updateDialogue = document.getElementById('update-entry-dialogue');
+const btnCloseUpdate = document.getElementById('update-x-mark');
+const nameUpdate = document.getElementById('name-update');
+const pennIDUpdate = document.getElementById('penn-id-update');
+const emailUpdate = document.getElementById('email-update');
+const amountUpdate = document.getElementById('amount-update');
+const bookingNumberUpdate = document.getElementById('booking_number-update');
+const detailsUpdate = document.getElementById('details-update');
+const scheduleUpdate = document.getElementById('schedule-update');
+const returnTimeUpdate = document.getElementById('return_time-update');
+const operatorUpdate = document.getElementById('operator-update');
+const dateSentUpdate = document.getElementById('date_sent-update');
+const forgivenUpdate = document.getElementById('forgiven-update');
+const idToUpdate = document.getElementById('id-to-update');
+
+btnCloseUpdate.addEventListener('click', () => {
+    updateDialogue.classList.remove('show');
+})
+
+function updateEntry(ele) {
+    const id = parseInt(ele.closest('td').getAttribute('alt'));
+    const rowDataList = ele.closest('tr').querySelectorAll('td');
+    console.log(rowDataList[2].innerText);
+
+    idToUpdate.value = rowDataList[0].innerText;
+    nameUpdate.value = rowDataList[1].innerText;
+    pennIDUpdate.value = rowDataList[2].innerText;
+    emailUpdate.value = rowDataList[3].innerText;
+    amountUpdate.value = rowDataList[4].innerText.substring(1);
+    bookingNumberUpdate.value = rowDataList[5].innerText;
+    detailsUpdate.value = rowDataList[6].innerText;
+    scheduleUpdate.value = rowDataList[7].innerText;
+    let returnTimeString = rowDataList[8].innerText;
+    const datetimeHTML = '02/13/2023 09:02 AM';
+    let returnHour = parseInt(returnTimeString.substring(11, 13));
+    let returnPeriod = returnTimeString.substring(17, 19);
+    console.log(returnPeriod)
+    console.log(`Return hour before +12 %12 = ${returnHour}`);
+    if (returnPeriod === 'PM' && returnHour !== 12) {
+        returnHour += 12;
+    }
+    console.log(`Return hour AFTER +12 %12 = ${returnHour}`);
+
+    
+    returnHour = returnHour.toString();
+    console.log(`return hour = ${returnHour}`)
+    if (returnHour.length < 2) {
+        returnHour = '0' + returnHour;
+    }
+
+    returnTimeFormatted = `${returnTimeString.substring(6, 10)}-${returnTimeString.substring(0, 2)}-${returnTimeString.substring(3, 5)}T${returnHour}:${returnTimeString.substring(14, 16)}`;
+    console.log(returnTimeFormatted);
+    returnTimeUpdate.value = returnTimeFormatted;
+    console.log(returnTimeUpdate.value);
+    operatorUpdate.value = rowDataList[9].innerText;
+    //get text of date, convert to format yyyy-mm-dd
+    let textDate = rowDataList[10].innerText;
+    isoDateFormat = `${textDate.substring(6, 10)}-${textDate.substring(0, 2)}-${textDate.substring(3, 5)}`;
+    dateSentUpdate.value = isoDateFormat; 
+
+    forgivenUpdate.value = rowDataList[11].innerText;
+    updateDialogue.classList.add('show');
+}
+
+
+console.log('script is linked');
+const btnAddEntry = document.getElementById('add-entry');
+const addEntryDialogue = document.getElementById('add-entry-dialogue');
+btnAddEntry.addEventListener('click', () => {
+    addEntryDialogue.classList.add('show');
+});
+
+const btnCloseEntry = document.getElementById('entry-x-mark');
+btnCloseEntry.addEventListener('click', () => {
+    addEntryDialogue.classList.remove('show');
+})
+
+const btnCloseEmail = document.getElementById('email-x-mark');
+const generateEmailsDialogue = document.getElementById('generate-emails-dialogue');
+btnCloseEmail.addEventListener('click', () => {
+    generateEmailsDialogue.style.visibility = 'hidden';
+})
+
+
+
+    </script>
 
 {% endblock %}

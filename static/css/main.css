@@ -471,4 +471,16 @@ textarea {
   position: sticky !important;
   top: 20px;
   margin: 20px 0;
+}
+
+ol {
+  margin-bottom: 20px;
+}
+
+.fa-circle-info {
+  color: var(--color-green);
+  transform: scale(70%);
+}
+.fa-circle-info:hover {
+  color: var(--color-green-dark);
 }/*# sourceMappingURL=main.css.map */

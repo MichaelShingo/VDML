@@ -12,11 +12,17 @@ from wtforms.validators import InputRequired
 
 # virtualenv env 
 # cmd "source env/bin/activate"
+# pip3 freeze > requirements.txt
 
-#Explore selenium 
+#virtualenv in python anywhere: "workon myvirtualenv", then pip install packages from here 
+# you should go into virtual env, then pip install -r requirements.txt
+
+#write "tutorial" text for each page 
+
+#Explore selenium, you have to copy text from Chrome or Opera....
 #authentication
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
-#TODO add export csv option
+#TODO add export csv option, or upload excel option
 #Add excel file download option
 #TODO automatically open email program for late equipjment generator 
 
@@ -95,9 +101,7 @@ def booking_analysis():
     if form.validate_on_submit():
         file = form.file.data
         file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
-        print('file has been uploaded')
         filename = file.filename
-        print(filename)
         filename = filename.replace(' ', '_')
 
         (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, 

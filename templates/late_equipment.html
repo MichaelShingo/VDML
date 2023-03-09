@@ -3,18 +3,35 @@
 {% block head %}
 {% endblock %}
 {% block body %}
-    <h1>Late Equipment Email Generator</h1>
-    <p>This script takes plain text from the connect2 booking page and generates a late equipment
-        email that can be sent to the user.
-    </p>
-    <form method="POST">
-        <textarea class="generated-textarea" name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ originalText }}</textarea>
-        <br>
-        <input class="btn" type="submit">
-    </form>
-    <textarea class="generated-texarea" style="visibility: {{ visibility }}" name="output" id="late-output" 
-        rows="20" cols="100" placeholder="Result outputs here.">{{ resultText }}</textarea>
-    <p style="visibility: {{ visibility }}" class="alert-message">The result has been copied to your clipboard.</p>
+<h1>Late Equipment Email Generator <i class="fa fa-circle-info" id="info-button"></i></h1>
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <ol class="hide" id="instruction-list">
+                <li>When a user is late, this function generates the email that you can send to the user to remind them to bring back the equipment. We have been waiting until they are 2 days past the return time to send them this personal email.</li>
+                <li>Log into connect2 and go to the Dashboard.</li>
+                <li>Select the late booking from the Check ins.</li>
+                <li>Click “Proceed to check in”.</li>
+                <li>Click on the Con number (this takes you to the “Resource booking summary" page).</li>
+                <li>Hit cmd + a to copy all of the text on the page.</li>
+                <li>Paste the copied text into the text box in the VDML app and hit the “Submit” button.</li>
+                <li>** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
+     
+
+            </ol>
+            <form method="POST">
+                <textarea class="generated-textarea" name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ originalText }}</textarea>
+                <br>
+                <input class="btn" type="submit">
+            </form>
+            <textarea class="generated-texarea" style="visibility: {{ visibility }}" name="output" id="late-output" 
+                rows="20" cols="100" placeholder="Result outputs here.">{{ resultText }}</textarea>
+    
+        </div>
+        <div class="col-2"></div>
+    </div>
+   
+    
 
 
 {% endblock %}

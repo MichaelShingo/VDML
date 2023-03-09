@@ -463,3 +463,14 @@ textarea {
   margin: 20px 0;
 }
   
+ol {
+  margin-bottom: 20px;
+}
+
+.fa-circle-info {
+  color: var(--color-green);
+  transform: scale(70%);
+  &:hover {
+    color: var(--color-green-dark);
+  }
+}
