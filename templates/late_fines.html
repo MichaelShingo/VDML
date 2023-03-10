@@ -2,8 +2,6 @@
 
 {% block head %}
     <title>Late Fines</title>
-    <!-- <link rel="stylesheet" type="text/css" href="../static/css/main.css"> -->
-
 {% endblock %}
 {% block body %}
     <h1>Late Fines Toolkit <i class="fa fa-circle-info" id="info-button"></i></h1>
@@ -26,7 +24,7 @@
                 <li>Click on "Generate Emails" on the bottom menu. This brings up a dialogue that generates emails for users and circulation.</li>
                 <li>Sort by various columns by clicking on the arrows at the top of the table.</li>
                 <li>Select all or deselect all checkboxes by clicking on the corresponding buttons in the bottom menu.</li>
-                <li>Filter by date added by entering a date and clicking the "Filter by Date Added" button.</li>
+                <li>Filter by date sent by entering a date and clicking the "Filter by Date Sent" button.</li>
                 <li>Search for specific terms using the "Type your search term" box at the bottom menu.</li>
                 <li>To clear search and filtering, click on the "Clear Filters" button.</li>
                 <li>Click the green pencil icon in the "Actions" column to edit an entry.</li>
@@ -35,10 +33,7 @@
         </div>
         <div class="col-2"></div>
     </div>
-   
-
     <div class="content">
-       
         {% if tasks|length < 1 %}
         <table class="content-table">
             <thead>
@@ -52,12 +47,11 @@
                     <th>Schedule</th>
                     <th>Return Time</th>
                     <th>Operator</th>
-                    <th>Date Sent</th>
-                    <th>Forgiven</th>
+                    <th>Date Added</th>
+                    <th>Notes</th>
                     <th>Actions</th>
                 </tr>
             </thead>
-           
             <tr>
                 <td></td>
                 <td></td>
@@ -74,8 +68,6 @@
             </tr>
         </table>
         <h4>No entries found. Clear filters or create an entry.</h4>
-
-
         {% else %}
         <table class="content-table">
             <thead class="sticky-th">
@@ -140,8 +132,7 @@
                         </a>
                     </th>                
                     <th></th>
-                    <th></th>
-                    
+                    <th></th>   
                 </tr>
                 <tr class="sticky-th">
                     <th>Name</th>
@@ -153,13 +144,11 @@
                     <th>Schedule</th>
                     <th>Return</th>
                     <th>Operator</th>
-                    <th>Date Sent</th>
-                    <th>Forgiven</th>
-                    <th>Actions</th>
-                    
+                    <th>Date Added</th>
+                    <th>Notes</th>
+                    <th>Actions</th>     
                 </tr>
             </thead>
-            
             {% for task in tasks %}
                 <tr>
                     <td style="display: none;">{{ task.id }}</td>
@@ -187,27 +176,22 @@
                             <i class="fa fa-stop fa-lg"></i>
                             {% endif %}
                         </a>
-                        <a  id="btn-update"  onclick="updateEntry(this);" ><i class="fa fa-pen fa-lg"></i></a>  <!--href="/update/{{task.id}}"-->
-
+                        <a  id="btn-update" onclick="updateEntry(this)"><i class="fa fa-pen fa-lg"></i></a>
                         <a href="/delete/{{task.id}}"><i class="fa fa-trash fa-lg"></i></a>
-
                     </td>
                 </tr>
             {% endfor %}
         </table>
         {% endif %}
-
     </div>
-
     <div class="form-controls sticky-bottom">
-
         <form class="table-edit-form" method="POST">
             <div class="row">
                 <input class="btn" id="add-entry" name="Add Entry" type="button" value="Add Entry">
                 <input class="btn" id="select-all" name="select-all" type="submit" value="Select All">
                 <input class="btn" id="deselect-all" name="deselect-all" type="submit" value="Deselect All">
                 <input class="form-input" name="added-date" type="date" value="{{ filteredDate }}">
-                <input class="btn" id="filter-by-date-added" name="filter-by-date-added" type="submit" value="Filter by Date Added">
+                <input class="btn" id="filter-by-date-added" name="filter-by-date-added" type="submit" value="Filter by Date Sent">
                 <input class="btn" id="clear-filters" name="clear-filters" type="submit" value="Clear Filters">
             </div>
         </form>
@@ -216,11 +200,8 @@
             <input class="btn" id="search" name="Search" value="Search" type="submit">
             <input id="generate-emails" class="btn" name="generate-emails" type="submit" value="Generate Emails">
         </form>
-        <form method="POST">
-        </form>
-            
+     
     </div>
-
         <div class="add-entry-dialogue" id="add-entry-dialogue">
             <h2>Add Entry</h2>
             <div id="entry-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
@@ -234,27 +215,22 @@
                     <div class="input-container">
                         <label for="penn-id">Penn ID</label>
                         <input name="penn-id" class="form-input" id="penn-id" placeholder="Penn ID Barcode (digits only)">
-    
                     </div>
                     <div class="input-container">
                         <label for="user-email">Email</label>
                         <input name="user-email" class="form-input" id="user-email" placeholder="email@upenn.edu">
                     </div>
-    
                     <div class="input-container">
                         <label for="fine-amount">Fine Amount (number only)</label>
                         <input name="fine-amount" class="form-input" id="fine-amount" placeholder="Fine amount (digits only)">
                     </div>
                     <div class="input-container">
-                        <label for="forgiven">Forgiven</label>
+                        <label for="forgiven">Notes</label>
                         <input name="forgiven" class="form-input" id="forgiven" placeholder="Notes">
-    
                     </div>
                     <input name="add-entry" class="btn btn-submit" type="submit">
                 </div>
                 <div class="col-2"></div>
-
-                
             </form>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -264,8 +240,6 @@
             {% endif %}
             {% endwith %}
         </div>
-
-
         <div class="update-entry-dialogue" id="update-entry-dialogue" style="visibility: {{ visibilityUpdate }}" >
             <h2>Update Entry</h2>
             <div id="update-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
@@ -311,19 +285,16 @@
                         <input name="operator" class="form-input" id="operator-update">
                     </div>
                     <div class="input-container">
-                        <label for="date_sent-update">Date Sent</label>
+                        <label for="date_sent-update">Date Added</label>
                         <input type="date" name="date_sent" class="form-input" id="date_sent-update">
                     </div>
                     <div class="input-container">
-                        <label for="forgiven-update">Forgiven</label>
+                        <label for="forgiven-update">Notes</label>
                         <input name="forgiven" class="form-input" id="forgiven-update" placeholder="Notes">
-    
                     </div>
                     <input name="update-entry" class="btn btn-submit" type="submit">
-
                 </div>
                  <div class="col-2"></div>
-               
             </form>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -333,18 +304,13 @@
             {% endif %}
             {% endwith %}
         </div>
-
-
         <div class="generate-emails-dialogue" id="generate-emails-dialogue" style="visibility: {{ visibilityCirc }}";>
             <h2>Generated Emails</h2>
             <form class="form">
                 <div id="email-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
                 <textarea class="generated-textarea" name="output" id="late-output" rows="1" cols="50" placeholder="Please select entries before generating emails.">{{ resultTextUser }}</textarea>
                  <textarea class="generated-textarea" name="output" id="late-output" rows="1" cols="" placeholder="Please select entries before generating emails.">{{ resultTextCirc }}</textarea>
-
             </form>
-
-
             {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
@@ -353,98 +319,75 @@
             {% endif %}
             {% endwith %}
         </div>
-
         <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
-    
     </div>
     <script>
+        const btnGenerateEmail = document.getElementById('generate-emails');
+        const updateDialogue = document.getElementById('update-entry-dialogue');
+        const btnCloseUpdate = document.getElementById('update-x-mark');
+        const nameUpdate = document.getElementById('name-update');
+        const pennIDUpdate = document.getElementById('penn-id-update');
+        const emailUpdate = document.getElementById('email-update');
+        const amountUpdate = document.getElementById('amount-update');
+        const bookingNumberUpdate = document.getElementById('booking_number-update');
+        const detailsUpdate = document.getElementById('details-update');
+        const scheduleUpdate = document.getElementById('schedule-update');
+        const returnTimeUpdate = document.getElementById('return_time-update');
+        const operatorUpdate = document.getElementById('operator-update');
+        const dateSentUpdate = document.getElementById('date_sent-update');
+        const forgivenUpdate = document.getElementById('forgiven-update');
+        const idToUpdate = document.getElementById('id-to-update');
 
-const btnGenerateEmail = document.getElementById('generate-emails');
-const updateDialogue = document.getElementById('update-entry-dialogue');
-const btnCloseUpdate = document.getElementById('update-x-mark');
-const nameUpdate = document.getElementById('name-update');
-const pennIDUpdate = document.getElementById('penn-id-update');
-const emailUpdate = document.getElementById('email-update');
-const amountUpdate = document.getElementById('amount-update');
-const bookingNumberUpdate = document.getElementById('booking_number-update');
-const detailsUpdate = document.getElementById('details-update');
-const scheduleUpdate = document.getElementById('schedule-update');
-const returnTimeUpdate = document.getElementById('return_time-update');
-const operatorUpdate = document.getElementById('operator-update');
-const dateSentUpdate = document.getElementById('date_sent-update');
-const forgivenUpdate = document.getElementById('forgiven-update');
-const idToUpdate = document.getElementById('id-to-update');
+        btnCloseUpdate.addEventListener('click', () => {
+            updateDialogue.classList.remove('show');
+        })
 
-btnCloseUpdate.addEventListener('click', () => {
-    updateDialogue.classList.remove('show');
-})
+        function updateEntry(ele) {
+            const id = parseInt(ele.closest('td').getAttribute('alt'));
+            const rowDataList = ele.closest('tr').querySelectorAll('td');
+            idToUpdate.value = rowDataList[0].innerText;
+            nameUpdate.value = rowDataList[1].innerText;
+            pennIDUpdate.value = rowDataList[2].innerText;
+            emailUpdate.value = rowDataList[3].innerText;
+            amountUpdate.value = rowDataList[4].innerText.substring(1);
+            bookingNumberUpdate.value = rowDataList[5].innerText;
+            detailsUpdate.value = rowDataList[6].innerText;
+            scheduleUpdate.value = rowDataList[7].innerText;
+            let returnTimeString = rowDataList[8].innerText;
+            const datetimeHTML = '02/13/2023 09:02 AM';
+            let returnHour = parseInt(returnTimeString.substring(11, 13));
+            let returnPeriod = returnTimeString.substring(17, 19);
+            if (returnPeriod === 'PM' && returnHour !== 12) {
+                returnHour += 12;
+            }
+            returnHour = returnHour.toString();
+            if (returnHour.length < 2) {
+                returnHour = '0' + returnHour;
+            }
+            returnTimeFormatted = `${returnTimeString.substring(6, 10)}-${returnTimeString.substring(0, 2)}-${returnTimeString.substring(3, 5)}T${returnHour}:${returnTimeString.substring(14, 16)}`;
+            returnTimeUpdate.value = returnTimeFormatted;
+            operatorUpdate.value = rowDataList[9].innerText;
+            //get text of date, convert to format yyyy-mm-dd
+            let textDate = rowDataList[10].innerText;
+            isoDateFormat = `${textDate.substring(6, 10)}-${textDate.substring(0, 2)}-${textDate.substring(3, 5)}`;
+            dateSentUpdate.value = isoDateFormat; 
 
-function updateEntry(ele) {
-    const id = parseInt(ele.closest('td').getAttribute('alt'));
-    const rowDataList = ele.closest('tr').querySelectorAll('td');
-    console.log(rowDataList[2].innerText);
-
-    idToUpdate.value = rowDataList[0].innerText;
-    nameUpdate.value = rowDataList[1].innerText;
-    pennIDUpdate.value = rowDataList[2].innerText;
-    emailUpdate.value = rowDataList[3].innerText;
-    amountUpdate.value = rowDataList[4].innerText.substring(1);
-    bookingNumberUpdate.value = rowDataList[5].innerText;
-    detailsUpdate.value = rowDataList[6].innerText;
-    scheduleUpdate.value = rowDataList[7].innerText;
-    let returnTimeString = rowDataList[8].innerText;
-    const datetimeHTML = '02/13/2023 09:02 AM';
-    let returnHour = parseInt(returnTimeString.substring(11, 13));
-    let returnPeriod = returnTimeString.substring(17, 19);
-    console.log(returnPeriod)
-    console.log(`Return hour before +12 %12 = ${returnHour}`);
-    if (returnPeriod === 'PM' && returnHour !== 12) {
-        returnHour += 12;
-    }
-    console.log(`Return hour AFTER +12 %12 = ${returnHour}`);
-
-    
-    returnHour = returnHour.toString();
-    console.log(`return hour = ${returnHour}`)
-    if (returnHour.length < 2) {
-        returnHour = '0' + returnHour;
-    }
-
-    returnTimeFormatted = `${returnTimeString.substring(6, 10)}-${returnTimeString.substring(0, 2)}-${returnTimeString.substring(3, 5)}T${returnHour}:${returnTimeString.substring(14, 16)}`;
-    console.log(returnTimeFormatted);
-    returnTimeUpdate.value = returnTimeFormatted;
-    console.log(returnTimeUpdate.value);
-    operatorUpdate.value = rowDataList[9].innerText;
-    //get text of date, convert to format yyyy-mm-dd
-    let textDate = rowDataList[10].innerText;
-    isoDateFormat = `${textDate.substring(6, 10)}-${textDate.substring(0, 2)}-${textDate.substring(3, 5)}`;
-    dateSentUpdate.value = isoDateFormat; 
-
-    forgivenUpdate.value = rowDataList[11].innerText;
-    updateDialogue.classList.add('show');
-}
-
-
-console.log('script is linked');
-const btnAddEntry = document.getElementById('add-entry');
-const addEntryDialogue = document.getElementById('add-entry-dialogue');
-btnAddEntry.addEventListener('click', () => {
-    addEntryDialogue.classList.add('show');
-});
-
-const btnCloseEntry = document.getElementById('entry-x-mark');
-btnCloseEntry.addEventListener('click', () => {
-    addEntryDialogue.classList.remove('show');
-})
-
-const btnCloseEmail = document.getElementById('email-x-mark');
-const generateEmailsDialogue = document.getElementById('generate-emails-dialogue');
-btnCloseEmail.addEventListener('click', () => {
-    generateEmailsDialogue.style.visibility = 'hidden';
-})
-
-
-
+            forgivenUpdate.value = rowDataList[11].innerText;
+            updateDialogue.classList.add('show');
+        }
+        const btnAddEntry = document.getElementById('add-entry');
+        const addEntryDialogue = document.getElementById('add-entry-dialogue');
+        btnAddEntry.addEventListener('click', () => {
+            addEntryDialogue.classList.add('show');
+        });
+        const btnCloseEntry = document.getElementById('entry-x-mark');
+        btnCloseEntry.addEventListener('click', () => {
+            addEntryDialogue.classList.remove('show');
+        })
+        const btnCloseEmail = document.getElementById('email-x-mark');
+        const generateEmailsDialogue = document.getElementById('generate-emails-dialogue');
+        btnCloseEmail.addEventListener('click', () => {
+            generateEmailsDialogue.style.visibility = 'hidden';
+        })
     </script>
-
 {% endblock %}

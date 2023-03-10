@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
-
 {% block head %}
 {% endblock %}
 {% block body %}
-
     <h1>Booking Analysis <i class="fa fa-circle-info" id="info-button"></i></h1>
     <div class="row">
         <div class="col-2"></div>
@@ -16,7 +14,6 @@
                 <li>This will generate and download a CSV file. Upload this to the VDML app by clicking "Choose File". Do not edit the CSV file in another program, this may change the encoding format of the file, resulting in an error in processing.</li>
                 <li>Click "Upload File" and the charts will be generated.</li>
                 <li>Click the green buttons to choose which chart to view. Hover over the chart contents to see precise numbers.</li>
-
             </ol>
             <h2>Upload a CSV file</h2>
             <form class="" method="POST" enctype="multipart/form-data">
@@ -27,8 +24,6 @@
         </div>
         <div class="col-2"></div>
     </div>
-
-
     <div class="chart-options">
         <button onclick="setChartVisibility(0)" class="btn" >Bookings by Equipment</button>
         <button onclick="setChartVisibility(1)" class="btn" >Popular Days</button>
@@ -40,9 +35,8 @@
         <button onclick="setChartVisibility(7)" class="btn" >Popular Users</button>
         <button onclick="setChartVisibility(8)" class="btn" >Late Returns</button>
     </div>
-
     <div class="chart-container" style="height: {{ equipmentListLength * 40 }}px;">
-        <canvas id="myChart"></canvas>
+        <canvas id="bookingsByEquipment"></canvas>
     </div>
     <div class="chart-container" >
         <canvas id="popularDaysChart"></canvas>
@@ -68,262 +62,250 @@
     <div class="chart-container" style="height: {{ lateReturnLength * 40}}px">
         <canvas id="lateReturnChart"></canvas>
     </div>
-      
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script>
-    const btnList = document.getElementsByClassName('btn');
-    const chartList = document.getElementsByClassName('chart-container');
+        const btnList = document.getElementsByClassName('btn');
+        const chartList = document.getElementsByClassName('chart-container');
 
-    function setChartVisibility(chartID){
-        console.log(chartID);
-        for (let i = 0; i < chartList.length; i++) {
-            if (i === chartID) {
-                btnList[i].classList.add('blue');
-                chartList[i].classList.remove('hide');
-            } else {
-                chartList[i].classList.add('hide');
-                btnList[i].classList.remove('blue');
-            }
-        }
-    }
-
-
-
-    const ctx = document.getElementById('myChart');
-    let equipmentList = JSON.parse({{ equipmentList | tojson }});
-    let countList = JSON.parse({{ countList | tojson }});
-
-    const popularDaysChart = document.getElementById('popularDaysChart');
-    let dayList = JSON.parse({{ dayList | tojson }});
-    let popularDayCount = JSON.parse({{ popularDayCount | tojson }});
-
-    const popularHoursChart = document.getElementById('popularHoursChart');
-    let hourList = JSON.parse({{ hourList | tojson }});
-    let hourCountList = JSON.parse({{ hourCountList | tojson }})
-
-    const popularHoursByDayChart = document.getElementById('popularHoursByDayChart');
-    let dayHour = JSON.parse({{ dayHour | tojson }})
-    let dayHourCount = JSON.parse({{ dayHourCount | tojson }})
-
-    const bookingsByCategoryChart = document.getElementById('bookingsByCategoryChart');
-    let categoryList = JSON.parse({{ categoryList | tojson }})
-    let categoryCount = JSON.parse({{ categoryCount | tojson }})
-
-    const noShowChart = document.getElementById('noShowChart');
-    let noShowUsername = JSON.parse({{ noShowUsername | tojson }})
-    let noShowCount = JSON.parse({{ noShowCount | tojson }})
-
-    const timeDifferenceChart = document.getElementById('timeDifferenceChart');
-    let timeDifferenceList = JSON.parse({{ timeDifferenceList | tojson }})
-    let timeDifferenceCount = JSON.parse({{ timeDifferenceCount | tojson }})
-
-    const popularUsersChart = document.getElementById('popularUsersChart');
-    let sortedPopularUsers = JSON.parse({{ sortedPopularUsers | tojson }})
-    let numberEquipment = JSON.parse({{ numberEquipment | tojson }})
-    let numberUniqueBookings = JSON.parse({{ numberUniqueBookings | tojson }})
-
-    const lateReturnChart = document.getElementById('lateReturnChart');
-    let lateReturnNames = JSON.parse({{ lateReturnNames | tojson }})
-    let lateReturnMinutes = JSON.parse({{ lateReturnMinutes | tojson }})
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-        labels: equipmentList,
-        datasets: [{
-            label: 'Bookings',
-            data: countList,
-            borderWidth: 1
-        }]
-        },
-        options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-            beginAtZero: true
-            }
-        }
-        }
-    });
-
-    new Chart(popularDaysChart, {
-        type: 'bar',
-        data: {
-            labels: dayList,
-            datasets: [{
-                label: 'Bookings by Day of the Week',
-                data: popularDayCount,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+        function setChartVisibility(chartID){
+            for (let i = 0; i < chartList.length; i++) {
+                if (i === chartID) {
+                    btnList[i].classList.add('blue');
+                    chartList[i].classList.remove('hide');
+                } else {
+                    chartList[i].classList.add('hide');
+                    btnList[i].classList.remove('blue');
                 }
             }
         }
-    });
 
-    new Chart(popularHoursChart, {
-        type: 'bar',
-        data: {
-            labels: hourList,
-            datasets: [{
-                label: 'Bookings by Time of Day',
-                data: hourCountList,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+        const bookingsByEquipment = document.getElementById('bookingsByEquipment');
+        let equipmentList = JSON.parse({{ equipmentList | tojson }});
+        let countList = JSON.parse({{ countList | tojson }});
 
-    new Chart(popularHoursByDayChart, {
-        type: 'bar',
-        data: {
-            labels: dayHour,
-            datasets: [{
-                label: 'Bookings by Time and Day',
-                data: dayHourCount,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-        maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+        const popularDaysChart = document.getElementById('popularDaysChart');
+        let dayList = JSON.parse({{ dayList | tojson }});
+        let popularDayCount = JSON.parse({{ popularDayCount | tojson }});
 
-    new Chart(bookingsByCategoryChart, {
-        type: 'bar',
-        data: {
-            labels: categoryList,
-            datasets: [{
-                label: 'Bookings by Category',
-                data: categoryCount,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+        const popularHoursChart = document.getElementById('popularHoursChart');
+        let hourList = JSON.parse({{ hourList | tojson }});
+        let hourCountList = JSON.parse({{ hourCountList | tojson }})
 
-    new Chart(noShowChart, {
-        type: 'bar',
-        data: {
-            labels: noShowUsername,
-            datasets: [{
-                label: 'No Shows',
-                data: noShowCount,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+        const popularHoursByDayChart = document.getElementById('popularHoursByDayChart');
+        let dayHour = JSON.parse({{ dayHour | tojson }})
+        let dayHourCount = JSON.parse({{ dayHourCount | tojson }})
 
-    new Chart(timeDifferenceChart, {
-        type: 'bar',
-        data: {
-            labels: timeDifferenceList,
+        const bookingsByCategoryChart = document.getElementById('bookingsByCategoryChart');
+        let categoryList = JSON.parse({{ categoryList | tojson }})
+        let categoryCount = JSON.parse({{ categoryCount | tojson }})
+
+        const noShowChart = document.getElementById('noShowChart');
+        let noShowUsername = JSON.parse({{ noShowUsername | tojson }})
+        let noShowCount = JSON.parse({{ noShowCount | tojson }})
+
+        const timeDifferenceChart = document.getElementById('timeDifferenceChart');
+        let timeDifferenceList = JSON.parse({{ timeDifferenceList | tojson }})
+        let timeDifferenceCount = JSON.parse({{ timeDifferenceCount | tojson }})
+
+        const popularUsersChart = document.getElementById('popularUsersChart');
+        let sortedPopularUsers = JSON.parse({{ sortedPopularUsers | tojson }})
+        let numberEquipment = JSON.parse({{ numberEquipment | tojson }})
+        let numberUniqueBookings = JSON.parse({{ numberUniqueBookings | tojson }})
+
+        const lateReturnChart = document.getElementById('lateReturnChart');
+        let lateReturnNames = JSON.parse({{ lateReturnNames | tojson }})
+        let lateReturnMinutes = JSON.parse({{ lateReturnMinutes | tojson }})
+
+        new Chart(bookingsByEquipment, {
+            type: 'bar',
+            data: {
+            labels: equipmentList,
             datasets: [{
                 label: 'Bookings',
-                data: timeDifferenceCount,
+                data: countList,
                 borderWidth: 1
             }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    
-
-    new Chart(popularUsersChart, {
-        type: 'bar',
-        data: {
-            labels: sortedPopularUsers,
-            datasets: [{
-                label: '# Unique Bookings',
-                data: numberEquipment,
-                borderWidth: 1
             },
-            {
-                label: '# Equipment Bookings',
-                data: numberUniqueBookings,
-                borderWidth: 1
-            }
-            ]
-        },
-        options: {
+            options: {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             scales: {
                 y: {
-                    beginAtZero: true
+                beginAtZero: true
                 }
             }
-        }
-    });
+            }
+        });
 
-    new Chart(lateReturnChart, {
-        type: 'bar',
-        data: {
-            labels: lateReturnNames,
-            datasets: [{
-                label: '# Minutes Late',
-                data: lateReturnMinutes,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
+        new Chart(popularDaysChart, {
+            type: 'bar',
+            data: {
+                labels: dayList,
+                datasets: [{
+                    label: 'Bookings by Day of the Week',
+                    data: popularDayCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(popularHoursChart, {
+            type: 'bar',
+            data: {
+                labels: hourList,
+                datasets: [{
+                    label: 'Bookings by Time of Day',
+                    data: hourCountList,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(popularHoursByDayChart, {
+            type: 'bar',
+            data: {
+                labels: dayHour,
+                datasets: [{
+                    label: 'Bookings by Time and Day',
+                    data: dayHourCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
             maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
-    
+        });
 
+        new Chart(bookingsByCategoryChart, {
+            type: 'bar',
+            data: {
+                labels: categoryList,
+                datasets: [{
+                    label: 'Bookings by Category',
+                    data: categoryCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
+        new Chart(noShowChart, {
+            type: 'bar',
+            data: {
+                labels: noShowUsername,
+                datasets: [{
+                    label: 'No Shows',
+                    data: noShowCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
+        new Chart(timeDifferenceChart, {
+            type: 'bar',
+            data: {
+                labels: timeDifferenceList,
+                datasets: [{
+                    label: 'Bookings',
+                    data: timeDifferenceCount,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(popularUsersChart, {
+            type: 'bar',
+            data: {
+                labels: sortedPopularUsers,
+                datasets: [{
+                    label: '# Unique Bookings',
+                    data: numberEquipment,
+                    borderWidth: 1
+                },
+                {
+                    label: '# Equipment Bookings',
+                    data: numberUniqueBookings,
+                    borderWidth: 1
+                }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(lateReturnChart, {
+            type: 'bar',
+            data: {
+                labels: lateReturnNames,
+                datasets: [{
+                    label: '# Minutes Late',
+                    data: lateReturnMinutes,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     </script>
-
-
 {% endblock %}

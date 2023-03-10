@@ -283,6 +283,10 @@ h1 {
   border-bottom: 3px solid var(--color-green);
 }
 
+.alert {
+  color: var(--color-pink) !important;
+}
+
 .generate-email-dialogue {
   visibility: hidden !important;
 }
@@ -291,7 +295,15 @@ h1 {
   border: 2px solid var(--color-grey-2);
   border-radius: 10px;
   padding: 6px 10px;
-  margin: 0px 4px 0px 0px;
+  margin: 0px 4px 10px 0px;
+}
+
+.form-input-block {
+  border: 2px solid var(--color-grey-2);
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin: 0px 4px 10px 0px;
+  display: block;
 }
 
 .form {
@@ -322,10 +334,6 @@ h1 {
   resize: none;
   width: 100%;
   min-height: 35vh;
-}
-.add-entry-dialogue .alert, .update-entry-dialogue .alert, .generate-emails-dialogue .alert {
-  color: var(--color-pink);
-  text-align: center;
 }
 .add-entry-dialogue .input-container, .update-entry-dialogue .input-container, .generate-emails-dialogue .input-container {
   text-align: center;

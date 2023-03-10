@@ -1,4 +1,5 @@
-from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template
+from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template, make_response
+from functools import wraps
 from flask import request
 import os, webbrowser, json
 from werkzeug.utils import secure_filename
@@ -13,18 +14,22 @@ from wtforms.validators import InputRequired
 # virtualenv env 
 # cmd "source env/bin/activate"
 # pip3 freeze > requirements.txt
+# git pull -X theirs    (merge their changes)
 
 #virtualenv in python anywhere: "workon myvirtualenv", then pip install packages from here 
 # you should go into virtual env, then pip install -r requirements.txt
 
-#write "tutorial" text for each page 
 
-#Explore selenium, you have to copy text from Chrome or Opera....
-#authentication
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
+#TODOadd more comments, for future editing 
+
 #TODO add export csv option, or upload excel option
-#Add excel file download option
-#TODO automatically open email program for late equipjment generator 
+#TODO Add excel file download option
+
+#TODO Explore selenium as a way of extracting data from connect2 directly
+#TODO login information should be hashed...
+
+
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
@@ -35,7 +40,6 @@ db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
 FontAwesome(app)
 app.secret_key = 'jj8^^83jd)))ueid9ieSHI!!'
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relative path, 4 is absolute path
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['SECRET_KEY'] = 'jj8^^83jd)))ueid9ieSHI!!'
@@ -66,9 +70,18 @@ class LateFine(db.Model): #Todo is the table name, it's automatically lowercase 
 with app.app_context():
     db.create_all()
 
-@app.route('/')  #routes to index.html so you don't 404
-def index():
-    return render_template('index.html')
+
+def auth_required(f):
+    @wraps(f)
+    #simple HTTP authentication, add @auth_required after each route you want to protect
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if auth and auth.username == 'vdmlstaff' and auth.password == 'pythonApp!':
+            return f(*args, **kwargs)
+
+        return make_response('Invalid login credentials.', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
+
+    return decorated
 
 selectedSet = set()
 sortingParameter = '' #database column name
@@ -86,42 +99,50 @@ def searchDatabase(searchTerm):
     searchIDList = []
     allEntries = LateFine.query.all()
     for entry in allEntries:
-        entryString = (entry.name + entry.penn_id + entry.email + str(entry.amount) + entry.details + entry.schedule + str(entry.return_time) + entry.operator + str(entry.date_sent) + entry.forgiven).lower()
+        entryString = ((entry.name + entry.penn_id + entry.email + str(entry.amount) + entry.details + entry.schedule + str(entry.return_time)
+         + entry.operator + str(entry.date_sent) + entry.forgiven).lower())
         if searchTerm in entryString:
             searchIDList.append(entry.id)
     return LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
+@app.route('/')  #routes to index.html so you don't 404
+@auth_required
+def index():
+    return render_template('index.html')
 
 @app.route('/booking_analysis', methods=['POST', 'GET'])
+@auth_required
 def booking_analysis():
     global chartSelection
     form = UploadFileForm()
     filename = ''
 
     if form.validate_on_submit():
-        file = form.file.data
-        file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
-        filename = file.filename
-        filename = filename.replace(' ', '_')
+        try:
+            file = form.file.data
+            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
+            filename = file.filename
+            filename = filename.replace(' ', '_')
+            (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, 
+            categoryList, categoryCount, noShowUsername, noShowCount, timeDifferenceList, timeDifferenceCount, sortedPopularUsers, 
+            numberEquipment, numberUniqueBookings, lateReturnNames, lateReturnMinutes) = bookingAnalysis.analyzeCSV(filename)
 
-        (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, 
-        categoryList, categoryCount, noShowUsername, noShowCount, timeDifferenceList, timeDifferenceCount, sortedPopularUsers, 
-        numberEquipment, numberUniqueBookings, lateReturnNames, lateReturnMinutes) = bookingAnalysis.analyzeCSV(filename)
-
-        return render_template('booking_analysis_chart.html', form=form, equipmentList = json.dumps(equipmentList), countList = json.dumps(countList),
-            dayList = json.dumps(dayList), popularDayCount = json.dumps(popularDayCount), hourList = json.dumps(hourList),
-            hourCountList = json.dumps(hourCountList), dayHour = json.dumps(dayHour), dayHourCount = json.dumps(dayHourCount), categoryList = json.dumps(categoryList),
-            categoryCount = json.dumps(categoryCount), noShowUsername = json.dumps(noShowUsername), noShowCount = json.dumps(noShowCount),
-            timeDifferenceList = json.dumps(timeDifferenceList), timeDifferenceCount = json.dumps(timeDifferenceCount), sortedPopularUsers = json.dumps(sortedPopularUsers),
-            numberEquipment = json.dumps(numberEquipment), numberUniqueBookings = json.dumps(numberUniqueBookings), lateReturnNames = json.dumps(lateReturnNames),
-            lateReturnMinutes = json.dumps(lateReturnMinutes), equipmentListLength = len(equipmentList), timeDifferenceLength = len(timeDifferenceList),
-            popularUsersLength = len(sortedPopularUsers), lateReturnLength = len(lateReturnNames), chartSelection = chartSelection)
+            return render_template('booking_analysis_chart.html', form=form, equipmentList = json.dumps(equipmentList), countList = json.dumps(countList),
+                dayList = json.dumps(dayList), popularDayCount = json.dumps(popularDayCount), hourList = json.dumps(hourList),
+                hourCountList = json.dumps(hourCountList), dayHour = json.dumps(dayHour), dayHourCount = json.dumps(dayHourCount), categoryList = json.dumps(categoryList),
+                categoryCount = json.dumps(categoryCount), noShowUsername = json.dumps(noShowUsername), noShowCount = json.dumps(noShowCount),
+                timeDifferenceList = json.dumps(timeDifferenceList), timeDifferenceCount = json.dumps(timeDifferenceCount), sortedPopularUsers = json.dumps(sortedPopularUsers),
+                numberEquipment = json.dumps(numberEquipment), numberUniqueBookings = json.dumps(numberUniqueBookings), lateReturnNames = json.dumps(lateReturnNames),
+                lateReturnMinutes = json.dumps(lateReturnMinutes), equipmentListLength = len(equipmentList), timeDifferenceLength = len(timeDifferenceList),
+                popularUsersLength = len(sortedPopularUsers), lateReturnLength = len(lateReturnNames), chartSelection = chartSelection)
+        except:
+            flash('Invalid file format or file name. Make sure the CSV was not edited in another program and there are no special characters in the filename.')
+            return render_template('booking_analysis.html', form=form)
 
     return render_template('booking_analysis.html', form=form)
 
-
-
 @app.route("/late_equipment", methods=['POST', 'GET'])
+@auth_required
 def late_equipment(visibility='hidden'):
     if request.method == 'POST':
         text = request.form['text']
@@ -130,14 +151,15 @@ def late_equipment(visibility='hidden'):
             processed_text = lateEquipment.generateEmail(text)
         except:
             processed_text = 'Failed to extract data.'
-        
-        return render_template('late_equipment.html', originalText=text, resultText=processed_text, methods=['POST'], visibility='visible')
+        subjectLine = 'Vitale Digital Media Lab - Late Equipment'
+        userEmail = request.form['email']
+        return redirect(f'mailto:{userEmail}?Subject={subjectLine}&body={processed_text}')
+        #return render_template('late_equipment.html', originalText=text, resultText=processed_text, methods=['POST'], visibility='visible')
     else:
         return render_template('late_equipment.html', visibility='hidden')
 
-
-
 @app.route("/late_fines", methods=['POST', 'GET'])
+@auth_required
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
     currentDB = LateFine.query.all()
     global searchIDList
@@ -159,7 +181,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                 if not text == '':
                     owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
                     returnTime = datetime.strptime(returnTime, '%m/%d/%Y %I:%M %p')
-
             except Exception as e:
                 print(e)
                 flash('Error: The script failed to extract data from pasted text. Blank fields added.')
@@ -186,7 +207,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             lateFine.booking_number = request.form['booking_number']
             lateFine.details = request.form['details']
             lateFine.schedule = request.form['schedule']
-            format = '2018-06-07T00:00'
+            # date format = 2018-06-07T00:00
             if request.form['return_time']:
                 lateFine.return_time = datetime.strptime(request.form['return_time'], '%Y-%m-%dT%H:%M')
             else:
@@ -247,7 +268,9 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             tasks = searchDatabase(searchTerm)
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
     else:
-        if sortingParameter and filteredDate:
+        if len(searchIDList) > 0:
+            tasks = LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
+        elif sortingParameter and filteredDate:
             if sortingParameter == 'name' and sortingOrder == 'desc':
                 tasks = LateFine.query.order_by(LateFine.name.desc()).filter_by(date_sent=filteredDate).all() 
             elif sortingParameter == 'name' and sortingOrder == 'asc':
@@ -305,25 +328,20 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                 tasks = LateFine.query.order_by(LateFine.date_sent.desc()).all()
             elif sortingParameter == 'date_sent' and sortingOrder == 'asc':
                 tasks = LateFine.query.order_by(LateFine.date_sent.asc()).all()
-        elif len(searchIDList) > 0:
-            tasks = LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
         elif filteredDate:
             tasks = LateFine.query.filter_by(date_sent=filteredDate).all()
         else:
-            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all
+            tasks = LateFine.query.order_by(LateFine.date_sent).all()
 
-        #set generate emails variables as global and check for them here, return different render template if so....
         if generateEmailCount == 0:
             generateEmailCount += 1
             return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         try:
             return render_template('late_fines.html', filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
-            
         except:
-            #if table todo does not exist, create table
-            tasks = LateFine.query.order_by(LateFine.date_sent).all() #returns all 
+            tasks = LateFine.query.order_by(LateFine.date_sent).all()
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
   
 @app.route('/sort-desc-name')
@@ -332,7 +350,6 @@ def sortDescName():
     global sortingOrder
     sortingParameter = 'name'
     sortingOrder = 'desc'
-   
     return redirect('/late_fines')
 
 @app.route('/sort-asc-name')
@@ -439,7 +456,6 @@ def sortAscDateSent():
     sortingOrder = 'asc'
     return redirect('/late_fines')
 
-
 @app.route('/delete/<int:id>') 
 def delete(id):
     task_to_delete = LateFine.query.get_or_404(id)
@@ -468,12 +484,11 @@ def generateUserEmail(id):
     subjectLine = 'Vitale Digital Media Lab - Late Fine'
     userEmail = currentEntry.email
     resultUser = lateFinesUserEmail.generateEmail(currentEntry.name, currentEntry.amount, currentEntry.details, currentEntry.schedule, currentEntry.return_time)
-    return redirect(f'mailto:{userEmail}?Subject=Vitale Digital Media Lab - Late Fine&body={resultUser}')
+    return redirect(f'mailto:{userEmail}?Subject={subjectLine}&body={resultUser}')
 
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 if __name__ == "__main__": # watches for changes and updates
     app.run(port=8000, debug=True)

@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block head %}
 {% endblock %}
 {% block body %}
@@ -16,22 +15,16 @@
                 <li>Hit cmd + a to copy all of the text on the page.</li>
                 <li>Paste the copied text into the text box in the VDML app and hit the “Submit” button.</li>
                 <li>** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
-     
-
             </ol>
             <form method="POST">
+                <input type="email" name="email" placeholder="User email" class="form-input-block"/>
                 <textarea class="generated-textarea" name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ originalText }}</textarea>
                 <br>
                 <input class="btn" type="submit">
             </form>
             <textarea class="generated-texarea" style="visibility: {{ visibility }}" name="output" id="late-output" 
                 rows="20" cols="100" placeholder="Result outputs here.">{{ resultText }}</textarea>
-    
         </div>
         <div class="col-2"></div>
     </div>
-   
-    
-
-
 {% endblock %}

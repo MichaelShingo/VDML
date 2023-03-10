@@ -254,8 +254,13 @@ h1 {
   }
 
 
-
 }
+
+
+.alert {
+  color: var(--color-pink) !important;
+}
+
 
 //ADD ENTRY -------------
 
@@ -270,9 +275,19 @@ h1 {
   border: 2px solid var(--color-grey-2);
   border-radius: 10px;
   padding: 6px 10px;
-  margin: 0px 4px 0px 0px;
+  margin: 0px 4px 10px 0px;
 
 }
+
+.form-input-block {
+  border: 2px solid var(--color-grey-2);
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin: 0px 4px 10px 0px;
+  display: block;
+}
+
+
 .form {
   width: 100%;
 }
@@ -299,10 +314,7 @@ h1 {
     min-height: 35vh;
   }
 
-  .alert {
-    color: var(--color-pink);
-    text-align: center;
-  }
+
   .input-container {
     text-align: center;
     label {
