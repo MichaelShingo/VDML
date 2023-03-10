@@ -11,15 +11,17 @@ from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from wtforms.validators import InputRequired
 
+# ----- START VIRTUAL ENVIRONMENT AND COMMON GIT COMMANDS -----
 # virtualenv env 
 # cmd "source env/bin/activate"
 # pip3 freeze > requirements.txt
 # git pull -X theirs    (merge their changes)
 
-#virtualenv in python anywhere: "workon myvirtualenv", then pip install packages from here 
-# you should go into virtual env, then pip install -r requirements.txt
+# ----- PYTHON ANYWHERE -----
+# If modules are not found upon deploy, go into virtual env, then pip install -r requirements.txt
+# "workon myvirtualenv", then pip install packages from here
 
-
+# ----- TASKS -----
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODOadd more comments, for future editing 
 
@@ -28,8 +30,6 @@ from wtforms.validators import InputRequired
 
 #TODO Explore selenium as a way of extracting data from connect2 directly
 #TODO login information should be hashed...
-
-
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
@@ -45,11 +45,11 @@ app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['SECRET_KEY'] = 'jj8^^83jd)))ueid9ieSHI!!'
 db.init_app(app)
 
-class UploadFileForm(FlaskForm):
+class UploadFileForm(FlaskForm): #FlaskForm module for booking_analysis page
     file = FileField('File', validators=[InputRequired()])
     submit = SubmitField('Upload File')
 
-class LateFine(db.Model): #Todo is the table name, it's automatically lowercase when it's created
+class LateFine(db.Model): #Creates SQL database model 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     penn_id = db.Column(db.String(200), nullable=False)
