@@ -400,6 +400,13 @@ textarea {
   background-color: var(--color-green-dark);
 }
 
+#download-excel {
+  background-color: var(--color-yellow);
+}
+#download-excel:hover {
+  background-color: var(--color-yellow-dark);
+}
+
 #deselect-all {
   background-color: var(--color-pink);
 }

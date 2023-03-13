@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template, make_response
+from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template, make_response, send_from_directory
 from functools import wraps
 from flask import request
 import os, webbrowser, json
@@ -140,6 +140,15 @@ def booking_analysis():
             return render_template('booking_analysis.html', form=form)
 
     return render_template('booking_analysis.html', form=form)
+
+@app.route('/download-analysis', methods=['GET'])
+@auth_required
+def download_analysis():
+    print('Downloading...')
+    downloadPath = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
+    excelFilename = 'bookingAnalysis.xlsx'
+    return send_from_directory(downloadPath, excelFilename)
+    #return redirect('/booking_analysis')
 
 @app.route("/late_equipment", methods=['POST', 'GET'])
 @auth_required

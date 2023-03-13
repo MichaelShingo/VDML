@@ -182,9 +182,7 @@ h1 {
   font-size: 3rem;
 }
 .content-table {
-
   position: relative;
-
   border-collapse: collapse;
   margin: 25px auto;
   font-size: 1em;
@@ -378,6 +376,12 @@ textarea {
   margin: 5px 4px 5px 0px;
   &:hover {
     background-color: var(--color-green-dark);
+  }
+}
+#download-excel {
+  background-color: var(--color-yellow);
+  &:hover {
+    background-color: var(--color-yellow-dark);
   }
 }
 #deselect-all {
