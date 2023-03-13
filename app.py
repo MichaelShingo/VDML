@@ -10,6 +10,7 @@ from flask_fontawesome import FontAwesome
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from wtforms.validators import InputRequired
+import csv
 
 # ----- START VIRTUAL ENVIRONMENT AND COMMON GIT COMMANDS -----
 # virtualenv env 
@@ -26,7 +27,6 @@ from wtforms.validators import InputRequired
 #TODOadd more comments, for future editing 
 
 #TODO add export csv option, or upload excel option
-#TODO Add excel file download option
 
 #TODO Explore selenium as a way of extracting data from connect2 directly
 #TODO login information should be hashed...
@@ -44,6 +44,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///VDML.db' #three /'s is relati
 app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['SECRET_KEY'] = 'jj8^^83jd)))ueid9ieSHI!!'
 db.init_app(app)
+
+FILES_DIRECTORY = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
 
 class UploadFileForm(FlaskForm): #FlaskForm module for booking_analysis page
     file = FileField('File', validators=[InputRequired()])
@@ -69,7 +71,6 @@ class LateFine(db.Model): #Creates SQL database model
 
 with app.app_context():
     db.create_all()
-
 
 def auth_required(f):
     @wraps(f)
@@ -144,11 +145,9 @@ def booking_analysis():
 @app.route('/download-analysis', methods=['GET'])
 @auth_required
 def download_analysis():
-    print('Downloading...')
     downloadPath = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
     excelFilename = 'bookingAnalysis.xlsx'
     return send_from_directory(downloadPath, excelFilename)
-    #return redirect('/booking_analysis')
 
 @app.route("/late_equipment", methods=['POST', 'GET'])
 @auth_required
@@ -226,7 +225,22 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             lateFine.forgiven = request.form['forgiven']
             db.session.commit()
             return redirect('/late_fines')
+        elif 'download-csv' in request.form:
+            tasks = LateFine.query.all()
+            os.chdir(FILES_DIRECTORY)
 
+            with open('lateFines.csv', 'w', newline='') as csv_file:
+                csv_writer = csv.writer(csv_file, delimiter='\t')
+                csv_writer.writerow(['Name', 'Penn ID', 'Email', 'Amount', 'Booking', 'Details', 'Schedule', 'Return', 'Operator', 'Date Added', 'Notes', 'Selected'])
+                for task in tasks:
+                    if task.selected:
+                        csv_writer.writerow([task.name, task.penn_id, task.email, task.amount, task.booking_number, 
+                            task.details, task.schedule, task.return_time, task.operator, task.date_sent, task.forgiven, task.selected])
+                csv_file.close()
+
+            downloadPath = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
+            csvFilename = 'lateFines.csv'
+            return send_from_directory(downloadPath, csvFilename)
         elif 'generate-emails' in request.form:
             generateEmailCount = 0
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
@@ -276,6 +290,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             searchTerm = request.form['search'].lower()
             tasks = searchDatabase(searchTerm)
             return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+
     else:
         if len(searchIDList) > 0:
             tasks = LateFine.query.filter(LateFine.id.in_(searchIDList)).all()

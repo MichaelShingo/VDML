@@ -400,10 +400,10 @@ textarea {
   background-color: var(--color-green-dark);
 }
 
-#download-excel {
+.download {
   background-color: var(--color-yellow);
 }
-#download-excel:hover {
+.download:hover {
   background-color: var(--color-yellow-dark);
 }
 
