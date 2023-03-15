@@ -5,6 +5,13 @@
 {% endblock %}
 {% block body %}
     <h1>Late Fines Toolkit <i class="fa fa-circle-info" id="info-button"></i></h1>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <h3 class="alert" style="position: sticky !important;">{{ message }}</h3>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
     <div class="row hide" id="instruction-list">
         <div class="col-2"></div>
         <div class="col-8">
@@ -201,6 +208,7 @@
             <input id="generate-emails" class="btn" name="generate-emails" type="submit" value="Generate Emails">
             <input id="download-csv" class="btn download" name="download-csv" type="submit" value="Download CSV">
         </form>
+
      
     </div>
         <div class="add-entry-dialogue" id="add-entry-dialogue">
@@ -233,13 +241,8 @@
                 </div>
                 <div class="col-2"></div>
             </form>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                <h3 class="alert">{{ message }}</h3>
-                {% endfor %}
-            {% endif %}
-            {% endwith %}
+            <input id="upload-csv" style="display: block" class="btn download" name="upload-csv" type="submit" value="Upload CSV">
+
         </div>
         <div class="update-entry-dialogue" id="update-entry-dialogue" style="visibility: {{ visibilityUpdate }}" >
             <h2>Update Entry</h2>
@@ -320,7 +323,15 @@
             {% endif %}
             {% endwith %}
         </div>
-        <p style="visibility: {{ visibilityCSV }}" class="alert-message">The result has been copied to your clipboard.</p>
+    </div>
+    <div class="upload-csv-dialogue" id="upload-csv-dialogue" style="visibility: {{ visibilityCirc }}";>
+        <h2>Upload CSV</h2>
+        <form class="" method="POST" enctype="multipart/form-data">
+                {{form.hidden_tag()}}
+                {{form.file()}}
+                {{form.submit()}}
+        </form>
+    
     </div>
     <script>
         const btnGenerateEmail = document.getElementById('generate-emails');
@@ -389,6 +400,15 @@
         const generateEmailsDialogue = document.getElementById('generate-emails-dialogue');
         btnCloseEmail.addEventListener('click', () => {
             generateEmailsDialogue.style.visibility = 'hidden';
+        })
+
+        //Upload CSV dialogue
+        const btnUploadCSV = document.getElementById('upload-csv');
+        const uploadCSVDialogue = document.getElementById('upload-csv-dialogue');
+
+        btnUploadCSV.addEventListener('click', () => {
+            uploadCSVDialogue.style.visibility = 'visible';
+            addEntryDialogue.style.visibility = 'hidden';
         })
     </script>
 {% endblock %}

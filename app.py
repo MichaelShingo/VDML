@@ -23,13 +23,12 @@ import csv
 # "workon myvirtualenv", then pip install packages from here
 
 # ----- TASKS -----
+# remove mobile-responsive header
 #TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
 #TODOadd more comments, for future editing 
-
-#TODO add export csv option, or upload excel option
-
-#TODO Explore selenium as a way of extracting data from connect2 directly
 #TODO login information should be hashed...
+#TODO Explore selenium as a way of extracting data from connect2 directly
+
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
@@ -181,6 +180,46 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         if entry.selected:
             selectedSet.add(entry.id)
 
+
+
+    form = UploadFileForm()
+    filename = ''
+
+    # CSV UPLOAD
+    if form.validate_on_submit():
+        try:
+            file = form.file.data
+            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
+            filename = file.filename
+            filename = filename.replace(' ', '_')
+            filename = filename.replace('(', '')
+            filename = filename.replace(')', '')
+            os.chdir(FILES_DIRECTORY)
+
+            with open(filename, 'r') as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter='\t')
+                i = 0
+                for row in csv_reader:
+                    if i > 0:
+                        owner, pennID, email, amount, bookingNum, equipmentString, dateRange, returnTime, staffName, dateUpdate, forgiven, selected = row
+                        amount = int(amount)
+                        returnTime = datetime.strptime(returnTime, '%Y-%m-%d %H:%M:%S')
+                        dateUpdate = datetime.strptime(dateUpdate, '%Y-%m-%d %H:%M:%S')
+                        new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
+                            details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateUpdate, forgiven=forgiven)
+                        db.session.add(new_entry)
+                        db.session.commit()
+                    i += 1
+                csv_file.close()
+
+            os.remove(filename)
+
+            return redirect('/late_fines')
+
+        except Exception as e:
+            flash('Invalid CSV formatting. Make sure the "Return", "Date Added" and "Amount" columns follow the required format exactly and that there are no special characters in the filename.')
+            return redirect('/late_fines')
+
     if request.method == 'POST':
         if 'add-entry' in request.form:
             text = request.form['text']
@@ -280,16 +319,16 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             except ValueError:
                 print(ValueError)
             tasks = LateFine.query.filter_by(date_sent=filteredDate).all()
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', filteredDate=filteredDateHTML, visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', form=form, tasks=tasks, cols='0', visibility='hidden', filteredDate=filteredDateHTML, visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         elif 'clear-filters' in request.form:
             searchIDList = []
             filteredDate = None
             tasks = LateFine.query.all()
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', form=form, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         elif 'search' in request.form:
             searchTerm = request.form['search'].lower()
             tasks = searchDatabase(searchTerm)
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', form=form, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
 
     else:
         if len(searchIDList) > 0:
@@ -360,13 +399,13 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
         if generateEmailCount == 0:
             generateEmailCount += 1
-            return render_template('late_fines.html', methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
+            return render_template('late_fines.html', form=form, methods=['POST'], resultTextCirc=resultCirc, resultTextUser=resultUser,
                 visibilityCSV='hidden', visibilityCirc='visible', tasks=tasks)
         try:
-            return render_template('late_fines.html', filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', form=form, filteredDate=filteredDate, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
         except:
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
-            return render_template('late_fines.html', tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
+            return render_template('late_fines.html', form=form, tasks=tasks, cols='0', visibility='hidden', visibilityCSV='hidden', visibilityUser='hidden', visibilityCirc='hidden')
   
 @app.route('/sort-desc-name')
 def sortDescName():

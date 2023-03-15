@@ -98,6 +98,7 @@ p, h1, h2, h3, h4, h5, h6 {
   --color-yellow: #c4b810;
   --color-yellow-dark: #958c0b;
   --color-green: #00a778;
+  --color-green-trans: #00a7782e;
   --color-green-dark: #007b58;
   --color-black: #000;
   --color-grey-1: #f3f3f3;
@@ -241,10 +242,16 @@ h1 {
 
   tbody tr {
     border-bottom: 1px solid var(--color-grey-2);
+    &:hover {
+      background-color: var(--color-green-trans);
+    }
   }
 
   tbody tr:nth-of-type(even) {
     background-color: var(--color-grey-1);
+    &:hover {
+      background-color: var(--color-green-trans);
+    }
   }
 
   tbody tr:last-of-type {
@@ -289,7 +296,7 @@ h1 {
 .form {
   width: 100%;
 }
-.add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue {
+.add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue, .upload-csv-dialogue {
   overflow-y: auto;
   background-color: var(--color-grey-1);
   visibility: hidden;
