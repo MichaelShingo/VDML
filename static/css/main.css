@@ -326,6 +326,7 @@ h1 {
   min-width: 550px;
   max-width: 750px;
   max-height: 95vh;
+  min-height: 10vh;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
@@ -374,7 +375,7 @@ h1 {
 }
 
 .show {
-  visibility: visible;
+  visibility: visible !important;
 }
 
 .hide {

@@ -324,13 +324,27 @@
             {% endwith %}
         </div>
     </div>
-    <div class="upload-csv-dialogue" id="upload-csv-dialogue" style="visibility: {{ visibilityCirc }}";>
+    <div class="upload-csv-dialogue" id="upload-csv-dialogue" style="visibility: visible !important";> <!-- {{ visibilityCirc }}-->
         <h2>Upload CSV</h2>
-        <form class="" method="POST" enctype="multipart/form-data">
+        <div id="csv-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
+
+        <div class="col-2"></div>
+        <div class="col-8">
+            <p>Upload a CSV file to add entries in bulk. The CSV file must follow the format of the file given by the app when "Download CSV" is clicked. In particular, check the following details:</p>
+            <ol>
+                <li>The file should have a header row. The app skips the first row when reading the CSV file.</li>
+                <li>The "Amount" column should contain integers only.</li>
+                <li>The "Return" and "Date Added" columns must follow the date/time format precisely.</li>
+            </ol>
+            <form class="" method="POST" enctype="multipart/form-data">
                 {{form.hidden_tag()}}
-                {{form.file()}}
+                {{ form.file(class_='wt-form-classes') }}
                 {{form.submit()}}
-        </form>
+            </form>
+        </div>
+        <div class="col-2"></div>
+
+
     
     </div>
     <script>
@@ -405,10 +419,15 @@
         //Upload CSV dialogue
         const btnUploadCSV = document.getElementById('upload-csv');
         const uploadCSVDialogue = document.getElementById('upload-csv-dialogue');
+        const btnCloseCSV = document.getElementById('csv-x-mark');
 
         btnUploadCSV.addEventListener('click', () => {
-            uploadCSVDialogue.style.visibility = 'visible';
-            addEntryDialogue.style.visibility = 'hidden';
+            uploadCSVDialogue.classList.add('show');
+            addEntryDialogue.classList.remove('show');
+        })
+
+        btnCloseCSV.addEventListener('click', () => {
+            uploadCSVDialogue.classList.remove('show');
         })
     </script>
 {% endblock %}

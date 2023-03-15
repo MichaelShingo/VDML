@@ -23,7 +23,6 @@ import csv
 # "workon myvirtualenv", then pip install packages from here
 
 # ----- TASKS -----
-# no decimals in charts (maybe set min Y value )
 #TODOadd more comments, for future editing 
 #TODO login information should be hashed...or store in .env? 
 #TODO Explore selenium as a way of extracting data from connect2 directly
@@ -121,6 +120,8 @@ def booking_analysis():
             file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
             filename = file.filename
             filename = filename.replace(' ', '_')
+            filename = filename.replace('(', '')
+            filename = filename.replace(')', '')
             (equipmentList, countList, dayList, popularDayCount, hourList, hourCountList, dayHour, dayHourCount, 
             categoryList, categoryCount, noShowUsername, noShowCount, timeDifferenceList, timeDifferenceCount, sortedPopularUsers, 
             numberEquipment, numberUniqueBookings, lateReturnNames, lateReturnMinutes) = bookingAnalysis.analyzeCSV(filename)

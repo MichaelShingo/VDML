@@ -305,6 +305,7 @@ h1 {
   min-width:550px;
   max-width: 750px;
   max-height: 95vh;
+  min-height: 10vh;
   height: fit-content;
   top: 50%;
   left: 50%;
@@ -357,7 +358,7 @@ h1 {
 
 
 .show {
-  visibility: visible;
+  visibility: visible !important;
 }
 .hide {
   visibility: hidden;
@@ -464,3 +465,11 @@ ol {
     color: var(--color-green-dark);
   }
 }
+
+// .wt-form-classes {
+
+// }
+
+// input #submit {
+//   background-color: red !important;
+// }
