@@ -11,9 +11,11 @@ def generateEmail(name, amount, details, date_range, return_time):
         amount = 0
     daysLate = amount // 25
     if amount == 25:
-        finePlusDays += '.00 (1 day'
+        finePlusDays += '.00'
+    elif amount == 50:
+        finePlusDays += f'.00 (past the return time and {str(daysLate - 1)} day late)'
     else:
-        finePlusDays += '.00 (' + str(daysLate) + ' days'
+        finePlusDays += f'.00 (past the return time and {str(daysLate - 1)} days late)'
     if name:
         firstName = name[0:name.index(' ')]
     else:
@@ -27,7 +29,7 @@ def generateEmail(name, amount, details, date_range, return_time):
 
 Our records show you borrowed equipment from the Vitale Digital Media Lab and returned it late (see details below). 
 
-The overdue fine of $%s late @ $25/day) will be added to your library account by next week, and you may pay it off at the Circulation Desk at that time.
+The overdue fine of $%s will be added to your library account by next week, and you may pay it off at the Circulation Desk at that time.
 
 If you have any questions, please feel free to reply to this email or contact the lab manager, David Toccafondi (davidtoc@pobox.upenn.edu, 215-746-2661).
 

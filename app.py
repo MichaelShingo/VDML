@@ -23,12 +23,10 @@ import csv
 # "workon myvirtualenv", then pip install packages from here
 
 # ----- TASKS -----
-# remove mobile-responsive header
-#TODO edit userEmailGenerator to say less than 1 day late, vs. more than 1 day late 
+# no decimals in charts (maybe set min Y value )
 #TODOadd more comments, for future editing 
-#TODO login information should be hashed...
+#TODO login information should be hashed...or store in .env? 
 #TODO Explore selenium as a way of extracting data from connect2 directly
-
 
 UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
