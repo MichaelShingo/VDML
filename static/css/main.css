@@ -274,6 +274,9 @@ h1 {
 .content-table td, .content-table th {
   padding: 12px 15px;
 }
+.content-table td:nth-child(11) {
+  width: 125px;
+}
 .content-table tbody tr {
   border-bottom: 1px solid var(--color-grey-2);
 }
@@ -317,7 +320,7 @@ h1 {
   width: 100%;
 }
 
-.add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue, .upload-csv-dialogue {
+.dialogue, .add-entry-dialogue, .update-entry-dialogue, .generate-emails-dialogue, .upload-csv-dialogue {
   overflow-y: auto;
   background-color: var(--color-grey-1);
   visibility: hidden;
@@ -337,40 +340,40 @@ h1 {
   padding: 1%;
   box-shadow: var(--default-shadow);
 }
-.add-entry-dialogue .generated-textarea, .update-entry-dialogue .generated-textarea, .generate-emails-dialogue .generated-textarea, .upload-csv-dialogue .generated-textarea {
+.dialogue .generated-textarea, .add-entry-dialogue .generated-textarea, .update-entry-dialogue .generated-textarea, .generate-emails-dialogue .generated-textarea, .upload-csv-dialogue .generated-textarea {
   margin: 15px 0;
   resize: none;
   width: 100%;
   min-height: 35vh;
 }
-.add-entry-dialogue .input-container, .update-entry-dialogue .input-container, .generate-emails-dialogue .input-container, .upload-csv-dialogue .input-container {
+.dialogue .input-container, .add-entry-dialogue .input-container, .update-entry-dialogue .input-container, .generate-emails-dialogue .input-container, .upload-csv-dialogue .input-container {
   text-align: center;
 }
-.add-entry-dialogue .input-container label, .update-entry-dialogue .input-container label, .generate-emails-dialogue .input-container label, .upload-csv-dialogue .input-container label {
+.dialogue .input-container label, .add-entry-dialogue .input-container label, .update-entry-dialogue .input-container label, .generate-emails-dialogue .input-container label, .upload-csv-dialogue .input-container label {
   display: block;
   text-align: left;
 }
-.add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea, .update-entry-dialogue .input-container .form-input, .update-entry-dialogue .input-container textarea, .generate-emails-dialogue .input-container .form-input, .generate-emails-dialogue .input-container textarea, .upload-csv-dialogue .input-container .form-input, .upload-csv-dialogue .input-container textarea {
+.dialogue .input-container .form-input, .dialogue .input-container textarea, .add-entry-dialogue .input-container .form-input, .add-entry-dialogue .input-container textarea, .update-entry-dialogue .input-container .form-input, .update-entry-dialogue .input-container textarea, .generate-emails-dialogue .input-container .form-input, .generate-emails-dialogue .input-container textarea, .upload-csv-dialogue .input-container .form-input, .upload-csv-dialogue .input-container textarea {
   border-radius: 10px;
   margin: 10px auto;
   border: none;
   padding: 5px;
   width: 100%;
 }
-.add-entry-dialogue h2, .update-entry-dialogue h2, .generate-emails-dialogue h2, .upload-csv-dialogue h2 {
+.dialogue h2, .add-entry-dialogue h2, .update-entry-dialogue h2, .generate-emails-dialogue h2, .upload-csv-dialogue h2 {
   text-align: center;
 }
-.add-entry-dialogue .btn-submit, .update-entry-dialogue .btn-submit, .generate-emails-dialogue .btn-submit, .upload-csv-dialogue .btn-submit {
+.dialogue .btn-submit, .add-entry-dialogue .btn-submit, .update-entry-dialogue .btn-submit, .generate-emails-dialogue .btn-submit, .upload-csv-dialogue .btn-submit {
   display: block;
   margin: 10px auto;
 }
-.add-entry-dialogue .x-mark, .update-entry-dialogue .x-mark, .generate-emails-dialogue .x-mark, .upload-csv-dialogue .x-mark {
+.dialogue .x-mark, .add-entry-dialogue .x-mark, .update-entry-dialogue .x-mark, .generate-emails-dialogue .x-mark, .upload-csv-dialogue .x-mark {
   color: var(--color-pink);
   position: absolute;
   top: 10px;
   right: 10px;
 }
-.add-entry-dialogue .x-mark:hover, .update-entry-dialogue .x-mark:hover, .generate-emails-dialogue .x-mark:hover, .upload-csv-dialogue .x-mark:hover {
+.dialogue .x-mark:hover, .add-entry-dialogue .x-mark:hover, .update-entry-dialogue .x-mark:hover, .generate-emails-dialogue .x-mark:hover, .upload-csv-dialogue .x-mark:hover {
   color: var(--color-pink-dark);
 }
 
@@ -486,4 +489,10 @@ ol {
 }
 .fa-circle-info:hover {
   color: var(--color-green-dark);
+}
+
+#upload-csv {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }/*# sourceMappingURL=main.css.map */

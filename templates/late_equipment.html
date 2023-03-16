@@ -27,4 +27,30 @@
         </div>
         <div class="col-2"></div>
     </div>
+    <div class="dialogue" id="info-dialogue" style="visibility: hidden">
+        <div id="late-equipment-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
+        <div class="col-2"></div>
+        <div class="col-8">
+            <h2>Information</h2>
+            <ol>
+                <li>When a user is late, this function generates the email that you can send to the user to remind them to bring back the equipment. We have been waiting until they are 2 days past the return time to send them this personal email.</li>
+                <li>Log into connect2 and go to the Dashboard.</li>
+                <li>Select the late booking from the Check ins.</li>
+                <li>Click “Proceed to check in”.</li>
+                <li>Click on the Con number (this takes you to the “Resource booking summary" page).</li>
+                <li>Hit cmd + a to copy all of the text on the page.</li>
+                <li>Paste the copied text into the text box in the VDML app and hit the “Submit” button.</li>
+                <li>** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
+            </ol>
+
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <script>
+        const xMark = document.getElementById('late-equipment-x-mark');
+        const dialogue = document.getElementById('info-dialogue');
+        xMark.addEventListener('click', () => {
+            dialogue.style.visibility = 'hidden';
+        })
+    </script>
 {% endblock %}

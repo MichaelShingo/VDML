@@ -12,6 +12,10 @@ from wtforms import FileField, SubmitField
 from wtforms.validators import InputRequired
 import csv
 
+
+
+# A FEW MORE INSTRUCTIONS? AND PUT THEM IN THE SAME POPUP THING? 
+
 # ----- START VIRTUAL ENVIRONMENT AND COMMON GIT COMMANDS -----
 # virtualenv env 
 # cmd "source env/bin/activate"
@@ -21,9 +25,7 @@ import csv
 # ----- PYTHON ANYWHERE -----
 # If modules are not found upon deploy, go into virtual env, then pip install -r requirements.txt
 # "workon myvirtualenv", then pip install packages from here
-# If merge conflicts use this: maybe not because it overrides online database
-#   git fetch --prune
-#   git reset --hard origin/master
+# If merge conflicts, try deleting files in static/files
 
 # ----- TASKS -----
 # no decimals in charts (maybe set min Y value )
