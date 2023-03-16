@@ -45,7 +45,9 @@ app.config['UPLOAD_FOLDER'] = 'static/files'
 app.config['SECRET_KEY'] = 'jj8^^83jd)))ueid9ieSHI!!'
 db.init_app(app)
 
-FILES_DIRECTORY = os.path.join(os.path.dirname(__file__), '/static/files/')
+FILES_DIRECTORY = './static/files/'
+
+print(os.path.dirname(os.path.abspath(__file__)))
 
 class UploadFileForm(FlaskForm): #FlaskForm module for booking_analysis page
     file = FileField('File', validators=[InputRequired()])
