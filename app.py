@@ -74,17 +74,17 @@ class LateFine(db.Model): #Creates SQL database model
 with app.app_context():
     db.create_all()
 
-def auth_required(f):
-    @wraps(f)
-    #simple HTTP authentication, add @auth_required after each route you want to protect
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if auth and auth.username == 'vdmlstaff' and auth.password == 'pythonApp!':
-            return f(*args, **kwargs)
+# def auth_required(f):
+#     @wraps(f)
+#     #simple HTTP authentication, add @auth_required after each route you want to protect
+#     def decorated(*args, **kwargs):
+#         auth = request.authorization
+#         if auth and auth.username == 'vdmlstaff' and auth.password == 'pythonApp!':
+#             return f(*args, **kwargs)
 
-        return make_response('Invalid login credentials.', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
+#         return make_response('Invalid login credentials.', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
 
-    return decorated
+#     return decorated
 
 selectedSet = set()
 sortingParameter = '' #database column name
@@ -199,7 +199,10 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             filename = filename.replace(' ', '_')
             filename = filename.replace('(', '')
             filename = filename.replace(')', '')
-            os.chdir(FILES_DIRECTORY)
+            #os.chdir(FILES_DIRECTORY)
+
+            filename = FILES_DIRECTORY + filename
+            print(filename)
 
             with open(filename, 'r') as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter='\t')
