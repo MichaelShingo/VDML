@@ -1,9 +1,9 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, request, redirect, render_template, make_response, send_from_directory
 from functools import wraps
 from flask import request
-import os, webbrowser, json
+import os, json
 from werkzeug.utils import secure_filename
-from scripts import lateEquipment, lateFinesCsv, lateFinesCirculationEmail, lateFinesUserEmail, bookingAnalysis
+from scripts import lateEquipment, lateFinesCsv, lateFinesUserEmail, bookingAnalysis
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_fontawesome import FontAwesome
@@ -11,10 +11,6 @@ from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from wtforms.validators import InputRequired
 import csv
-
-
-
-# A FEW MORE INSTRUCTIONS? AND PUT THEM IN THE SAME POPUP THING? 
 
 # ----- START VIRTUAL ENVIRONMENT AND COMMON GIT COMMANDS -----
 # virtualenv env 
@@ -28,8 +24,6 @@ import csv
 # If merge conflicts, try deleting files in static/files
 
 # ----- TASKS -----
-# no decimals in charts (maybe set min Y value )
-#TODOadd more comments, for future editing 
 #TODO login information should be hashed...or store in .env? 
 #TODO Explore selenium as a way of extracting data from connect2 directly
 
@@ -49,11 +43,7 @@ app.config['SECRET_KEY'] = 'jj8^^83jd)))ueid9ieSHI!!'
 db.init_app(app)
 
 FILES_DIRECTORY = './static/files/'
-
 COMPLETE_FILES_PATH = CURRENT_WORKING_DIR + '/static/files/'
-
-
-print(os.path.dirname(os.path.abspath(__file__)))
 
 class UploadFileForm(FlaskForm): #FlaskForm module for booking_analysis page
     file = FileField('File', validators=[InputRequired()])
@@ -200,11 +190,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         filename = filename.replace(' ', '_')
         filename = filename.replace('(', '')
         filename = filename.replace(')', '')
-        #os.chdir(FILES_DIRECTORY)
-
         filename = CURRENT_WORKING_DIR + '/static/files/' + filename
-        print(filename)
-        print(os.getcwd())
 
         with open(filename, 'r') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter='\t')
@@ -240,7 +226,6 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
                     owner, bookingNum, equipmentString, dateRange, returnTime, staffName, todayDate = lateFinesCsv.generateCSV(text)
                     returnTime = datetime.strptime(returnTime, '%m/%d/%Y %I:%M %p')
             except Exception as e:
-                print(e)
                 flash('Error: The script failed to extract data from pasted text. Blank fields added.')
 
             pennID = request.form['penn-id']

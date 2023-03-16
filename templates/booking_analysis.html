@@ -6,15 +6,6 @@
     <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
-            <ol class="hide" id="instruction-list">
-                <li>This page takes a CSV file of booking information, extracted from connect2, calculates various data points, and displays them in several charts.</li>
-                <li>In connect2, navigate to the "Find Bookings" tab.</li>
-                <li>On the right-hand column, select a date range or other filtering options as desired.</li>
-                <li>Click "Export to Excel" at the bottom of the column.</li>
-                <li>This will generate and download a CSV file. Upload this to the VDML app by clicking "Choose File". Do not edit the CSV file in another program, this may change the encoding format of the file, resulting in an error in processing.</li>
-                <li>Click "Upload File" and the charts will be generated.</li>
-                <li>Click the green buttons to choose which chart to view. Hover over the chart contents to see precise numbers.</li>
-            </ol>
             <h2>Upload a CSV file</h2>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -45,12 +36,8 @@
                 <li>Click "Upload File" and the charts will be generated.</li>
                 <li>Click the green buttons to choose which chart to view. Hover over the chart contents to see precise numbers.</li>
             </ol>
-
         </div>
         <div class="col-2"></div>
-
-
-    
     </div>
     <script>
         const xMark = document.getElementById('chart-x-mark');

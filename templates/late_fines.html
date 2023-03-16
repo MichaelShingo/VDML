@@ -15,28 +15,6 @@
     <div class="row hide" id="instruction-list">
         <div class="col-2"></div>
         <div class="col-8">
-            <ol>
-                <li>This page contains a table displaying a record of all late fines.</li>
-                <li>In connect2 go to the "Reports" tab and click on "User debt."</li>
-                <li>Hit the submit button on the right-hand column without entering any values. This generates a PDF listing all outstanding fines.</li>
-                <li>Click on the "Users" tab and search the username of the user listed in the late fine PDF. </li>
-                <li>Click on the user, and on the following page, click on "View debt account details."</li>
-                <li>Click on the Con number of the booking associated with the fine. This takes you to the “Resource booking summary" page. </li>
-                <li>Hit cmd + a to copy all of the text on the page. ** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
-                <li>In the app, click on "Add Entry" and paste the text you copied in the "Connect2 Text" box.</li>
-                <li>In connect2, click on the name of the user to navigate to the "User details" page. In the app, fill in the remaining fields based on the data on this connect2 page.</li>
-                <li>Click the “Submit” button. The entry will be added to the table. Repeat this for every user in the PDF.</li>
-                <li>In the "emails" column, click on the link to generate an email to the user. This will open your default email application and autofill all of the fields. Repeat this for every user who needs to be notified. This is generally done on Wednesday, and we give the users 2 days to respond before sending the fines to circulation on Friday.</li>
-                <li>To generate the email to circulation, first select the entries you want to include. This is done in the "Actions" column by clicking on the blue checkboxes.</li>
-                <li>Click on "Generate Emails" on the bottom menu. This brings up a dialogue that generates emails for users and circulation.</li>
-                <li>Sort by various columns by clicking on the arrows at the top of the table.</li>
-                <li>Select all or deselect all checkboxes by clicking on the corresponding buttons in the bottom menu.</li>
-                <li>Filter by date sent by entering a date and clicking the "Filter by Date Sent" button.</li>
-                <li>Search for specific terms using the "Type your search term" box at the bottom menu.</li>
-                <li>To clear search and filtering, click on the "Clear Filters" button.</li>
-                <li>Click the green pencil icon in the "Actions" column to edit an entry.</li>
-                <li>Click on the red trash icon in the "Actions" column to delete an entry.</li>
-            </ol>
         </div>
         <div class="col-2"></div>
     </div>
@@ -208,8 +186,6 @@
             <input id="generate-emails" class="btn" name="generate-emails" type="submit" value="Generate Emails">
             <input id="download-csv" class="btn download" name="download-csv" type="submit" value="Download CSV">
         </form>
-
-     
     </div>
         <div class="add-entry-dialogue" id="add-entry-dialogue">
             <h2>Add Entry</h2>
@@ -247,7 +223,6 @@
             <input id="upload-csv" class="btn download" name="upload-csv" type="submit" value="Upload CSV">
             <div class="col-2">
             </div>
-
         </div>
         <div class="update-entry-dialogue" id="update-entry-dialogue" style="visibility: {{ visibilityUpdate }}" >
             <h2>Update Entry</h2>
@@ -348,9 +323,6 @@
             </form>
         </div>
         <div class="col-2"></div>
-
-
-    
     </div>
     <div class="dialogue" id="info-dialogue" style="visibility: hidden">
         <div id="late-fines-x-mark" class="x-mark"><i class="fa fa-xmark fa-2x"></i></div>
@@ -378,12 +350,13 @@
                 <li>To clear search and filtering, click on the "Clear Filters" button.</li>
                 <li>Click the green pencil icon in the "Actions" column to edit an entry.</li>
                 <li>Click on the red trash icon in the "Actions" column to delete an entry.</li>
+                <li>Any selected entries can be downloaded as a CSV file.</li>
+                <li>A CSV file in the exact same format as the one produced by download can be uploaded to create multiple entries. This can also serve as a backup for the data on the server. In particular, make sure the "Amount", "Return", and "Date Added" columsn are formatted precisely.</li>
             </ol>
         </div>
         <div class="col-2"></div>
     </div>
     <script>
-
         const xMark = document.getElementById('late-fines-x-mark');
         const dialogue = document.getElementById('info-dialogue');
         xMark.addEventListener('click', () => {

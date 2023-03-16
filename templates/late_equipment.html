@@ -6,16 +6,6 @@
     <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
-            <ol class="hide" id="instruction-list">
-                <li>When a user is late, this function generates the email that you can send to the user to remind them to bring back the equipment. We have been waiting until they are 2 days past the return time to send them this personal email.</li>
-                <li>Log into connect2 and go to the Dashboard.</li>
-                <li>Select the late booking from the Check ins.</li>
-                <li>Click “Proceed to check in”.</li>
-                <li>Click on the Con number (this takes you to the “Resource booking summary" page).</li>
-                <li>Hit cmd + a to copy all of the text on the page.</li>
-                <li>Paste the copied text into the text box in the VDML app and hit the “Submit” button.</li>
-                <li>** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
-            </ol>
             <form method="POST">
                 <input type="email" name="email" placeholder="User email" class="form-input-block"/>
                 <textarea class="generated-textarea" name="text" id="late-input" rows="20" cols="100" placeholder="Paste your text here.">{{ originalText }}</textarea>
@@ -42,7 +32,6 @@
                 <li>Paste the copied text into the text box in the VDML app and hit the “Submit” button.</li>
                 <li>** Currently, text from connect2 must be copied from Google Chrome or Safari. (Firefox does not provide the correct formatting).</li>
             </ol>
-
         </div>
         <div class="col-2"></div>
     </div>
