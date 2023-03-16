@@ -192,41 +192,41 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
     # CSV UPLOAD
     if form.validate_on_submit():
-        try:
-            file = form.file.data
-            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
-            filename = file.filename
-            filename = filename.replace(' ', '_')
-            filename = filename.replace('(', '')
-            filename = filename.replace(')', '')
-            #os.chdir(FILES_DIRECTORY)
+        # try:
+        file = form.file.data
+        file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
+        filename = file.filename
+        filename = filename.replace(' ', '_')
+        filename = filename.replace('(', '')
+        filename = filename.replace(')', '')
+        #os.chdir(FILES_DIRECTORY)
 
-            filename = FILES_DIRECTORY + filename
-            print(filename)
+        filename = FILES_DIRECTORY + filename
+        print(filename)
 
-            with open(filename, 'r') as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter='\t')
-                i = 0
-                for row in csv_reader:
-                    if i > 0:
-                        owner, pennID, email, amount, bookingNum, equipmentString, dateRange, returnTime, staffName, dateUpdate, forgiven, selected = row
-                        amount = int(amount)
-                        returnTime = datetime.strptime(returnTime, '%Y-%m-%d %H:%M:%S')
-                        dateUpdate = datetime.strptime(dateUpdate, '%Y-%m-%d %H:%M:%S')
-                        new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
-                            details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateUpdate, forgiven=forgiven)
-                        db.session.add(new_entry)
-                        db.session.commit()
-                    i += 1
-                csv_file.close()
+        with open(filename, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter='\t')
+            i = 0
+            for row in csv_reader:
+                if i > 0:
+                    owner, pennID, email, amount, bookingNum, equipmentString, dateRange, returnTime, staffName, dateUpdate, forgiven, selected = row
+                    amount = int(amount)
+                    returnTime = datetime.strptime(returnTime, '%Y-%m-%d %H:%M:%S')
+                    dateUpdate = datetime.strptime(dateUpdate, '%Y-%m-%d %H:%M:%S')
+                    new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
+                        details=equipmentString, schedule=dateRange, return_time=returnTime, operator=staffName, date_sent=dateUpdate, forgiven=forgiven)
+                    db.session.add(new_entry)
+                    db.session.commit()
+                i += 1
+            csv_file.close()
 
-            os.remove(filename)
+        os.remove(filename)
 
-            return redirect('/late_fines')
+        return redirect('/late_fines')
 
-        except Exception as e:
-            flash('Invalid CSV formatting. Make sure the "Return", "Date Added" and "Amount" columns follow the required format exactly and that there are no special characters in the filename.')
-            return redirect('/late_fines')
+        # except Exception as e:
+        #     flash('Invalid CSV formatting. Make sure the "Return", "Date Added" and "Amount" columns follow the required format exactly and that there are no special characters in the filename.')
+        #     return redirect('/late_fines')
 
     if request.method == 'POST':
         if 'add-entry' in request.form:
