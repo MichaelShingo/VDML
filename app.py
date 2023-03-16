@@ -35,6 +35,7 @@ UPLOAD_FOLDER = './uploads/'
 ALLOWED_EXTENSIONS = {'.csv'}
 SQLALCHEMY_TRACK_MODIFICATIONS = False #you need this? 
 SEPARATOR = '-----------------------------------------\n'
+CURRENT_WORKING_DIR = os.getcwd()
 
 db = SQLAlchemy() #initialize database
 app = Flask(__name__) #references this file
@@ -201,8 +202,9 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
         filename = filename.replace(')', '')
         #os.chdir(FILES_DIRECTORY)
 
-        filename = FILES_DIRECTORY + filename
+        filename = CURRENT_WORKING_DIR + '/static/files/' + filename
         print(filename)
+        print(os.getcwd())
 
         with open(filename, 'r') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter='\t')
