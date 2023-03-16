@@ -215,7 +215,8 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             for row in csv_reader:
                 if i > 0:
                     owner, pennID, email, amount, bookingNum, equipmentString, dateRange, returnTime, staffName, dateUpdate, forgiven, selected = row
-                    amount = int(amount)
+                    if amount:
+                        amount = int(amount)
                     returnTime = datetime.strptime(returnTime, '%Y-%m-%d %H:%M:%S')
                     dateUpdate = datetime.strptime(dateUpdate, '%Y-%m-%d %H:%M:%S')
                     new_entry = LateFine(name=owner, penn_id=pennID, email=email, amount=amount, booking_number=bookingNum, 
