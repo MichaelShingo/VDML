@@ -48,6 +48,9 @@ db.init_app(app)
 
 FILES_DIRECTORY = './static/files/'
 
+COMPLETE_FILES_PATH = CURRENT_WORKING_DIR + '/static/files/'
+
+
 print(os.path.dirname(os.path.abspath(__file__)))
 
 class UploadFileForm(FlaskForm): #FlaskForm module for booking_analysis page
@@ -276,9 +279,8 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
             return redirect('/late_fines')
         elif 'download-csv' in request.form:
             tasks = LateFine.query.all()
-            os.chdir(FILES_DIRECTORY)
 
-            with open('lateFines.csv', 'w', newline='') as csv_file:
+            with open(COMPLETE_FILES_PATH + 'lateFines.csv', 'w', newline='') as csv_file:
                 csv_writer = csv.writer(csv_file, delimiter='\t')
                 csv_writer.writerow(['Name', 'Penn ID', 'Email', 'Amount', 'Booking', 'Details', 'Schedule', 'Return', 'Operator', 'Date Added', 'Notes', 'Selected'])
                 for task in tasks:
@@ -289,7 +291,7 @@ def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='
 
             downloadPath = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
             csvFilename = 'lateFines.csv'
-            return send_from_directory(downloadPath, csvFilename)
+            return send_from_directory(COMPLETE_FILES_PATH, csvFilename)
         elif 'generate-emails' in request.form:
             generateEmailCount = 0
             tasks = LateFine.query.order_by(LateFine.date_sent).all()
