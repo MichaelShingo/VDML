@@ -21,8 +21,12 @@ import csv
 # ----- PYTHON ANYWHERE -----
 # If modules are not found upon deploy, go into virtual env, then pip install -r requirements.txt
 # "workon myvirtualenv", then pip install packages from here
+# If merge conflicts use this: maybe not because it overrides online database
+#   git fetch --prune
+#   git reset --hard origin/master
 
 # ----- TASKS -----
+# no decimals in charts (maybe set min Y value )
 #TODOadd more comments, for future editing 
 #TODO login information should be hashed...or store in .env? 
 #TODO Explore selenium as a way of extracting data from connect2 directly
@@ -103,12 +107,12 @@ def searchDatabase(searchTerm):
     return LateFine.query.filter(LateFine.id.in_(searchIDList)).all()
 
 @app.route('/')  #routes to index.html so you don't 404
-@auth_required
+# @auth_required
 def index():
     return render_template('index.html')
 
 @app.route('/booking_analysis', methods=['POST', 'GET'])
-@auth_required
+# @auth_required
 def booking_analysis():
     global chartSelection
     form = UploadFileForm()
@@ -141,14 +145,14 @@ def booking_analysis():
     return render_template('booking_analysis.html', form=form)
 
 @app.route('/download-analysis', methods=['GET'])
-@auth_required
+# @auth_required
 def download_analysis():
     downloadPath = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
     excelFilename = 'bookingAnalysis.xlsx'
     return send_from_directory(downloadPath, excelFilename)
 
 @app.route("/late_equipment", methods=['POST', 'GET'])
-@auth_required
+# @auth_required
 def late_equipment(visibility='hidden'):
     if request.method == 'POST':
         text = request.form['text']
@@ -165,7 +169,7 @@ def late_equipment(visibility='hidden'):
         return render_template('late_equipment.html', visibility='hidden')
 
 @app.route("/late_fines", methods=['POST', 'GET'])
-@auth_required
+# @auth_required
 def late_fines(visibility='hidden', cols='0', resulTextCSV=None, visibilityCSV='hidden', visibilityUser='hidden', visbilityCirc='hidden'):
     currentDB = LateFine.query.all()
     global searchIDList
